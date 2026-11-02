@@ -1902,7 +1902,7 @@ html_content = f'''<!DOCTYPE html>
           }}
         }});
 
-        if (targetBounds && (this.currentMode === 'name' || this.isAnswered)) {{
+        if (targetBounds && (this.currentMode === 'name' || this.currentMode === 'type' || this.isAnswered)) {{
           this.map.flyToBounds(targetBounds, {{ maxZoom: 10.5, duration: 0.5 }});
         }}
       }},
@@ -2416,7 +2416,7 @@ html_content = f'''<!DOCTYPE html>
           }}
         }});
 
-        if (targetBounds && (this.currentMode === 'name' || this.isAnswered)) {{
+        if (targetBounds && (this.currentMode === 'name' || this.currentMode === 'type' || this.isAnswered)) {{
           this.map.flyToBounds(targetBounds, {{ maxZoom: 8, duration: 0.5 }});
         }}
       }},
@@ -3066,7 +3066,7 @@ html_content = f'''<!DOCTYPE html>
           }}
         }});
 
-        if (targetBounds && (this.currentMode === 'name' || this.isAnswered)) {{
+        if (targetBounds && (this.currentMode === 'name' || this.currentMode === 'type' || this.isAnswered)) {{
           this.map.flyToBounds(targetBounds, {{ maxZoom: 5.5, duration: 0.5 }});
         }}
       }},

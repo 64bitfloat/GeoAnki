@@ -1417,6 +1417,7 @@ html_content = f'''<!DOCTYPE html>
       currentIndex: 0,
       currentQuestion: null,
       isAnswered: false,
+      answeredResult: null,
       activeRegionFilter: 'ALL',
       geoJsonCache: {{}},
 
@@ -1724,6 +1725,7 @@ html_content = f'''<!DOCTYPE html>
 
             layer.on({{
               mouseover: (e) => {{
+                if (this.isAnswered) return;
                 // 対象外の国・自治体はホバー変化させない
                 if (!isTarget && this.currentMode !== 'explore') return;
                 e.target.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
@@ -1770,6 +1772,7 @@ html_content = f'''<!DOCTYPE html>
 
       nextQuestion() {{
         this.isAnswered = false;
+        this.answeredResult = null;
         document.getElementById('muni-locate-feedback-bar').classList.add('hidden');
         document.getElementById('muni-type-feedback-bar').classList.add('hidden');
 
@@ -1821,11 +1824,41 @@ html_content = f'''<!DOCTYPE html>
 
         this.geoJsonLayer.eachLayer(layer => {{
           if (!layer.feature || !layer.feature.properties) return;
+          if (layer._path) layer._path.classList.remove('polygon-pulse');
+
           const featProps = layer.feature.properties;
           let code = String(featProps.N03_007 || featProps.code || '');
-          const isTarget = targetCodes.has(code) || (WARD_TO_CITY[code] && targetCodes.has(WARD_TO_CITY[code]));
-          const isCurrentHighlight = currentCode && (code === currentCode || WARD_TO_CITY[code] === currentCode);
+          const cityCode = WARD_TO_CITY[code] || code;
+          const isTarget = targetCodes.has(code) || targetCodes.has(cityCode);
 
+          // 回答後のハイライト判定
+          if (this.isAnswered && this.answeredResult) {{
+            const res = this.answeredResult;
+            if (res.isCorrect) {{
+              if (code === res.code || cityCode === res.code) {{
+                layer.setStyle({{ fillColor: '#34d399', fillOpacity: 0.95, weight: 3.5, color: '#059669' }});
+                if (layer.bringToFront) layer.bringToFront();
+                return;
+              }}
+            }} else {{
+              // 不正解時: 正解場所は黄色点滅
+              if (code === res.correctCode || cityCode === res.correctCode) {{
+                layer.setStyle({{ fillColor: '#fbbf24', fillOpacity: 0.95, weight: 3.5, color: '#eab308' }});
+                if (layer._path) layer._path.classList.add('polygon-pulse');
+                if (layer.bringToFront) layer.bringToFront();
+                return;
+              }}
+              // 誤ってタップした場所は赤色
+              if (res.wrongCode && (code === res.wrongCode || cityCode === res.wrongCode)) {{
+                layer.setStyle({{ fillColor: '#f87171', fillOpacity: 0.95, weight: 3.5, color: '#dc2626' }});
+                if (layer.bringToFront) layer.bringToFront();
+                return;
+              }}
+            }}
+          }}
+
+          // 通常出題中（4択または記入）のハイライト
+          const isCurrentHighlight = !this.isAnswered && currentCode && (code === currentCode || cityCode === currentCode);
           if (isCurrentHighlight) {{
             layer.setStyle({{
               fillColor: '#fbbf24',
@@ -1863,7 +1896,7 @@ html_content = f'''<!DOCTYPE html>
           }}
         }});
 
-        if (targetBounds && this.currentMode === 'name') {{
+        if (targetBounds && (this.currentMode === 'name' || this.isAnswered)) {{
           this.map.flyToBounds(targetBounds, {{ maxZoom: 10.5, duration: 0.5 }});
         }}
       }},
@@ -1906,7 +1939,7 @@ html_content = f'''<!DOCTYPE html>
         if (this.currentMode === 'locate') {{
           if (this.isAnswered) return;
           const isCorrect = (code === this.currentQuestion[0]);
-          this.handleAnswer(isCorrect, layer);
+          this.handleAnswer(isCorrect, layer, code);
         }} else if (this.currentMode === 'explore') {{
           this.selectedMuni = targetMuni;
           document.getElementById('muni-explore-empty').classList.add('hidden');
@@ -1924,7 +1957,7 @@ html_content = f'''<!DOCTYPE html>
         }}
       }},
 
-      handleAnswer(isCorrect, targetEl) {{
+      handleAnswer(isCorrect, targetEl, clickedCode = null) {{
         if (this.isAnswered) return;
         this.isAnswered = true;
 
@@ -1933,6 +1966,7 @@ html_content = f'''<!DOCTYPE html>
         const rec = this.data.records[q[0]];
 
         if (isCorrect) {{
+          this.answeredResult = {{ isCorrect: true, code: q[0] }};
           sound.correct();
           rec.correct++;
           rec.last = 'correct';
@@ -1940,7 +1974,6 @@ html_content = f'''<!DOCTYPE html>
           STORAGE.set(KEYS.MUNI, this.data);
 
           if (this.currentMode === 'locate') {{
-            if (targetEl && targetEl.setStyle) targetEl.setStyle({{ fillColor: '#34d399', fillOpacity: 0.95 }});
             const bar = document.getElementById('muni-locate-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
@@ -1952,11 +1985,14 @@ html_content = f'''<!DOCTYPE html>
             bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
           }}
 
+          this.resetPolygonStyles();
+
           setTimeout(() => {{
             this.currentIndex++;
             this.nextQuestion();
           }}, 900);
         }} else {{
+          this.answeredResult = {{ isCorrect: false, correctCode: q[0], wrongCode: clickedCode }};
           sound.wrong();
           rec.wrong++;
           rec.last = 'wrong';
@@ -1964,8 +2000,7 @@ html_content = f'''<!DOCTYPE html>
           STORAGE.set(KEYS.MUNI, this.data);
 
           if (this.currentMode === 'locate') {{
-            if (targetEl && targetEl.setStyle) targetEl.setStyle({{ fillColor: '#f87171', fillOpacity: 0.95 }});
-            this.highlightQuestionPolygon();
+            this.resetPolygonStyles();
             const bar = document.getElementById('muni-locate-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `
@@ -1975,10 +2010,12 @@ html_content = f'''<!DOCTYPE html>
               </div>
             `;
           }} else if (this.currentMode === 'name') {{
+            this.resetPolygonStyles();
             if (targetEl) targetEl.classList.add('!bg-rose-700');
             const correctBtn = document.querySelector(`.muni-choice-btn[data-code="${{q[0]}}"]`);
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
+            this.resetPolygonStyles();
             const bar = document.getElementById('muni-type-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `
@@ -2040,6 +2077,7 @@ html_content = f'''<!DOCTYPE html>
       currentIndex: 0,
       currentQuestion: null,
       isAnswered: false,
+      answeredResult: null,
 
       init() {{
         this.data = STORAGE.get(KEYS.PROV, {{ records: {{}} }});
@@ -2232,6 +2270,7 @@ html_content = f'''<!DOCTYPE html>
 
       nextQuestion() {{
         this.isAnswered = false;
+        this.answeredResult = null;
         document.getElementById('prov-locate-feedback-bar').classList.add('hidden');
         document.getElementById('prov-type-feedback-bar').classList.add('hidden');
 
@@ -2285,10 +2324,39 @@ html_content = f'''<!DOCTYPE html>
 
         this.geoJsonLayer.eachLayer(layer => {{
           if (!layer.feature || !layer.feature.properties) return;
+          if (layer._path) layer._path.classList.remove('polygon-pulse');
+
           const code = layer.feature.properties.code;
           const isTarget = targetCodes.has(code);
-          const isCurrentHighlight = currentCode && (code === currentCode);
 
+          // 回答後のハイライト判定
+          if (this.isAnswered && this.answeredResult) {{
+            const res = this.answeredResult;
+            if (res.isCorrect) {{
+              if (code === res.code) {{
+                layer.setStyle({{ fillColor: '#34d399', fillOpacity: 0.95, weight: 3.5, color: '#059669' }});
+                if (layer.bringToFront) layer.bringToFront();
+                return;
+              }}
+            }} else {{
+              // 不正解時: 正解場所は黄色点滅
+              if (code === res.correctCode) {{
+                layer.setStyle({{ fillColor: '#fbbf24', fillOpacity: 0.95, weight: 3.5, color: '#eab308' }});
+                if (layer._path) layer._path.classList.add('polygon-pulse');
+                if (layer.bringToFront) layer.bringToFront();
+                return;
+              }}
+              // 誤ってタップした場所は赤色
+              if (res.wrongCode && code === res.wrongCode) {{
+                layer.setStyle({{ fillColor: '#f87171', fillOpacity: 0.95, weight: 3.5, color: '#dc2626' }});
+                if (layer.bringToFront) layer.bringToFront();
+                return;
+              }}
+            }}
+          }}
+
+          // 通常出題中（4択または記入）のハイライト
+          const isCurrentHighlight = !this.isAnswered && currentCode && (code === currentCode);
           if (isCurrentHighlight) {{
             layer.setStyle({{
               fillColor: '#fbbf24',
@@ -2324,7 +2392,7 @@ html_content = f'''<!DOCTYPE html>
           }}
         }});
 
-        if (targetBounds && this.currentMode === 'name') {{
+        if (targetBounds && (this.currentMode === 'name' || this.isAnswered)) {{
           this.map.flyToBounds(targetBounds, {{ maxZoom: 8, duration: 0.5 }});
         }}
       }},
@@ -2365,7 +2433,7 @@ html_content = f'''<!DOCTYPE html>
         if (this.currentMode === 'locate') {{
           if (this.isAnswered) return;
           const isCorrect = (code === this.currentQuestion.code);
-          this.handleAnswer(isCorrect, layer);
+          this.handleAnswer(isCorrect, layer, code);
         }} else if (this.currentMode === 'explore') {{
           this.selectedProv = targetProv;
           document.getElementById('prov-explore-empty').classList.add('hidden');
@@ -2383,7 +2451,7 @@ html_content = f'''<!DOCTYPE html>
         }}
       }},
 
-      handleAnswer(isCorrect, targetEl) {{
+      handleAnswer(isCorrect, targetEl, clickedCode = null) {{
         if (this.isAnswered) return;
         this.isAnswered = true;
 
@@ -2392,6 +2460,7 @@ html_content = f'''<!DOCTYPE html>
         const rec = this.data.records[q.code];
 
         if (isCorrect) {{
+          this.answeredResult = {{ isCorrect: true, code: q.code }};
           sound.correct();
           rec.correct++;
           rec.last = 'correct';
@@ -2399,7 +2468,6 @@ html_content = f'''<!DOCTYPE html>
           STORAGE.set(KEYS.PROV, this.data);
 
           if (this.currentMode === 'locate') {{
-            if (targetEl && targetEl.setStyle) targetEl.setStyle({{ fillColor: '#34d399', fillOpacity: 0.95 }});
             const bar = document.getElementById('prov-locate-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
@@ -2411,11 +2479,14 @@ html_content = f'''<!DOCTYPE html>
             bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
           }}
 
+          this.resetPolygonStyles();
+
           setTimeout(() => {{
             this.currentIndex++;
             this.nextQuestion();
           }}, 900);
         }} else {{
+          this.answeredResult = {{ isCorrect: false, correctCode: q.code, wrongCode: clickedCode }};
           sound.wrong();
           rec.wrong++;
           rec.last = 'wrong';
@@ -2423,8 +2494,7 @@ html_content = f'''<!DOCTYPE html>
           STORAGE.set(KEYS.PROV, this.data);
 
           if (this.currentMode === 'locate') {{
-            if (targetEl && targetEl.setStyle) targetEl.setStyle({{ fillColor: '#f87171', fillOpacity: 0.95 }});
-            this.highlightQuestionPolygon();
+            this.resetPolygonStyles();
             const bar = document.getElementById('prov-locate-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `
@@ -2434,10 +2504,12 @@ html_content = f'''<!DOCTYPE html>
               </div>
             `;
           }} else if (this.currentMode === 'name') {{
+            this.resetPolygonStyles();
             if (targetEl) targetEl.classList.add('!bg-rose-700');
             const correctBtn = document.querySelector(`.prov-choice-btn[data-code="${{q.code}}"]`);
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
+            this.resetPolygonStyles();
             const bar = document.getElementById('prov-type-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `
@@ -2500,6 +2572,7 @@ html_content = f'''<!DOCTYPE html>
       currentIndex: 0,
       currentQuestion: null,
       isAnswered: false,
+      answeredResult: null,
 
       init() {{
         this.data = STORAGE.get(KEYS.WORLD, {{ records: {{}} }});
@@ -2766,6 +2839,7 @@ html_content = f'''<!DOCTYPE html>
 
             layer.on({{
               mouseover: (e) => {{
+                if (this.isAnswered) return;
                 // 【重要】対象外の国はホバーしても色を変えない
                 if (!isTarget && this.currentMode !== 'explore') return;
                 e.target.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
@@ -2812,6 +2886,7 @@ html_content = f'''<!DOCTYPE html>
 
       nextQuestion() {{
         this.isAnswered = false;
+        this.answeredResult = null;
         document.getElementById('world-locate-feedback-bar').classList.add('hidden');
         document.getElementById('world-type-feedback-bar').classList.add('hidden');
 
@@ -2879,10 +2954,39 @@ html_content = f'''<!DOCTYPE html>
 
         this.geoJsonLayer.eachLayer(layer => {{
           if (!layer.feature || !layer.feature.properties) return;
+          if (layer._path) layer._path.classList.remove('polygon-pulse');
+
           const code = layer.feature.properties.code;
           const isTarget = targetCodes.has(code);
-          const isCurrentHighlight = currentCode && (code === currentCode);
 
+          // 回答後のハイライト判定
+          if (this.isAnswered && this.answeredResult) {{
+            const res = this.answeredResult;
+            if (res.isCorrect) {{
+              if (code === res.code) {{
+                layer.setStyle({{ fillColor: '#34d399', fillOpacity: 0.95, weight: 3.5, color: '#059669' }});
+                if (layer.bringToFront) layer.bringToFront();
+                return;
+              }}
+            }} else {{
+              // 不正解時: 正解場所は黄色点滅
+              if (code === res.correctCode) {{
+                layer.setStyle({{ fillColor: '#fbbf24', fillOpacity: 0.95, weight: 3.5, color: '#eab308' }});
+                if (layer._path) layer._path.classList.add('polygon-pulse');
+                if (layer.bringToFront) layer.bringToFront();
+                return;
+              }}
+              // 誤ってタップした場所は赤色
+              if (res.wrongCode && code === res.wrongCode) {{
+                layer.setStyle({{ fillColor: '#f87171', fillOpacity: 0.95, weight: 3.5, color: '#dc2626' }});
+                if (layer.bringToFront) layer.bringToFront();
+                return;
+              }}
+            }}
+          }}
+
+          // 通常出題中（4択または記入）のハイライト
+          const isCurrentHighlight = !this.isAnswered && currentCode && (code === currentCode);
           if (isCurrentHighlight) {{
             layer.setStyle({{
               fillColor: '#fbbf24',
@@ -2918,7 +3022,7 @@ html_content = f'''<!DOCTYPE html>
           }}
         }});
 
-        if (targetBounds && this.currentMode === 'name') {{
+        if (targetBounds && (this.currentMode === 'name' || this.isAnswered)) {{
           this.map.flyToBounds(targetBounds, {{ maxZoom: 5.5, duration: 0.5 }});
         }}
       }},
@@ -2970,7 +3074,7 @@ html_content = f'''<!DOCTYPE html>
         if (this.currentMode === 'locate') {{
           if (this.isAnswered) return;
           const isCorrect = (code === this.currentQuestion.code);
-          this.handleAnswer(isCorrect, layer);
+          this.handleAnswer(isCorrect, layer, code);
         }} else if (this.currentMode === 'explore') {{
           this.selectedCountry = targetCountry;
           document.getElementById('world-explore-empty').classList.add('hidden');
@@ -2989,7 +3093,7 @@ html_content = f'''<!DOCTYPE html>
         }}
       }},
 
-      handleAnswer(isCorrect, targetEl) {{
+      handleAnswer(isCorrect, targetEl, clickedCode = null) {{
         if (this.isAnswered) return;
         this.isAnswered = true;
 
@@ -2998,6 +3102,7 @@ html_content = f'''<!DOCTYPE html>
         const rec = this.data.records[q.code];
 
         if (isCorrect) {{
+          this.answeredResult = {{ isCorrect: true, code: q.code }};
           sound.correct();
           rec.correct++;
           rec.last = 'correct';
@@ -3005,7 +3110,6 @@ html_content = f'''<!DOCTYPE html>
           STORAGE.set(KEYS.WORLD, this.data);
 
           if (this.currentMode === 'locate') {{
-            if (targetEl && targetEl.setStyle) targetEl.setStyle({{ fillColor: '#34d399', fillOpacity: 0.95 }});
             const bar = document.getElementById('world-locate-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
@@ -3017,11 +3121,14 @@ html_content = f'''<!DOCTYPE html>
             bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
           }}
 
+          this.resetPolygonStyles();
+
           setTimeout(() => {{
             this.currentIndex++;
             this.nextQuestion();
           }}, 900);
         }} else {{
+          this.answeredResult = {{ isCorrect: false, correctCode: q.code, wrongCode: clickedCode }};
           sound.wrong();
           rec.wrong++;
           rec.last = 'wrong';
@@ -3031,8 +3138,7 @@ html_content = f'''<!DOCTYPE html>
           const answerText = (this.targetType === 'capital') ? `${{q.name}}の首都は「${{q.capital}}」` : `正解は「${{q.name}}」`;
 
           if (this.currentMode === 'locate') {{
-            if (targetEl && targetEl.setStyle) targetEl.setStyle({{ fillColor: '#f87171', fillOpacity: 0.95 }});
-            this.highlightQuestionPolygon();
+            this.resetPolygonStyles();
             const bar = document.getElementById('world-locate-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `
@@ -3042,10 +3148,12 @@ html_content = f'''<!DOCTYPE html>
               </div>
             `;
           }} else if (this.currentMode === 'name') {{
+            this.resetPolygonStyles();
             if (targetEl) targetEl.classList.add('!bg-rose-700');
             const correctBtn = document.querySelector(`.world-choice-btn[data-code="${{q.code}}"]`);
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
+            this.resetPolygonStyles();
             const bar = document.getElementById('world-type-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `

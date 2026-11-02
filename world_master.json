@@ -1,0 +1,4409 @@
+{
+  "JPN": {
+    "code": "JPN",
+    "code2": "JP",
+    "name": "日本",
+    "capital": "東京",
+    "furigana_name": "にほん",
+    "furigana_cap": "とうきょう",
+    "region": "アジア",
+    "level": 1,
+    "lat": 36.2,
+    "lng": 138.2,
+    "aliases_name": [
+      "にっぽん",
+      "ニッポン",
+      "japan",
+      "日本",
+      "にほん"
+    ],
+    "aliases_cap": [
+      "とうきょうと",
+      "tokyo",
+      "東京",
+      "とうきょう"
+    ]
+  },
+  "CHN": {
+    "code": "CHN",
+    "code2": "CN",
+    "name": "中国",
+    "capital": "北京",
+    "furigana_name": "ちゅうごく",
+    "furigana_cap": "ぺきん",
+    "region": "アジア",
+    "level": 1,
+    "lat": 35.8,
+    "lng": 104.1,
+    "aliases_name": [
+      "中華人民共和国",
+      "チャイナ",
+      "china",
+      "中国",
+      "ちゅうごく"
+    ],
+    "aliases_cap": [
+      "ペキン",
+      "ベイジン",
+      "beijing",
+      "北京",
+      "ぺきん"
+    ]
+  },
+  "KOR": {
+    "code": "KOR",
+    "code2": "KR",
+    "name": "韓国",
+    "capital": "ソウル",
+    "furigana_name": "かんこく",
+    "furigana_cap": "そうる",
+    "region": "アジア",
+    "level": 1,
+    "lat": 35.9,
+    "lng": 127.7,
+    "aliases_name": [
+      "大韓民国",
+      "南コリア",
+      "korea",
+      "韓国",
+      "かんこく"
+    ],
+    "aliases_cap": [
+      "ソウル特別市",
+      "seoul",
+      "ソウル",
+      "そうる"
+    ]
+  },
+  "IND": {
+    "code": "IND",
+    "code2": "IN",
+    "name": "インド",
+    "capital": "ニューデリー",
+    "furigana_name": "いんど",
+    "furigana_cap": "にゅーでりー",
+    "region": "アジア",
+    "level": 1,
+    "lat": 20.6,
+    "lng": 78.9,
+    "aliases_name": [
+      "india",
+      "インド",
+      "いんど"
+    ],
+    "aliases_cap": [
+      "デリー",
+      "new delhi",
+      "delhi",
+      "ニューデリー",
+      "にゅーでりー"
+    ]
+  },
+  "IDN": {
+    "code": "IDN",
+    "code2": "ID",
+    "name": "インドネシア",
+    "capital": "ジャカルタ",
+    "furigana_name": "いんどねしあ",
+    "furigana_cap": "じゃかるた",
+    "region": "アジア",
+    "level": 1,
+    "lat": -0.8,
+    "lng": 113.9,
+    "aliases_name": [
+      "indonesia",
+      "インドネシア",
+      "いんどねしあ"
+    ],
+    "aliases_cap": [
+      "jakarta",
+      "ジャカルタ",
+      "じゃかるた"
+    ]
+  },
+  "SAU": {
+    "code": "SAU",
+    "code2": "SA",
+    "name": "サウジアラビア",
+    "capital": "リヤド",
+    "furigana_name": "さうじあらびあ",
+    "furigana_cap": "りやど",
+    "region": "アジア",
+    "level": 1,
+    "lat": 23.9,
+    "lng": 45.1,
+    "aliases_name": [
+      "サウジ",
+      "saudi arabia",
+      "サウジアラビア",
+      "さうじあらびあ"
+    ],
+    "aliases_cap": [
+      "riyadh",
+      "リヤド",
+      "りやど"
+    ]
+  },
+  "TUR": {
+    "code": "TUR",
+    "code2": "TR",
+    "name": "トルコ",
+    "capital": "アンカラ",
+    "furigana_name": "とるこ",
+    "furigana_cap": "あんから",
+    "region": "アジア",
+    "level": 1,
+    "lat": 38.9,
+    "lng": 35.2,
+    "aliases_name": [
+      "turkey",
+      "turkiye",
+      "トルコ",
+      "とるこ"
+    ],
+    "aliases_cap": [
+      "ankara",
+      "アンカラ",
+      "あんから"
+    ]
+  },
+  "THA": {
+    "code": "THA",
+    "code2": "TH",
+    "name": "タイ",
+    "capital": "バンコク",
+    "furigana_name": "たい",
+    "furigana_cap": "ばんこく",
+    "region": "アジア",
+    "level": 1,
+    "lat": 15.9,
+    "lng": 100.9,
+    "aliases_name": [
+      "タイ王国",
+      "thailand",
+      "タイ",
+      "たい"
+    ],
+    "aliases_cap": [
+      "bangkok",
+      "クルンテープ",
+      "バンコク",
+      "ばんこく"
+    ]
+  },
+  "VNM": {
+    "code": "VNM",
+    "code2": "VN",
+    "name": "ベトナム",
+    "capital": "ハノイ",
+    "furigana_name": "べとなむ",
+    "furigana_cap": "はのい",
+    "region": "アジア",
+    "level": 1,
+    "lat": 14.0,
+    "lng": 108.3,
+    "aliases_name": [
+      "ベトナム社会主義共和国",
+      "vietnam",
+      "ベトナム",
+      "べとなむ"
+    ],
+    "aliases_cap": [
+      "hanoi",
+      "ハノイ",
+      "はのい"
+    ]
+  },
+  "SGP": {
+    "code": "SGP",
+    "code2": "SG",
+    "name": "シンガポール",
+    "capital": "シンガポール",
+    "furigana_name": "しんがぽーる",
+    "furigana_cap": "しんがぽーる",
+    "region": "アジア",
+    "level": 1,
+    "lat": 1.35,
+    "lng": 103.8,
+    "aliases_name": [
+      "singapore",
+      "シンガポール",
+      "しんがぽーる"
+    ],
+    "aliases_cap": [
+      "singapore",
+      "シンガポール",
+      "しんがぽーる"
+    ]
+  },
+  "PHL": {
+    "code": "PHL",
+    "code2": "PH",
+    "name": "フィリピン",
+    "capital": "マニラ",
+    "furigana_name": "ふぃりぴん",
+    "furigana_cap": "まにら",
+    "region": "アジア",
+    "level": 2,
+    "lat": 12.8,
+    "lng": 121.7,
+    "aliases_name": [
+      "philippines",
+      "フィリピン",
+      "ふぃりぴん"
+    ],
+    "aliases_cap": [
+      "manila",
+      "マニラ",
+      "まにら"
+    ]
+  },
+  "MYS": {
+    "code": "MYS",
+    "code2": "MY",
+    "name": "マレーシア",
+    "capital": "クアラルンプール",
+    "furigana_name": "まれーしあ",
+    "furigana_cap": "くあらるんぷーる",
+    "region": "アジア",
+    "level": 2,
+    "lat": 4.2,
+    "lng": 101.9,
+    "aliases_name": [
+      "malaysia",
+      "マレーシア",
+      "まれーしあ"
+    ],
+    "aliases_cap": [
+      "kuala lumpur",
+      "クアラルンプール",
+      "くあらるんぷーる"
+    ]
+  },
+  "PAK": {
+    "code": "PAK",
+    "code2": "PK",
+    "name": "パキスタン",
+    "capital": "イスラマバード",
+    "furigana_name": "ぱきすたん",
+    "furigana_cap": "いすらまばーど",
+    "region": "アジア",
+    "level": 2,
+    "lat": 30.3,
+    "lng": 69.3,
+    "aliases_name": [
+      "pakistan",
+      "パキスタン",
+      "ぱきすたん"
+    ],
+    "aliases_cap": [
+      "islamabad",
+      "イスラマバード",
+      "いすらまばーど"
+    ]
+  },
+  "IRN": {
+    "code": "IRN",
+    "code2": "IR",
+    "name": "イラン",
+    "capital": "テヘラン",
+    "furigana_name": "いらん",
+    "furigana_cap": "てへらん",
+    "region": "アジア",
+    "level": 2,
+    "lat": 32.4,
+    "lng": 53.7,
+    "aliases_name": [
+      "イラン・イスラム共和国",
+      "iran",
+      "イラン",
+      "いらん"
+    ],
+    "aliases_cap": [
+      "tehran",
+      "テヘラン",
+      "てへらん"
+    ]
+  },
+  "IRQ": {
+    "code": "IRQ",
+    "code2": "IQ",
+    "name": "イラク",
+    "capital": "バグダッド",
+    "furigana_name": "いらく",
+    "furigana_cap": "ばぐだっど",
+    "region": "アジア",
+    "level": 2,
+    "lat": 33.2,
+    "lng": 43.7,
+    "aliases_name": [
+      "iraq",
+      "イラク",
+      "いらく"
+    ],
+    "aliases_cap": [
+      "バグダード",
+      "baghdad",
+      "バグダッド",
+      "ばぐだっど"
+    ]
+  },
+  "ISR": {
+    "code": "ISR",
+    "code2": "IL",
+    "name": "イスラエル",
+    "capital": "エルサレム",
+    "furigana_name": "いすらえる",
+    "furigana_cap": "えるされむ",
+    "region": "アジア",
+    "level": 2,
+    "lat": 31.0,
+    "lng": 34.8,
+    "aliases_name": [
+      "israel",
+      "イスラエル",
+      "いすらえる"
+    ],
+    "aliases_cap": [
+      "jerusalem",
+      "エルサレム",
+      "えるされむ"
+    ]
+  },
+  "ARE": {
+    "code": "ARE",
+    "code2": "AE",
+    "name": "アラブ首長国連邦",
+    "capital": "アブダビ",
+    "furigana_name": "あらぶしゅちょうこくれんぽう",
+    "furigana_cap": "あぶだび",
+    "region": "アジア",
+    "level": 2,
+    "lat": 23.4,
+    "lng": 53.8,
+    "aliases_name": [
+      "UAE",
+      "uae",
+      "united arab emirates",
+      "アラブ首長国連邦",
+      "あらぶしゅちょうこくれんぽう"
+    ],
+    "aliases_cap": [
+      "abu dhabi",
+      "アブダビ",
+      "あぶだび"
+    ]
+  },
+  "TWN": {
+    "code": "TWN",
+    "code2": "TW",
+    "name": "台湾",
+    "capital": "台北",
+    "furigana_name": "たいわん",
+    "furigana_cap": "たいぺい",
+    "region": "アジア",
+    "level": 2,
+    "lat": 23.7,
+    "lng": 121.0,
+    "aliases_name": [
+      "中華民国",
+      "taiwan",
+      "台湾",
+      "たいわん"
+    ],
+    "aliases_cap": [
+      "タイペイ",
+      "taipei",
+      "台北",
+      "たいぺい"
+    ]
+  },
+  "PRK": {
+    "code": "PRK",
+    "code2": "KP",
+    "name": "北朝鮮",
+    "capital": "ピョンヤン",
+    "furigana_name": "きたちょうせん",
+    "furigana_cap": "ぴょんやん",
+    "region": "アジア",
+    "level": 2,
+    "lat": 40.3,
+    "lng": 127.5,
+    "aliases_name": [
+      "朝鮮民主主義人民共和国",
+      "north korea",
+      "北朝鮮",
+      "きたちょうせん"
+    ],
+    "aliases_cap": [
+      "平壌",
+      "pyongyang",
+      "ピョンヤン",
+      "ぴょんやん"
+    ]
+  },
+  "MNG": {
+    "code": "MNG",
+    "code2": "MN",
+    "name": "モンゴル",
+    "capital": "ウランバートル",
+    "furigana_name": "もんごる",
+    "furigana_cap": "うらんばーとる",
+    "region": "アジア",
+    "level": 3,
+    "lat": 46.8,
+    "lng": 103.8,
+    "aliases_name": [
+      "モンゴル国",
+      "mongolia",
+      "モンゴル",
+      "もんごる"
+    ],
+    "aliases_cap": [
+      "ulaanbaatar",
+      "ウランバートル",
+      "うらんばーとる"
+    ]
+  },
+  "KAZ": {
+    "code": "KAZ",
+    "code2": "KZ",
+    "name": "カザフスタン",
+    "capital": "アスタナ",
+    "furigana_name": "かざふすたん",
+    "furigana_cap": "あすたな",
+    "region": "アジア",
+    "level": 3,
+    "lat": 48.0,
+    "lng": 66.9,
+    "aliases_name": [
+      "kazakhstan",
+      "カザフスタン",
+      "かざふすたん"
+    ],
+    "aliases_cap": [
+      "ヌルスルタン",
+      "astana",
+      "アスタナ",
+      "あすたな"
+    ]
+  },
+  "UZB": {
+    "code": "UZB",
+    "code2": "UZ",
+    "name": "ウズベキスタン",
+    "capital": "タシュケント",
+    "furigana_name": "うずべきすたん",
+    "furigana_cap": "たしゅけんと",
+    "region": "アジア",
+    "level": 3,
+    "lat": 41.3,
+    "lng": 64.6,
+    "aliases_name": [
+      "uzbekistan",
+      "ウズベキスタン",
+      "うずべきすたん"
+    ],
+    "aliases_cap": [
+      "tashkent",
+      "タシュケント",
+      "たしゅけんと"
+    ]
+  },
+  "BGD": {
+    "code": "BGD",
+    "code2": "BD",
+    "name": "バングラデシュ",
+    "capital": "ダッカ",
+    "furigana_name": "ばんぐらでしゅ",
+    "furigana_cap": "だっか",
+    "region": "アジア",
+    "level": 3,
+    "lat": 23.7,
+    "lng": 90.3,
+    "aliases_name": [
+      "bangladesh",
+      "バングラデシュ",
+      "ばんぐらでしゅ"
+    ],
+    "aliases_cap": [
+      "dhaka",
+      "ダッカ",
+      "だっか"
+    ]
+  },
+  "LKA": {
+    "code": "LKA",
+    "code2": "LK",
+    "name": "スリランカ",
+    "capital": "スリジャヤワルダナプラコッテ",
+    "furigana_name": "すりらんか",
+    "furigana_cap": "すりじゃやわるだなぷらこって",
+    "region": "アジア",
+    "level": 3,
+    "lat": 7.8,
+    "lng": 80.7,
+    "aliases_name": [
+      "sri lanka",
+      "スリランカ",
+      "すりらんか"
+    ],
+    "aliases_cap": [
+      "コッテ",
+      "コロンボ",
+      "sri jayawardenepura kotte",
+      "スリジャヤワルダナプラコッテ",
+      "すりじゃやわるだなぷらこって"
+    ]
+  },
+  "NPL": {
+    "code": "NPL",
+    "code2": "NP",
+    "name": "ネパール",
+    "capital": "カトマンズ",
+    "furigana_name": "ねぱーる",
+    "furigana_cap": "かとまんず",
+    "region": "アジア",
+    "level": 3,
+    "lat": 28.4,
+    "lng": 84.1,
+    "aliases_name": [
+      "nepal",
+      "ネパール",
+      "ねぱーる"
+    ],
+    "aliases_cap": [
+      "kathmandu",
+      "カトマンズ",
+      "かとまんず"
+    ]
+  },
+  "MMR": {
+    "code": "MMR",
+    "code2": "MM",
+    "name": "ミャンマー",
+    "capital": "ネピドー",
+    "furigana_name": "みゃんまー",
+    "furigana_cap": "ねぴどー",
+    "region": "アジア",
+    "level": 3,
+    "lat": 21.9,
+    "lng": 95.9,
+    "aliases_name": [
+      "ビルマ",
+      "myanmar",
+      "ミャンマー",
+      "みゃんまー"
+    ],
+    "aliases_cap": [
+      "naypyidaw",
+      "ネピドー",
+      "ねぴどー"
+    ]
+  },
+  "KHM": {
+    "code": "KHM",
+    "code2": "KH",
+    "name": "カンボジア",
+    "capital": "プノンペン",
+    "furigana_name": "かんぼじあ",
+    "furigana_cap": "ぷのんぺん",
+    "region": "アジア",
+    "level": 3,
+    "lat": 12.5,
+    "lng": 104.9,
+    "aliases_name": [
+      "cambodia",
+      "カンボジア",
+      "かんぼじあ"
+    ],
+    "aliases_cap": [
+      "phnom penh",
+      "プノンペン",
+      "ぷのんぺん"
+    ]
+  },
+  "LAO": {
+    "code": "LAO",
+    "code2": "LA",
+    "name": "ラオス",
+    "capital": "ビエンチャン",
+    "furigana_name": "らおす",
+    "furigana_cap": "びえんちゃん",
+    "region": "アジア",
+    "level": 3,
+    "lat": 19.8,
+    "lng": 102.5,
+    "aliases_name": [
+      "laos",
+      "ラオス",
+      "らおす"
+    ],
+    "aliases_cap": [
+      "ヴィエンチャン",
+      "vientiane",
+      "ビエンチャン",
+      "びえんちゃん"
+    ]
+  },
+  "JOR": {
+    "code": "JOR",
+    "code2": "JO",
+    "name": "ヨルダン",
+    "capital": "アンマン",
+    "furigana_name": "よるだん",
+    "furigana_cap": "あんまん",
+    "region": "アジア",
+    "level": 3,
+    "lat": 30.6,
+    "lng": 36.2,
+    "aliases_name": [
+      "jordan",
+      "ヨルダン",
+      "よるだん"
+    ],
+    "aliases_cap": [
+      "amman",
+      "アンマン",
+      "あんまん"
+    ]
+  },
+  "LBN": {
+    "code": "LBN",
+    "code2": "LB",
+    "name": "レバノン",
+    "capital": "ベイルート",
+    "furigana_name": "ればのん",
+    "furigana_cap": "べいるーと",
+    "region": "アジア",
+    "level": 3,
+    "lat": 33.8,
+    "lng": 35.8,
+    "aliases_name": [
+      "lebanon",
+      "レバノン",
+      "ればのん"
+    ],
+    "aliases_cap": [
+      "beirut",
+      "ベイルート",
+      "べいるーと"
+    ]
+  },
+  "OMN": {
+    "code": "OMN",
+    "code2": "OM",
+    "name": "オマーン",
+    "capital": "マスカット",
+    "furigana_name": "おまーん",
+    "furigana_cap": "ますかと",
+    "region": "アジア",
+    "level": 3,
+    "lat": 21.5,
+    "lng": 55.9,
+    "aliases_name": [
+      "oman",
+      "オマーン",
+      "おまーん"
+    ],
+    "aliases_cap": [
+      "muscat",
+      "マスカット",
+      "ますかと"
+    ]
+  },
+  "QAT": {
+    "code": "QAT",
+    "code2": "QA",
+    "name": "カタール",
+    "capital": "ドーハ",
+    "furigana_name": "かたーる",
+    "furigana_cap": "どーは",
+    "region": "アジア",
+    "level": 3,
+    "lat": 25.3,
+    "lng": 51.1,
+    "aliases_name": [
+      "qatar",
+      "カタール",
+      "かたーる"
+    ],
+    "aliases_cap": [
+      "doha",
+      "ドーハ",
+      "どーは"
+    ]
+  },
+  "KWT": {
+    "code": "KWT",
+    "code2": "KW",
+    "name": "クウェート",
+    "capital": "クウェート",
+    "furigana_name": "くうぇーと",
+    "furigana_cap": "くうぇーと",
+    "region": "アジア",
+    "level": 3,
+    "lat": 29.3,
+    "lng": 47.5,
+    "aliases_name": [
+      "kuwait",
+      "クウェート",
+      "くうぇーと"
+    ],
+    "aliases_cap": [
+      "kuwait city",
+      "クウェート",
+      "くうぇーと"
+    ]
+  },
+  "SYR": {
+    "code": "SYR",
+    "code2": "SY",
+    "name": "シリア",
+    "capital": "ダマスカス",
+    "furigana_name": "しりあ",
+    "furigana_cap": "だますかす",
+    "region": "アジア",
+    "level": 3,
+    "lat": 34.8,
+    "lng": 38.9,
+    "aliases_name": [
+      "syria",
+      "シリア",
+      "しりあ"
+    ],
+    "aliases_cap": [
+      "damascus",
+      "ダマスカス",
+      "だますかす"
+    ]
+  },
+  "YEM": {
+    "code": "YEM",
+    "code2": "YE",
+    "name": "イエメン",
+    "capital": "サナア",
+    "furigana_name": "いえめん",
+    "furigana_cap": "さなあ",
+    "region": "アジア",
+    "level": 3,
+    "lat": 15.5,
+    "lng": 48.5,
+    "aliases_name": [
+      "yemen",
+      "イエメン",
+      "いえめん"
+    ],
+    "aliases_cap": [
+      "sanaa",
+      "サナア",
+      "さなあ"
+    ]
+  },
+  "AFG": {
+    "code": "AFG",
+    "code2": "AF",
+    "name": "アフガニスタン",
+    "capital": "カブール",
+    "furigana_name": "あふがにすたん",
+    "furigana_cap": "かぶーる",
+    "region": "アジア",
+    "level": 3,
+    "lat": 33.9,
+    "lng": 67.7,
+    "aliases_name": [
+      "afghanistan",
+      "アフガニスタン",
+      "あふがにすたん"
+    ],
+    "aliases_cap": [
+      "kabul",
+      "カブール",
+      "かぶーる"
+    ]
+  },
+  "BTN": {
+    "code": "BTN",
+    "code2": "BT",
+    "name": "ブータン",
+    "capital": "ティンプー",
+    "furigana_name": "ぶーたん",
+    "furigana_cap": "てぃんぷー",
+    "region": "アジア",
+    "level": 4,
+    "lat": 27.5,
+    "lng": 90.4,
+    "aliases_name": [
+      "bhutan",
+      "ブータン",
+      "ぶーたん"
+    ],
+    "aliases_cap": [
+      "thimphu",
+      "ティンプー",
+      "てぃんぷー"
+    ]
+  },
+  "MDV": {
+    "code": "MDV",
+    "code2": "MV",
+    "name": "モルディブ",
+    "capital": "マレ",
+    "furigana_name": "もるでぃぶ",
+    "furigana_cap": "まれ",
+    "region": "アジア",
+    "level": 4,
+    "lat": 3.2,
+    "lng": 73.2,
+    "aliases_name": [
+      "モルジブ",
+      "maldives",
+      "モルディブ",
+      "もるでぃぶ"
+    ],
+    "aliases_cap": [
+      "male",
+      "マレ",
+      "まれ"
+    ]
+  },
+  "BRN": {
+    "code": "BRN",
+    "code2": "BN",
+    "name": "ブルネイ",
+    "capital": "バンダルスリブガワン",
+    "furigana_name": "ぶるねい",
+    "furigana_cap": "ばんだるすりぶがわん",
+    "region": "アジア",
+    "level": 4,
+    "lat": 4.5,
+    "lng": 114.7,
+    "aliases_name": [
+      "brunei",
+      "ブルネイ",
+      "ぶるねい"
+    ],
+    "aliases_cap": [
+      "bandar seri begawan",
+      "バンダルスリブガワン",
+      "ばんだるすりぶがわん"
+    ]
+  },
+  "TLS": {
+    "code": "TLS",
+    "code2": "TL",
+    "name": "東ティモール",
+    "capital": "ディリ",
+    "furigana_name": "ひがしてぃもーる",
+    "furigana_cap": "でぃり",
+    "region": "アジア",
+    "level": 4,
+    "lat": -8.8,
+    "lng": 125.7,
+    "aliases_name": [
+      "east timor",
+      "timor-leste",
+      "東ティモール",
+      "ひがしてぃもーる"
+    ],
+    "aliases_cap": [
+      "dili",
+      "ディリ",
+      "でぃり"
+    ]
+  },
+  "BHR": {
+    "code": "BHR",
+    "code2": "BH",
+    "name": "バーレーン",
+    "capital": "マナマ",
+    "furigana_name": "ばーれーん",
+    "furigana_cap": "まなま",
+    "region": "アジア",
+    "level": 4,
+    "lat": 26.0,
+    "lng": 50.5,
+    "aliases_name": [
+      "bahrain",
+      "バーレーン",
+      "ばーれーん"
+    ],
+    "aliases_cap": [
+      "manama",
+      "マナマ",
+      "まなま"
+    ]
+  },
+  "CYP": {
+    "code": "CYP",
+    "code2": "CY",
+    "name": "キプロス",
+    "capital": "ニコシア",
+    "furigana_name": "きぷろす",
+    "furigana_cap": "にこしあ",
+    "region": "アジア",
+    "level": 4,
+    "lat": 35.1,
+    "lng": 33.4,
+    "aliases_name": [
+      "cyprus",
+      "キプロス",
+      "きぷろす"
+    ],
+    "aliases_cap": [
+      "nicosia",
+      "ニコシア",
+      "にこしあ"
+    ]
+  },
+  "GEO": {
+    "code": "GEO",
+    "code2": "GE",
+    "name": "ジョージア",
+    "capital": "トビリシ",
+    "furigana_name": "じょーじあ",
+    "furigana_cap": "とびりし",
+    "region": "アジア",
+    "level": 4,
+    "lat": 42.3,
+    "lng": 43.3,
+    "aliases_name": [
+      "グルジア",
+      "georgia",
+      "ジョージア",
+      "じょーじあ"
+    ],
+    "aliases_cap": [
+      "tbilisi",
+      "トビリシ",
+      "とびりし"
+    ]
+  },
+  "ARM": {
+    "code": "ARM",
+    "code2": "AM",
+    "name": "アルメニア",
+    "capital": "エレバン",
+    "furigana_name": "あるめにあ",
+    "furigana_cap": "えればん",
+    "region": "アジア",
+    "level": 4,
+    "lat": 40.0,
+    "lng": 45.0,
+    "aliases_name": [
+      "armenia",
+      "アルメニア",
+      "あるめにあ"
+    ],
+    "aliases_cap": [
+      "yerevan",
+      "エレバン",
+      "えればん"
+    ]
+  },
+  "AZE": {
+    "code": "AZE",
+    "code2": "AZ",
+    "name": "アゼルバイジャン",
+    "capital": "バクー",
+    "furigana_name": "あぜるばいじゃん",
+    "furigana_cap": "ばくー",
+    "region": "アジア",
+    "level": 4,
+    "lat": 40.1,
+    "lng": 47.5,
+    "aliases_name": [
+      "azerbaijan",
+      "アゼルバイジャン",
+      "あぜるばいじゃん"
+    ],
+    "aliases_cap": [
+      "baku",
+      "バクー",
+      "ばくー"
+    ]
+  },
+  "KGZ": {
+    "code": "KGZ",
+    "code2": "KG",
+    "name": "キルギス",
+    "capital": "ビシュケク",
+    "furigana_name": "きるぎす",
+    "furigana_cap": "びしゅけく",
+    "region": "アジア",
+    "level": 4,
+    "lat": 41.2,
+    "lng": 74.7,
+    "aliases_name": [
+      "キルギスタン",
+      "kyrgyzstan",
+      "キルギス",
+      "きるぎす"
+    ],
+    "aliases_cap": [
+      "bishkek",
+      "ビシュケク",
+      "びしゅけく"
+    ]
+  },
+  "TJK": {
+    "code": "TJK",
+    "code2": "TJ",
+    "name": "タジキスタン",
+    "capital": "ドゥシャンベ",
+    "furigana_name": "たじきすたん",
+    "furigana_cap": "どぅしゃんべ",
+    "region": "アジア",
+    "level": 4,
+    "lat": 38.8,
+    "lng": 71.2,
+    "aliases_name": [
+      "tajikistan",
+      "タジキスタン",
+      "たじきすたん"
+    ],
+    "aliases_cap": [
+      "dushanbe",
+      "ドゥシャンベ",
+      "どぅしゃんべ"
+    ]
+  },
+  "TKM": {
+    "code": "TKM",
+    "code2": "TM",
+    "name": "トルクメニスタン",
+    "capital": "アシガバート",
+    "furigana_name": "とるくめにすたん",
+    "furigana_cap": "あしがばーと",
+    "region": "アジア",
+    "level": 4,
+    "lat": 38.9,
+    "lng": 59.5,
+    "aliases_name": [
+      "turkmenistan",
+      "トルクメニスタン",
+      "とるくめにすたん"
+    ],
+    "aliases_cap": [
+      "ashgabat",
+      "アシガバート",
+      "あしがばーと"
+    ]
+  },
+  "GBR": {
+    "code": "GBR",
+    "code2": "GB",
+    "name": "イギリス",
+    "capital": "ロンドン",
+    "furigana_name": "いぎりす",
+    "furigana_cap": "ろんどん",
+    "region": "ヨーロッパ",
+    "level": 1,
+    "lat": 55.3,
+    "lng": -3.4,
+    "aliases_name": [
+      "英国",
+      "連合王国",
+      "united kingdom",
+      "uk",
+      "イギリス",
+      "いぎりす"
+    ],
+    "aliases_cap": [
+      "london",
+      "ロンドン",
+      "ろんどん"
+    ]
+  },
+  "FRA": {
+    "code": "FRA",
+    "code2": "FR",
+    "name": "フランス",
+    "capital": "パリ",
+    "furigana_name": "ふらんす",
+    "furigana_cap": "ぱり",
+    "region": "ヨーロッパ",
+    "level": 1,
+    "lat": 46.2,
+    "lng": 2.2,
+    "aliases_name": [
+      "仏国",
+      "france",
+      "フランス",
+      "ふらんす"
+    ],
+    "aliases_cap": [
+      "paris",
+      "パリ",
+      "ぱり"
+    ]
+  },
+  "DEU": {
+    "code": "DEU",
+    "code2": "DE",
+    "name": "ドイツ",
+    "capital": "ベルリン",
+    "furigana_name": "どいつ",
+    "furigana_cap": "べるりん",
+    "region": "ヨーロッパ",
+    "level": 1,
+    "lat": 51.1,
+    "lng": 10.4,
+    "aliases_name": [
+      "独逸",
+      "germany",
+      "ドイツ",
+      "どいつ"
+    ],
+    "aliases_cap": [
+      "berlin",
+      "ベルリン",
+      "べるりん"
+    ]
+  },
+  "ITA": {
+    "code": "ITA",
+    "code2": "IT",
+    "name": "イタリア",
+    "capital": "ローマ",
+    "furigana_name": "いたりあ",
+    "furigana_cap": "ろーま",
+    "region": "ヨーロッパ",
+    "level": 1,
+    "lat": 41.8,
+    "lng": 12.5,
+    "aliases_name": [
+      "伊太利",
+      "italy",
+      "イタリア",
+      "いたりあ"
+    ],
+    "aliases_cap": [
+      "rome",
+      "ローマ",
+      "ろーま"
+    ]
+  },
+  "RUS": {
+    "code": "RUS",
+    "code2": "RU",
+    "name": "ロシア",
+    "capital": "モスクワ",
+    "furigana_name": "ろしあ",
+    "furigana_cap": "もすくわ",
+    "region": "ヨーロッパ",
+    "level": 1,
+    "lat": 61.5,
+    "lng": 105.3,
+    "aliases_name": [
+      "ロシア連邦",
+      "露国",
+      "russia",
+      "ロシア",
+      "ろしあ"
+    ],
+    "aliases_cap": [
+      "moscow",
+      "モスクワ",
+      "もすくわ"
+    ]
+  },
+  "ESP": {
+    "code": "ESP",
+    "code2": "ES",
+    "name": "スペイン",
+    "capital": "マドリード",
+    "furigana_name": "すぺいん",
+    "furigana_cap": "まどりーど",
+    "region": "ヨーロッパ",
+    "level": 1,
+    "lat": 40.4,
+    "lng": -3.7,
+    "aliases_name": [
+      "スペイン王国",
+      "西国",
+      "spain",
+      "スペイン",
+      "すぺいん"
+    ],
+    "aliases_cap": [
+      "マドリッド",
+      "madrid",
+      "マドリード",
+      "まどりーど"
+    ]
+  },
+  "CHE": {
+    "code": "CHE",
+    "code2": "CH",
+    "name": "スイス",
+    "capital": "ベルン",
+    "furigana_name": "すいす",
+    "furigana_cap": "べるん",
+    "region": "ヨーロッパ",
+    "level": 1,
+    "lat": 46.8,
+    "lng": 8.2,
+    "aliases_name": [
+      "スイス連邦",
+      "switzerland",
+      "スイス",
+      "すいす"
+    ],
+    "aliases_cap": [
+      "bern",
+      "ベルン",
+      "べるん"
+    ]
+  },
+  "NLD": {
+    "code": "NLD",
+    "code2": "NL",
+    "name": "オランダ",
+    "capital": "アムステルダム",
+    "furigana_name": "おらんだ",
+    "furigana_cap": "あむすてるだむ",
+    "region": "ヨーロッパ",
+    "level": 1,
+    "lat": 52.1,
+    "lng": 5.2,
+    "aliases_name": [
+      "ネーデルラント",
+      "netherlands",
+      "オランダ",
+      "おらんだ"
+    ],
+    "aliases_cap": [
+      "amsterdam",
+      "アムステルダム",
+      "あむすてるだむ"
+    ]
+  },
+  "SWE": {
+    "code": "SWE",
+    "code2": "SE",
+    "name": "スウェーデン",
+    "capital": "ストックホルム",
+    "furigana_name": "すうぇーでん",
+    "furigana_cap": "すとっくほるむ",
+    "region": "ヨーロッパ",
+    "level": 1,
+    "lat": 60.1,
+    "lng": 18.6,
+    "aliases_name": [
+      "sweden",
+      "スウェーデン",
+      "すうぇーでん"
+    ],
+    "aliases_cap": [
+      "stockholm",
+      "ストックホルム",
+      "すとっくほるむ"
+    ]
+  },
+  "GRC": {
+    "code": "GRC",
+    "code2": "GR",
+    "name": "ギリシャ",
+    "capital": "アテネ",
+    "furigana_name": "ぎりしゃ",
+    "furigana_cap": "あてね",
+    "region": "ヨーロッパ",
+    "level": 1,
+    "lat": 39.0,
+    "lng": 22.0,
+    "aliases_name": [
+      "ギリシア",
+      "greece",
+      "ギリシャ",
+      "ぎりしゃ"
+    ],
+    "aliases_cap": [
+      "athens",
+      "アテネ",
+      "あてね"
+    ]
+  },
+  "POL": {
+    "code": "POL",
+    "code2": "PL",
+    "name": "ポーランド",
+    "capital": "ワルシャワ",
+    "furigana_name": "ぽーらんど",
+    "furigana_cap": "わるしゃわ",
+    "region": "ヨーロッパ",
+    "level": 1,
+    "lat": 51.9,
+    "lng": 19.1,
+    "aliases_name": [
+      "poland",
+      "ポーランド",
+      "ぽーらんど"
+    ],
+    "aliases_cap": [
+      "warsaw",
+      "ワルシャワ",
+      "わるしゃわ"
+    ]
+  },
+  "PRT": {
+    "code": "PRT",
+    "code2": "PT",
+    "name": "ポルトガル",
+    "capital": "リスボン",
+    "furigana_name": "ぽるとがる",
+    "furigana_cap": "りすぼん",
+    "region": "ヨーロッパ",
+    "level": 2,
+    "lat": 39.3,
+    "lng": -8.2,
+    "aliases_name": [
+      "portugal",
+      "ポルトガル",
+      "ぽるとがる"
+    ],
+    "aliases_cap": [
+      "lisbon",
+      "リスボン",
+      "りすぼん"
+    ]
+  },
+  "BEL": {
+    "code": "BEL",
+    "code2": "BE",
+    "name": "ベルギー",
+    "capital": "ブリュッセル",
+    "furigana_name": "べるぎー",
+    "furigana_cap": "ぶりゅっせる",
+    "region": "ヨーロッパ",
+    "level": 2,
+    "lat": 50.5,
+    "lng": 4.4,
+    "aliases_name": [
+      "belgium",
+      "ベルギー",
+      "べるぎー"
+    ],
+    "aliases_cap": [
+      "brussels",
+      "ブリュッセル",
+      "ぶりゅっせる"
+    ]
+  },
+  "AUT": {
+    "code": "AUT",
+    "code2": "AT",
+    "name": "オーストリア",
+    "capital": "ウィーン",
+    "furigana_name": "おーすとりあ",
+    "furigana_cap": "うぃーん",
+    "region": "ヨーロッパ",
+    "level": 2,
+    "lat": 47.5,
+    "lng": 14.5,
+    "aliases_name": [
+      "austria",
+      "オーストリア",
+      "おーすとりあ"
+    ],
+    "aliases_cap": [
+      "vienna",
+      "ウィーン",
+      "うぃーん"
+    ]
+  },
+  "NOR": {
+    "code": "NOR",
+    "code2": "NO",
+    "name": "ノルウェー",
+    "capital": "オスロ",
+    "furigana_name": "のるうぇー",
+    "furigana_cap": "おすろ",
+    "region": "ヨーロッパ",
+    "level": 2,
+    "lat": 60.4,
+    "lng": 8.4,
+    "aliases_name": [
+      "norway",
+      "ノルウェー",
+      "のるうぇー"
+    ],
+    "aliases_cap": [
+      "oslo",
+      "オスロ",
+      "おすろ"
+    ]
+  },
+  "DNK": {
+    "code": "DNK",
+    "code2": "DK",
+    "name": "デンマーク",
+    "capital": "コペンハーゲン",
+    "furigana_name": "でんまーく",
+    "furigana_cap": "こぺんはーげん",
+    "region": "ヨーロッパ",
+    "level": 2,
+    "lat": 56.2,
+    "lng": 9.5,
+    "aliases_name": [
+      "denmark",
+      "デンマーク",
+      "でんまーく"
+    ],
+    "aliases_cap": [
+      "copenhagen",
+      "コペンハーゲン",
+      "こぺんはーげん"
+    ]
+  },
+  "FIN": {
+    "code": "FIN",
+    "code2": "FI",
+    "name": "フィンランド",
+    "capital": "ヘルシンキ",
+    "furigana_name": "ふぃんらんど",
+    "furigana_cap": "へるしんき",
+    "region": "ヨーロッパ",
+    "level": 2,
+    "lat": 61.9,
+    "lng": 25.7,
+    "aliases_name": [
+      "finland",
+      "フィンランド",
+      "ふぃんらんど"
+    ],
+    "aliases_cap": [
+      "helsinki",
+      "ヘルシンキ",
+      "へるしんき"
+    ]
+  },
+  "IRL": {
+    "code": "IRL",
+    "code2": "IE",
+    "name": "アイルランド",
+    "capital": "ダブリン",
+    "furigana_name": "あいるらんど",
+    "furigana_cap": "だぶりん",
+    "region": "ヨーロッパ",
+    "level": 2,
+    "lat": 53.4,
+    "lng": -8.2,
+    "aliases_name": [
+      "ireland",
+      "アイルランド",
+      "あいるらんど"
+    ],
+    "aliases_cap": [
+      "dublin",
+      "ダブリン",
+      "だぶりん"
+    ]
+  },
+  "CZE": {
+    "code": "CZE",
+    "code2": "CZ",
+    "name": "チェコ",
+    "capital": "プラハ",
+    "furigana_name": "ちぇこ",
+    "furigana_cap": "ぷらは",
+    "region": "ヨーロッパ",
+    "level": 2,
+    "lat": 49.8,
+    "lng": 15.4,
+    "aliases_name": [
+      "チェコ共和国",
+      "czechia",
+      "czech republic",
+      "チェコ",
+      "ちぇこ"
+    ],
+    "aliases_cap": [
+      "prague",
+      "プラハ",
+      "ぷらは"
+    ]
+  },
+  "HUN": {
+    "code": "HUN",
+    "code2": "HU",
+    "name": "ハンガリー",
+    "capital": "ブダペスト",
+    "furigana_name": "はんがりー",
+    "furigana_cap": "ぶだぺすと",
+    "region": "ヨーロッパ",
+    "level": 2,
+    "lat": 47.1,
+    "lng": 19.5,
+    "aliases_name": [
+      "hungary",
+      "ハンガリー",
+      "はんがりー"
+    ],
+    "aliases_cap": [
+      "budapest",
+      "ブダペスト",
+      "ぶだぺすと"
+    ]
+  },
+  "UKR": {
+    "code": "UKR",
+    "code2": "UA",
+    "name": "ウクライナ",
+    "capital": "キーウ",
+    "furigana_name": "うくらいな",
+    "furigana_cap": "きーう",
+    "region": "ヨーロッパ",
+    "level": 2,
+    "lat": 48.3,
+    "lng": 31.1,
+    "aliases_name": [
+      "ukraine",
+      "ウクライナ",
+      "うくらいな"
+    ],
+    "aliases_cap": [
+      "キエフ",
+      "kyiv",
+      "kiev",
+      "キーウ",
+      "きーう"
+    ]
+  },
+  "ROU": {
+    "code": "ROU",
+    "code2": "RO",
+    "name": "ルーマニア",
+    "capital": "ブカレスト",
+    "furigana_name": "るーまにあ",
+    "furigana_cap": "ぶかれすと",
+    "region": "ヨーロッパ",
+    "level": 2,
+    "lat": 45.9,
+    "lng": 24.9,
+    "aliases_name": [
+      "romania",
+      "ルーマニア",
+      "るーまにあ"
+    ],
+    "aliases_cap": [
+      "bucharest",
+      "ブカレスト",
+      "ぶかれすと"
+    ]
+  },
+  "HRV": {
+    "code": "HRV",
+    "code2": "HR",
+    "name": "クロアチア",
+    "capital": "ザグレブ",
+    "furigana_name": "くろあちあ",
+    "furigana_cap": "ざぐれぶ",
+    "region": "ヨーロッパ",
+    "level": 3,
+    "lat": 45.1,
+    "lng": 15.2,
+    "aliases_name": [
+      "croatia",
+      "クロアチア",
+      "くろあちあ"
+    ],
+    "aliases_cap": [
+      "zagreb",
+      "ザグレブ",
+      "ざぐれぶ"
+    ]
+  },
+  "SRB": {
+    "code": "SRB",
+    "code2": "RS",
+    "name": "セルビア",
+    "capital": "ベオグラード",
+    "furigana_name": "せるびあ",
+    "furigana_cap": "べおぐらーど",
+    "region": "ヨーロッパ",
+    "level": 3,
+    "lat": 44.0,
+    "lng": 21.0,
+    "aliases_name": [
+      "serbia",
+      "セルビア",
+      "せるびあ"
+    ],
+    "aliases_cap": [
+      "belgrade",
+      "ベオグラード",
+      "べおぐらーど"
+    ]
+  },
+  "BGR": {
+    "code": "BGR",
+    "code2": "BG",
+    "name": "ブルガリア",
+    "capital": "ソフィア",
+    "furigana_name": "ぶるがりあ",
+    "furigana_cap": "そふぃあ",
+    "region": "ヨーロッパ",
+    "level": 3,
+    "lat": 42.7,
+    "lng": 25.4,
+    "aliases_name": [
+      "bulgaria",
+      "ブルガリア",
+      "ぶるがりあ"
+    ],
+    "aliases_cap": [
+      "sofia",
+      "ソフィア",
+      "そふぃあ"
+    ]
+  },
+  "SVK": {
+    "code": "SVK",
+    "code2": "SK",
+    "name": "スロバキア",
+    "capital": "ブラチスラバ",
+    "furigana_name": "すろばきあ",
+    "furigana_cap": "ぶらちらば",
+    "region": "ヨーロッパ",
+    "level": 3,
+    "lat": 48.6,
+    "lng": 19.6,
+    "aliases_name": [
+      "slovakia",
+      "スロバキア",
+      "すろばきあ"
+    ],
+    "aliases_cap": [
+      "bratislava",
+      "ブラチスラバ",
+      "ぶらちらば"
+    ]
+  },
+  "SVN": {
+    "code": "SVN",
+    "code2": "SI",
+    "name": "スロベニア",
+    "capital": "リュブリャナ",
+    "furigana_name": "すろべにあ",
+    "furigana_cap": "りゅぶりゃな",
+    "region": "ヨーロッパ",
+    "level": 3,
+    "lat": 46.1,
+    "lng": 14.9,
+    "aliases_name": [
+      "slovenia",
+      "スロベニア",
+      "すろべにあ"
+    ],
+    "aliases_cap": [
+      "ljubljana",
+      "リュブリャナ",
+      "りゅぶりゃな"
+    ]
+  },
+  "EST": {
+    "code": "EST",
+    "code2": "EE",
+    "name": "エストニア",
+    "capital": "タリン",
+    "furigana_name": "えすとにあ",
+    "furigana_cap": "たりん",
+    "region": "ヨーロッパ",
+    "level": 3,
+    "lat": 58.5,
+    "lng": 25.0,
+    "aliases_name": [
+      "estonia",
+      "エストニア",
+      "えすとにあ"
+    ],
+    "aliases_cap": [
+      "tallinn",
+      "タリン",
+      "たりん"
+    ]
+  },
+  "LVA": {
+    "code": "LVA",
+    "code2": "LV",
+    "name": "ラトビア",
+    "capital": "リガ",
+    "furigana_name": "らとびあ",
+    "furigana_cap": "りが",
+    "region": "ヨーロッパ",
+    "level": 3,
+    "lat": 56.8,
+    "lng": 24.6,
+    "aliases_name": [
+      "latvia",
+      "ラトビア",
+      "らとびあ"
+    ],
+    "aliases_cap": [
+      "riga",
+      "リガ",
+      "りが"
+    ]
+  },
+  "LTU": {
+    "code": "LTU",
+    "code2": "LT",
+    "name": "リトアニア",
+    "capital": "ビリニュス",
+    "furigana_name": "りとあにあ",
+    "furigana_cap": "びりにゅす",
+    "region": "ヨーロッパ",
+    "level": 3,
+    "lat": 55.1,
+    "lng": 23.8,
+    "aliases_name": [
+      "lithuania",
+      "リトアニア",
+      "りとあにあ"
+    ],
+    "aliases_cap": [
+      "vilnius",
+      "ビリニュス",
+      "びりにゅす"
+    ]
+  },
+  "BLR": {
+    "code": "BLR",
+    "code2": "BY",
+    "name": "ベラルーシ",
+    "capital": "ミンスク",
+    "furigana_name": "べらるーし",
+    "furigana_cap": "みんすく",
+    "region": "ヨーロッパ",
+    "level": 3,
+    "lat": 53.7,
+    "lng": 27.9,
+    "aliases_name": [
+      "belarus",
+      "ベラルーシ",
+      "べらるーし"
+    ],
+    "aliases_cap": [
+      "minsk",
+      "ミンスク",
+      "みんすく"
+    ]
+  },
+  "ISL": {
+    "code": "ISL",
+    "code2": "IS",
+    "name": "アイスランド",
+    "capital": "レイキャビク",
+    "furigana_name": "あいすらんど",
+    "furigana_cap": "れいきゃびく",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 64.9,
+    "lng": -19.0,
+    "aliases_name": [
+      "iceland",
+      "アイスランド",
+      "あいすらんど"
+    ],
+    "aliases_cap": [
+      "reykjavik",
+      "レイキャビク",
+      "れいきゃびく"
+    ]
+  },
+  "LUX": {
+    "code": "LUX",
+    "code2": "LU",
+    "name": "ルクセンブルク",
+    "capital": "ルクセンブルク",
+    "furigana_name": "るくせんぶるく",
+    "furigana_cap": "るくせんぶるく",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 49.8,
+    "lng": 6.1,
+    "aliases_name": [
+      "luxembourg",
+      "ルクセンブルク",
+      "るくせんぶるく"
+    ],
+    "aliases_cap": [
+      "luxembourg",
+      "ルクセンブルク",
+      "るくせんぶるく"
+    ]
+  },
+  "MLT": {
+    "code": "MLT",
+    "code2": "MT",
+    "name": "マルタ",
+    "capital": "バレッタ",
+    "furigana_name": "まるた",
+    "furigana_cap": "ばれった",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 35.9,
+    "lng": 14.3,
+    "aliases_name": [
+      "malta",
+      "マルタ",
+      "まるた"
+    ],
+    "aliases_cap": [
+      "valletta",
+      "バレッタ",
+      "ばれった"
+    ]
+  },
+  "MCO": {
+    "code": "MCO",
+    "code2": "MC",
+    "name": "モナコ",
+    "capital": "モナコ",
+    "furigana_name": "もなこ",
+    "furigana_cap": "もなこ",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 43.7,
+    "lng": 7.4,
+    "aliases_name": [
+      "monaco",
+      "モナコ",
+      "もなこ"
+    ],
+    "aliases_cap": [
+      "monaco",
+      "モナコ",
+      "もなこ"
+    ]
+  },
+  "AND": {
+    "code": "AND",
+    "code2": "AD",
+    "name": "アンドラ",
+    "capital": "アンドララベリャ",
+    "furigana_name": "あんどら",
+    "furigana_cap": "あんどもらべりゃ",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 42.5,
+    "lng": 1.5,
+    "aliases_name": [
+      "andorra",
+      "アンドラ",
+      "あんどら"
+    ],
+    "aliases_cap": [
+      "andorra la vella",
+      "アンドララベリャ",
+      "あんどもらべりゃ"
+    ]
+  },
+  "LIE": {
+    "code": "LIE",
+    "code2": "LI",
+    "name": "リヒテンシュタイン",
+    "capital": "ファドゥーツ",
+    "furigana_name": "りひてんしゅたいん",
+    "furigana_cap": "ふぁどぅーつ",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 47.1,
+    "lng": 9.5,
+    "aliases_name": [
+      "liechtenstein",
+      "リヒテンシュタイン",
+      "りひてんしゅたいん"
+    ],
+    "aliases_cap": [
+      "vaduz",
+      "ファドゥーツ",
+      "ふぁどぅーつ"
+    ]
+  },
+  "SMR": {
+    "code": "SMR",
+    "code2": "SM",
+    "name": "サンマリノ",
+    "capital": "サンマリノ",
+    "furigana_name": "さんまりの",
+    "furigana_cap": "さんまりの",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 43.9,
+    "lng": 12.4,
+    "aliases_name": [
+      "san marino",
+      "サンマリノ",
+      "さんまりの"
+    ],
+    "aliases_cap": [
+      "san marino",
+      "サンマリノ",
+      "さんまりの"
+    ]
+  },
+  "VAT": {
+    "code": "VAT",
+    "code2": "VA",
+    "name": "バチカン",
+    "capital": "バチカン",
+    "furigana_name": "ばちかん",
+    "furigana_cap": "ばちかん",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 41.9,
+    "lng": 12.4,
+    "aliases_name": [
+      "バチカン市国",
+      "vatican",
+      "バチカン",
+      "ばちかん"
+    ],
+    "aliases_cap": [
+      "vatican",
+      "バチカン",
+      "ばちかん"
+    ]
+  },
+  "MNE": {
+    "code": "MNE",
+    "code2": "ME",
+    "name": "モンテネグロ",
+    "capital": "ポドゴリツァ",
+    "furigana_name": "もんてねぐろ",
+    "furigana_cap": "ぽどごりつぁ",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 42.7,
+    "lng": 19.3,
+    "aliases_name": [
+      "montenegro",
+      "モンテネグロ",
+      "もんてねぐろ"
+    ],
+    "aliases_cap": [
+      "podgorica",
+      "ポドゴリツァ",
+      "ぽどごりつぁ"
+    ]
+  },
+  "BIH": {
+    "code": "BIH",
+    "code2": "BA",
+    "name": "ボスニア・ヘルツェゴビナ",
+    "capital": "サラエボ",
+    "furigana_name": "ぼすにあへるつぇごびな",
+    "furigana_cap": "さらえぼ",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 43.9,
+    "lng": 17.6,
+    "aliases_name": [
+      "ボスニア",
+      "bosnia and herzegovina",
+      "ボスニア・ヘルツェゴビナ",
+      "ぼすにあへるつぇごびな"
+    ],
+    "aliases_cap": [
+      "サラエヴォ",
+      "sarajevo",
+      "サラエボ",
+      "さらえぼ"
+    ]
+  },
+  "MKD": {
+    "code": "MKD",
+    "code2": "MK",
+    "name": "北マケドニア",
+    "capital": "スコピエ",
+    "furigana_name": "きたまけどにあ",
+    "furigana_cap": "すこぴえ",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 41.6,
+    "lng": 21.7,
+    "aliases_name": [
+      "マケドニア",
+      "north macedonia",
+      "北マケドニア",
+      "きたまけどにあ"
+    ],
+    "aliases_cap": [
+      "skopje",
+      "スコピエ",
+      "すこぴえ"
+    ]
+  },
+  "ALB": {
+    "code": "ALB",
+    "code2": "AL",
+    "name": "アルバニア",
+    "capital": "ティラナ",
+    "furigana_name": "あるばにあ",
+    "furigana_cap": "てぃらな",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 41.1,
+    "lng": 20.1,
+    "aliases_name": [
+      "albania",
+      "アルバニア",
+      "あるばにあ"
+    ],
+    "aliases_cap": [
+      "tirana",
+      "ティラナ",
+      "てぃらな"
+    ]
+  },
+  "MDA": {
+    "code": "MDA",
+    "code2": "MD",
+    "name": "モルドバ",
+    "capital": "キシナウ",
+    "furigana_name": "もるどば",
+    "furigana_cap": "きしなう",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 47.4,
+    "lng": 28.3,
+    "aliases_name": [
+      "moldova",
+      "モルドバ",
+      "もるどば"
+    ],
+    "aliases_cap": [
+      "kishinev",
+      "chisinau",
+      "キシナウ",
+      "きしなう"
+    ]
+  },
+  "KOS": {
+    "code": "KOS",
+    "code2": "XK",
+    "name": "コソボ",
+    "capital": "プリシュティナ",
+    "furigana_name": "こそぼ",
+    "furigana_cap": "ぷりしゅてぃな",
+    "region": "ヨーロッパ",
+    "level": 4,
+    "lat": 42.6,
+    "lng": 20.9,
+    "aliases_name": [
+      "コソヴォ",
+      "kosovo",
+      "コソボ",
+      "こそぼ"
+    ],
+    "aliases_cap": [
+      "pristina",
+      "プリシュティナ",
+      "ぷりしゅてぃな"
+    ]
+  },
+  "USA": {
+    "code": "USA",
+    "code2": "US",
+    "name": "アメリカ合衆国",
+    "capital": "ワシントンD.C.",
+    "furigana_name": "あめりかがっしゅうこく",
+    "furigana_cap": "わしんとんでぃーしー",
+    "region": "北アメリカ",
+    "level": 1,
+    "lat": 37.0,
+    "lng": -95.7,
+    "aliases_name": [
+      "アメリカ",
+      "米国",
+      "usa",
+      "united states",
+      "アメリカ合衆国",
+      "あめりかがっしゅうこく"
+    ],
+    "aliases_cap": [
+      "ワシントン",
+      "ワシントンDC",
+      "washington dc",
+      "ワシントンD.C.",
+      "わしんとんでぃーしー"
+    ]
+  },
+  "CAN": {
+    "code": "CAN",
+    "code2": "CA",
+    "name": "カナダ",
+    "capital": "オタワ",
+    "furigana_name": "かなだ",
+    "furigana_cap": "おたわ",
+    "region": "北アメリカ",
+    "level": 1,
+    "lat": 56.1,
+    "lng": -106.3,
+    "aliases_name": [
+      "canada",
+      "カナダ",
+      "かなだ"
+    ],
+    "aliases_cap": [
+      "ottawa",
+      "オタワ",
+      "おたわ"
+    ]
+  },
+  "MEX": {
+    "code": "MEX",
+    "code2": "MX",
+    "name": "メキシコ",
+    "capital": "メキシコシティ",
+    "furigana_name": "めきしこ",
+    "furigana_cap": "めきしこしてぃ",
+    "region": "北アメリカ",
+    "level": 1,
+    "lat": 23.6,
+    "lng": -102.5,
+    "aliases_name": [
+      "mexico",
+      "メキシコ",
+      "めきしこ"
+    ],
+    "aliases_cap": [
+      "mexico city",
+      "メキシコシティ",
+      "めきしこしてぃ"
+    ]
+  },
+  "CUB": {
+    "code": "CUB",
+    "code2": "CU",
+    "name": "キューバ",
+    "capital": "ハバナ",
+    "furigana_name": "きゅーば",
+    "furigana_cap": "はばな",
+    "region": "北アメリカ",
+    "level": 2,
+    "lat": 21.5,
+    "lng": -77.7,
+    "aliases_name": [
+      "cuba",
+      "キューバ",
+      "きゅーば"
+    ],
+    "aliases_cap": [
+      "havana",
+      "ハバナ",
+      "はばな"
+    ]
+  },
+  "JAM": {
+    "code": "JAM",
+    "code2": "JM",
+    "name": "ジャマイカ",
+    "capital": "キングストン",
+    "furigana_name": "じゃまいか",
+    "furigana_cap": "きんぐすとん",
+    "region": "北アメリカ",
+    "level": 2,
+    "lat": 18.1,
+    "lng": -77.2,
+    "aliases_name": [
+      "jamaica",
+      "ジャマイカ",
+      "じゃまいか"
+    ],
+    "aliases_cap": [
+      "kingston",
+      "キングストン",
+      "きんぐすとん"
+    ]
+  },
+  "PAN": {
+    "code": "PAN",
+    "code2": "PA",
+    "name": "パナマ",
+    "capital": "パナマ市",
+    "furigana_name": "ぱなま",
+    "furigana_cap": "ぱなまし",
+    "region": "北アメリカ",
+    "level": 3,
+    "lat": 8.5,
+    "lng": -80.7,
+    "aliases_name": [
+      "panama",
+      "パナマ",
+      "ぱなま"
+    ],
+    "aliases_cap": [
+      "パナマシティ",
+      "panama city",
+      "パナマ市",
+      "ぱなまし"
+    ]
+  },
+  "CRI": {
+    "code": "CRI",
+    "code2": "CR",
+    "name": "コスタリカ",
+    "capital": "サンホセ",
+    "furigana_name": "こすたりか",
+    "furigana_cap": "さんほせ",
+    "region": "北アメリカ",
+    "level": 3,
+    "lat": 9.7,
+    "lng": -83.7,
+    "aliases_name": [
+      "costa rica",
+      "コスタリカ",
+      "こすたりか"
+    ],
+    "aliases_cap": [
+      "san jose",
+      "サンホセ",
+      "さんほせ"
+    ]
+  },
+  "GTM": {
+    "code": "GTM",
+    "code2": "GT",
+    "name": "グアテマラ",
+    "capital": "グアテマラシティ",
+    "furigana_name": "ぐあてまら",
+    "furigana_cap": "ぐあてまらしてぃ",
+    "region": "北アメリカ",
+    "level": 3,
+    "lat": 15.7,
+    "lng": -90.2,
+    "aliases_name": [
+      "guatemala",
+      "グアテマラ",
+      "ぐあてまら"
+    ],
+    "aliases_cap": [
+      "guatemala city",
+      "グアテマラシティ",
+      "ぐあてまらしてぃ"
+    ]
+  },
+  "DOM": {
+    "code": "DOM",
+    "code2": "DO",
+    "name": "ドミニカ共和国",
+    "capital": "サントドミンゴ",
+    "furigana_name": "どみにかきょうわこく",
+    "furigana_cap": "さんとどみんご",
+    "region": "北アメリカ",
+    "level": 3,
+    "lat": 18.7,
+    "lng": -70.1,
+    "aliases_name": [
+      "dominican republic",
+      "ドミニカ共和国",
+      "どみにかきょうわこく"
+    ],
+    "aliases_cap": [
+      "santo domingo",
+      "サントドミンゴ",
+      "さんとどみんご"
+    ]
+  },
+  "HTI": {
+    "code": "HTI",
+    "code2": "HT",
+    "name": "ハイチ",
+    "capital": "ポルトープランス",
+    "furigana_name": "はいち",
+    "furigana_cap": "ぽるとーぷらんす",
+    "region": "北アメリカ",
+    "level": 3,
+    "lat": 18.9,
+    "lng": -72.2,
+    "aliases_name": [
+      "haiti",
+      "ハイチ",
+      "はいち"
+    ],
+    "aliases_cap": [
+      "port-au-prince",
+      "ポルトープランス",
+      "ぽるとーぷらんす"
+    ]
+  },
+  "HND": {
+    "code": "HND",
+    "code2": "HN",
+    "name": "ホンジュラス",
+    "capital": "テグシガルパ",
+    "furigana_name": "ほんじゅらす",
+    "furigana_cap": "てぐしがるぱ",
+    "region": "北アメリカ",
+    "level": 3,
+    "lat": 15.1,
+    "lng": -86.2,
+    "aliases_name": [
+      "honduras",
+      "ホンジュラス",
+      "ほんじゅらす"
+    ],
+    "aliases_cap": [
+      "tegucigalpa",
+      "テグシガルパ",
+      "てぐしがるぱ"
+    ]
+  },
+  "SLV": {
+    "code": "SLV",
+    "code2": "SV",
+    "name": "エルサルバドル",
+    "capital": "サンサルバドル",
+    "furigana_name": "えるさるばどる",
+    "furigana_cap": "さんさるばどる",
+    "region": "北アメリカ",
+    "level": 3,
+    "lat": 13.7,
+    "lng": -88.8,
+    "aliases_name": [
+      "el salvador",
+      "エルサルバドル",
+      "えるさるばどる"
+    ],
+    "aliases_cap": [
+      "san salvador",
+      "サンサルバドル",
+      "さんさるばどる"
+    ]
+  },
+  "NIC": {
+    "code": "NIC",
+    "code2": "NI",
+    "name": "ニカラグア",
+    "capital": "マナグア",
+    "furigana_name": "にからぐあ",
+    "furigana_cap": "まなぐあ",
+    "region": "北アメリカ",
+    "level": 3,
+    "lat": 12.8,
+    "lng": -85.2,
+    "aliases_name": [
+      "nicaragua",
+      "ニカラグア",
+      "にからぐあ"
+    ],
+    "aliases_cap": [
+      "managua",
+      "マナグア",
+      "まなぐあ"
+    ]
+  },
+  "BHS": {
+    "code": "BHS",
+    "code2": "BS",
+    "name": "バハマ",
+    "capital": "ナッソー",
+    "furigana_name": "ばはま",
+    "furigana_cap": "なっそー",
+    "region": "北アメリカ",
+    "level": 4,
+    "lat": 25.0,
+    "lng": -77.3,
+    "aliases_name": [
+      "bahamas",
+      "バハマ",
+      "ばはま"
+    ],
+    "aliases_cap": [
+      "nassau",
+      "ナッソー",
+      "なっそー"
+    ]
+  },
+  "BRB": {
+    "code": "BRB",
+    "code2": "BB",
+    "name": "バルバドス",
+    "capital": "ブリッジタウン",
+    "furigana_name": "ばるばどす",
+    "furigana_cap": "ぶりっじたうん",
+    "region": "北アメリカ",
+    "level": 4,
+    "lat": 13.1,
+    "lng": -59.5,
+    "aliases_name": [
+      "barbados",
+      "バルバドス",
+      "ばるばどす"
+    ],
+    "aliases_cap": [
+      "bridgetown",
+      "ブリッジタウン",
+      "ぶりっじたうん"
+    ]
+  },
+  "BLZ": {
+    "code": "BLZ",
+    "code2": "BZ",
+    "name": "ベリーズ",
+    "capital": "ベルモパン",
+    "furigana_name": "べりーず",
+    "furigana_cap": "べるもぱん",
+    "region": "北アメリカ",
+    "level": 4,
+    "lat": 17.1,
+    "lng": -88.4,
+    "aliases_name": [
+      "belize",
+      "ベリーズ",
+      "べりーず"
+    ],
+    "aliases_cap": [
+      "belmopan",
+      "ベルモパン",
+      "べるもぱん"
+    ]
+  },
+  "TTO": {
+    "code": "TTO",
+    "code2": "TT",
+    "name": "トリニダード・トバゴ",
+    "capital": "ポートオブスペイン",
+    "furigana_name": "とりにだーどとばご",
+    "furigana_cap": "ぽーとおぶすぺいん",
+    "region": "北アメリカ",
+    "level": 4,
+    "lat": 10.6,
+    "lng": -61.2,
+    "aliases_name": [
+      "trinidad and tobago",
+      "トリニダード・トバゴ",
+      "とりにだーどとばご"
+    ],
+    "aliases_cap": [
+      "port of spain",
+      "ポートオブスペイン",
+      "ぽーとおぶすぺいん"
+    ]
+  },
+  "ATG": {
+    "code": "ATG",
+    "code2": "AG",
+    "name": "アンティグア・バーブーダ",
+    "capital": "セントジョンズ",
+    "furigana_name": "あんてぃぐあばーぶーだ",
+    "furigana_cap": "せんとじょんず",
+    "region": "北アメリカ",
+    "level": 4,
+    "lat": 17.0,
+    "lng": -61.7,
+    "aliases_name": [
+      "antigua and barbuda",
+      "アンティグア・バーブーダ",
+      "あんてぃぐあばーぶーだ"
+    ],
+    "aliases_cap": [
+      "saint john's",
+      "セントジョンズ",
+      "せんとじょんず"
+    ]
+  },
+  "DMA": {
+    "code": "DMA",
+    "code2": "DM",
+    "name": "ドミニカ国",
+    "capital": "ロゾー",
+    "furigana_name": "どみにかこく",
+    "furigana_cap": "ろぞー",
+    "region": "北アメリカ",
+    "level": 4,
+    "lat": 15.4,
+    "lng": -61.3,
+    "aliases_name": [
+      "dominica",
+      "ドミニカ国",
+      "どみにかこく"
+    ],
+    "aliases_cap": [
+      "roseau",
+      "ロゾー",
+      "ろぞー"
+    ]
+  },
+  "GRD": {
+    "code": "GRD",
+    "code2": "GD",
+    "name": "グレナダ",
+    "capital": "セントジョージズ",
+    "furigana_name": "ぐれなだ",
+    "furigana_cap": "せんとじょーじず",
+    "region": "北アメリカ",
+    "level": 4,
+    "lat": 12.1,
+    "lng": -61.6,
+    "aliases_name": [
+      "grenada",
+      "グレナダ",
+      "ぐれなだ"
+    ],
+    "aliases_cap": [
+      "saint george's",
+      "セントジョージズ",
+      "せんとじょーじず"
+    ]
+  },
+  "KNA": {
+    "code": "KNA",
+    "code2": "KN",
+    "name": "セントクリストファー・ネイビス",
+    "capital": "バセテール",
+    "furigana_name": "せんとくりすとふぁーねいびす",
+    "furigana_cap": "ばせてーる",
+    "region": "北アメリカ",
+    "level": 4,
+    "lat": 17.3,
+    "lng": -62.7,
+    "aliases_name": [
+      "saint kitts and nevis",
+      "セントクリストファー・ネイビス",
+      "せんとくりすとふぁーねいびす"
+    ],
+    "aliases_cap": [
+      "basseterre",
+      "バセテール",
+      "ばせてーる"
+    ]
+  },
+  "LCA": {
+    "code": "LCA",
+    "code2": "LC",
+    "name": "セントルシア",
+    "capital": "カストリーズ",
+    "furigana_name": "せんとるしあ",
+    "furigana_cap": "かすとりーず",
+    "region": "北アメリカ",
+    "level": 4,
+    "lat": 13.9,
+    "lng": -60.9,
+    "aliases_name": [
+      "saint lucia",
+      "セントルシア",
+      "せんとるしあ"
+    ],
+    "aliases_cap": [
+      "castries",
+      "カストリーズ",
+      "かすとりーず"
+    ]
+  },
+  "VCT": {
+    "code": "VCT",
+    "code2": "VC",
+    "name": "セントビンセント及びグレナディーン諸島",
+    "capital": "キングスタウン",
+    "furigana_name": "せんとびんせんとおよびぐれなでぃーんしょとう",
+    "furigana_cap": "きんぐすたうん",
+    "region": "北アメリカ",
+    "level": 4,
+    "lat": 13.2,
+    "lng": -61.2,
+    "aliases_name": [
+      "セントビンセント・グレナディーン",
+      "saint vincent and the grenadines",
+      "セントビンセント及びグレナディーン諸島",
+      "せんとびんせんとおよびぐれなでぃーんしょとう"
+    ],
+    "aliases_cap": [
+      "kingstown",
+      "キングスタウン",
+      "きんぐすたうん"
+    ]
+  },
+  "BRA": {
+    "code": "BRA",
+    "code2": "BR",
+    "name": "ブラジル",
+    "capital": "ブラジリア",
+    "furigana_name": "ぶらじる",
+    "furigana_cap": "ぶらじりあ",
+    "region": "南アメリカ",
+    "level": 1,
+    "lat": -14.2,
+    "lng": -51.9,
+    "aliases_name": [
+      "ブラジル連邦共和国",
+      "brazil",
+      "ブラジル",
+      "ぶらじる"
+    ],
+    "aliases_cap": [
+      "brasilia",
+      "ブラジリア",
+      "ぶらじりあ"
+    ]
+  },
+  "ARG": {
+    "code": "ARG",
+    "code2": "AR",
+    "name": "アルゼンチン",
+    "capital": "ブエノスアイレス",
+    "furigana_name": "あるぜんちん",
+    "furigana_cap": "ぶえのすあいれす",
+    "region": "南アメリカ",
+    "level": 1,
+    "lat": -38.4,
+    "lng": -63.6,
+    "aliases_name": [
+      "argentina",
+      "アルゼンチン",
+      "あるぜんちん"
+    ],
+    "aliases_cap": [
+      "buenos aires",
+      "ブエノスアイレス",
+      "ぶえのすあいれす"
+    ]
+  },
+  "COL": {
+    "code": "COL",
+    "code2": "CO",
+    "name": "コロンビア",
+    "capital": "ボゴタ",
+    "furigana_name": "ころんびあ",
+    "furigana_cap": "ぼごた",
+    "region": "南アメリカ",
+    "level": 2,
+    "lat": 4.5,
+    "lng": -74.2,
+    "aliases_name": [
+      "colombia",
+      "コロンビア",
+      "ころんびあ"
+    ],
+    "aliases_cap": [
+      "bogota",
+      "ボゴタ",
+      "ぼごた"
+    ]
+  },
+  "PER": {
+    "code": "PER",
+    "code2": "PE",
+    "name": "ペルー",
+    "capital": "リマ",
+    "furigana_name": "ぺるー",
+    "furigana_cap": "りま",
+    "region": "南アメリカ",
+    "level": 2,
+    "lat": -9.1,
+    "lng": -75.0,
+    "aliases_name": [
+      "peru",
+      "ペルー",
+      "ぺるー"
+    ],
+    "aliases_cap": [
+      "lima",
+      "リマ",
+      "りま"
+    ]
+  },
+  "CHL": {
+    "code": "CHL",
+    "code2": "CL",
+    "name": "チリ",
+    "capital": "サンティアゴ",
+    "furigana_name": "ちり",
+    "furigana_cap": "さんてぃあご",
+    "region": "南アメリカ",
+    "level": 2,
+    "lat": -35.6,
+    "lng": -71.5,
+    "aliases_name": [
+      "chile",
+      "チリ",
+      "ちり"
+    ],
+    "aliases_cap": [
+      "santiago",
+      "サンティアゴ",
+      "さんてぃあご"
+    ]
+  },
+  "VEN": {
+    "code": "VEN",
+    "code2": "VE",
+    "name": "ベネズエラ",
+    "capital": "カラカス",
+    "furigana_name": "べねずえら",
+    "furigana_cap": "からかす",
+    "region": "南アメリカ",
+    "level": 3,
+    "lat": 6.4,
+    "lng": -66.5,
+    "aliases_name": [
+      "venezuela",
+      "ベネズエラ",
+      "べねずえら"
+    ],
+    "aliases_cap": [
+      "caracas",
+      "カラカス",
+      "からかす"
+    ]
+  },
+  "ECU": {
+    "code": "ECU",
+    "code2": "EC",
+    "name": "エクアドル",
+    "capital": "キト",
+    "furigana_name": "えくあどる",
+    "furigana_cap": "きと",
+    "region": "南アメリカ",
+    "level": 3,
+    "lat": -1.8,
+    "lng": -78.1,
+    "aliases_name": [
+      "ecuador",
+      "エクアドル",
+      "えくあどる"
+    ],
+    "aliases_cap": [
+      "quito",
+      "キト",
+      "きと"
+    ]
+  },
+  "BOL": {
+    "code": "BOL",
+    "code2": "BO",
+    "name": "ボリビア",
+    "capital": "スクレ",
+    "furigana_name": "ぼりびあ",
+    "furigana_cap": "すくれ",
+    "region": "南アメリカ",
+    "level": 3,
+    "lat": -16.2,
+    "lng": -63.5,
+    "aliases_name": [
+      "bolivia",
+      "ボリビア",
+      "ぼりびあ"
+    ],
+    "aliases_cap": [
+      "ラパス",
+      "sucre",
+      "la paz",
+      "スクレ",
+      "すくれ"
+    ]
+  },
+  "PRY": {
+    "code": "PRY",
+    "code2": "PY",
+    "name": "パラグアイ",
+    "capital": "アスンシオン",
+    "furigana_name": "ぱらぐあい",
+    "furigana_cap": "あすんしおん",
+    "region": "南アメリカ",
+    "level": 3,
+    "lat": -23.4,
+    "lng": -58.4,
+    "aliases_name": [
+      "paraguay",
+      "パラグアイ",
+      "ぱらぐあい"
+    ],
+    "aliases_cap": [
+      "asuncion",
+      "アスンシオン",
+      "あすんしおん"
+    ]
+  },
+  "URY": {
+    "code": "URY",
+    "code2": "UY",
+    "name": "ウルグアイ",
+    "capital": "モンテビデオ",
+    "furigana_name": "うるぐあい",
+    "furigana_cap": "もんてびでお",
+    "region": "南アメリカ",
+    "level": 3,
+    "lat": -32.5,
+    "lng": -55.7,
+    "aliases_name": [
+      "uruguay",
+      "ウルグアイ",
+      "うるぐあい"
+    ],
+    "aliases_cap": [
+      "montevideo",
+      "モンテビデオ",
+      "もんてびでお"
+    ]
+  },
+  "GUY": {
+    "code": "GUY",
+    "code2": "GY",
+    "name": "ガイアナ",
+    "capital": "ジョージタウン",
+    "furigana_name": "がいあな",
+    "furigana_cap": "じょーじたうん",
+    "region": "南アメリカ",
+    "level": 4,
+    "lat": 4.8,
+    "lng": -58.9,
+    "aliases_name": [
+      "guyana",
+      "ガイアナ",
+      "がいあな"
+    ],
+    "aliases_cap": [
+      "georgetown",
+      "ジョージタウン",
+      "じょーじたうん"
+    ]
+  },
+  "SUR": {
+    "code": "SUR",
+    "code2": "SR",
+    "name": "スリナム",
+    "capital": "パラマリボ",
+    "furigana_name": "すりなむ",
+    "furigana_cap": "ぱらまりぼ",
+    "region": "南アメリカ",
+    "level": 4,
+    "lat": 3.9,
+    "lng": -56.0,
+    "aliases_name": [
+      "suriname",
+      "スリナム",
+      "すりなむ"
+    ],
+    "aliases_cap": [
+      "paramaribo",
+      "パラマリボ",
+      "ぱらまりぼ"
+    ]
+  },
+  "EGY": {
+    "code": "EGY",
+    "code2": "EG",
+    "name": "エジプト",
+    "capital": "カイロ",
+    "furigana_name": "えじぷと",
+    "furigana_cap": "かいろ",
+    "region": "アフリカ",
+    "level": 1,
+    "lat": 26.8,
+    "lng": 30.8,
+    "aliases_name": [
+      "エジプト・アラブ共和国",
+      "egypt",
+      "エジプト",
+      "えじぷと"
+    ],
+    "aliases_cap": [
+      "cairo",
+      "カイロ",
+      "かいろ"
+    ]
+  },
+  "ZAF": {
+    "code": "ZAF",
+    "code2": "ZA",
+    "name": "南アフリカ",
+    "capital": "プレトリア",
+    "furigana_name": "みなみあふりか",
+    "furigana_cap": "ぷれとりあ",
+    "region": "アフリカ",
+    "level": 1,
+    "lat": -30.5,
+    "lng": 22.9,
+    "aliases_name": [
+      "南アフリカ共和国",
+      "南ア",
+      "south africa",
+      "南アフリカ",
+      "みなみあふりか"
+    ],
+    "aliases_cap": [
+      "ケープタウン",
+      "ブルームフォンテーン",
+      "pretoria",
+      "cape town",
+      "プレトリア",
+      "ぷれとりあ"
+    ]
+  },
+  "NGA": {
+    "code": "NGA",
+    "code2": "NG",
+    "name": "ナイジェリア",
+    "capital": "アブジャ",
+    "furigana_name": "ないじぇりあ",
+    "furigana_cap": "あぶじゃ",
+    "region": "アフリカ",
+    "level": 2,
+    "lat": 9.0,
+    "lng": 8.6,
+    "aliases_name": [
+      "nigeria",
+      "ナイジェリア",
+      "ないじぇりあ"
+    ],
+    "aliases_cap": [
+      "abuja",
+      "アブジャ",
+      "あぶじゃ"
+    ]
+  },
+  "KEN": {
+    "code": "KEN",
+    "code2": "KE",
+    "name": "ケニア",
+    "capital": "ナイロビ",
+    "furigana_name": "けにあ",
+    "furigana_cap": "ないろび",
+    "region": "アフリカ",
+    "level": 2,
+    "lat": -0.0,
+    "lng": 37.9,
+    "aliases_name": [
+      "kenya",
+      "ケニア",
+      "けにあ"
+    ],
+    "aliases_cap": [
+      "nairobi",
+      "ナイロビ",
+      "ないろび"
+    ]
+  },
+  "MAR": {
+    "code": "MAR",
+    "code2": "MA",
+    "name": "モロッコ",
+    "capital": "ラバト",
+    "furigana_name": "もろっこ",
+    "furigana_cap": "らばと",
+    "region": "アフリカ",
+    "level": 2,
+    "lat": 31.7,
+    "lng": -7.0,
+    "aliases_name": [
+      "morocco",
+      "モロッコ",
+      "もろっこ"
+    ],
+    "aliases_cap": [
+      "rabat",
+      "ラバト",
+      "らばと"
+    ]
+  },
+  "GHA": {
+    "code": "GHA",
+    "code2": "GH",
+    "name": "ガーナ",
+    "capital": "アクラ",
+    "furigana_name": "がーな",
+    "furigana_cap": "あくら",
+    "region": "アフリカ",
+    "level": 2,
+    "lat": 7.9,
+    "lng": -1.0,
+    "aliases_name": [
+      "ghana",
+      "ガーナ",
+      "がーな"
+    ],
+    "aliases_cap": [
+      "accra",
+      "アクラ",
+      "あくら"
+    ]
+  },
+  "ETH": {
+    "code": "ETH",
+    "code2": "ET",
+    "name": "エチオピア",
+    "capital": "アディスアベバ",
+    "furigana_name": "えちおぴあ",
+    "furigana_cap": "あでぃすあべば",
+    "region": "アフリカ",
+    "level": 2,
+    "lat": 9.1,
+    "lng": 40.4,
+    "aliases_name": [
+      "ethiopia",
+      "エチオピア",
+      "えちおぴあ"
+    ],
+    "aliases_cap": [
+      "addis ababa",
+      "アディスアベバ",
+      "あでぃすあべば"
+    ]
+  },
+  "DZA": {
+    "code": "DZA",
+    "code2": "DZ",
+    "name": "アルジェリア",
+    "capital": "アルジェ",
+    "furigana_name": "あるじぇりあ",
+    "furigana_cap": "あるじぇ",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": 28.0,
+    "lng": 1.6,
+    "aliases_name": [
+      "algeria",
+      "アルジェリア",
+      "あるじぇりあ"
+    ],
+    "aliases_cap": [
+      "algiers",
+      "アルジェ",
+      "あるじぇ"
+    ]
+  },
+  "TUN": {
+    "code": "TUN",
+    "code2": "TN",
+    "name": "チュニジア",
+    "capital": "チュニス",
+    "furigana_name": "ちゅにじあ",
+    "furigana_cap": "ちゅにす",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": 33.8,
+    "lng": 9.5,
+    "aliases_name": [
+      "tunisia",
+      "チュニジア",
+      "ちゅにじあ"
+    ],
+    "aliases_cap": [
+      "tunis",
+      "チュニス",
+      "ちゅにす"
+    ]
+  },
+  "TZA": {
+    "code": "TZA",
+    "code2": "TZ",
+    "name": "タンザニア",
+    "capital": "ドドマ",
+    "furigana_name": "たんざにあ",
+    "furigana_cap": "どどま",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": -6.3,
+    "lng": 34.8,
+    "aliases_name": [
+      "tanzania",
+      "タンザニア",
+      "たんざにあ"
+    ],
+    "aliases_cap": [
+      "ダルエスサラーム",
+      "dodoma",
+      "ドドマ",
+      "どどま"
+    ]
+  },
+  "UGA": {
+    "code": "UGA",
+    "code2": "UG",
+    "name": "ウガンダ",
+    "capital": "カンパラ",
+    "furigana_name": "うがんだ",
+    "furigana_cap": "かんぱら",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": 1.3,
+    "lng": 32.2,
+    "aliases_name": [
+      "uganda",
+      "ウガンダ",
+      "うがんだ"
+    ],
+    "aliases_cap": [
+      "kampala",
+      "カンパラ",
+      "かんぱら"
+    ]
+  },
+  "SEN": {
+    "code": "SEN",
+    "code2": "SN",
+    "name": "セネガル",
+    "capital": "ダカール",
+    "furigana_name": "せねがる",
+    "furigana_cap": "だかーる",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": 14.4,
+    "lng": -14.4,
+    "aliases_name": [
+      "senegal",
+      "セネガル",
+      "せねがる"
+    ],
+    "aliases_cap": [
+      "dakar",
+      "ダカール",
+      "だかーる"
+    ]
+  },
+  "CIV": {
+    "code": "CIV",
+    "code2": "CI",
+    "name": "コートジボワール",
+    "capital": "ヤムスクロ",
+    "furigana_name": "こーとじぼわーる",
+    "furigana_cap": "やむすくろ",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": 7.5,
+    "lng": -5.5,
+    "aliases_name": [
+      "象牙海岸",
+      "cote d'ivoire",
+      "コートジボワール",
+      "こーとじぼわーる"
+    ],
+    "aliases_cap": [
+      "アビジャン",
+      "yamoussoukro",
+      "ヤムスクロ",
+      "やむすくろ"
+    ]
+  },
+  "CMR": {
+    "code": "CMR",
+    "code2": "CM",
+    "name": "カメルーン",
+    "capital": "ヤウンデ",
+    "furigana_name": "かめるーん",
+    "furigana_cap": "やうんで",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": 7.3,
+    "lng": 12.3,
+    "aliases_name": [
+      "cameroon",
+      "カメルーン",
+      "かめるーん"
+    ],
+    "aliases_cap": [
+      "yaounde",
+      "ヤウンデ",
+      "やうんで"
+    ]
+  },
+  "ZWE": {
+    "code": "ZWE",
+    "code2": "ZW",
+    "name": "ジンバブエ",
+    "capital": "ハラレ",
+    "furigana_name": "じんばぶえ",
+    "furigana_cap": "はられ",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": -19.0,
+    "lng": 29.1,
+    "aliases_name": [
+      "zimbabwe",
+      "ジンバブエ",
+      "じんばぶえ"
+    ],
+    "aliases_cap": [
+      "harare",
+      "ハラレ",
+      "はられ"
+    ]
+  },
+  "ZMB": {
+    "code": "ZMB",
+    "code2": "ZM",
+    "name": "ザンビア",
+    "capital": "ルサカ",
+    "furigana_name": "ざんびあ",
+    "furigana_cap": "るさか",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": -13.1,
+    "lng": 27.8,
+    "aliases_name": [
+      "zambia",
+      "ザンビア",
+      "ざんびあ"
+    ],
+    "aliases_cap": [
+      "lusaka",
+      "ルサカ",
+      "るさか"
+    ]
+  },
+  "AGO": {
+    "code": "AGO",
+    "code2": "AO",
+    "name": "アンゴラ",
+    "capital": "ルアンダ",
+    "furigana_name": "あんごら",
+    "furigana_cap": "るあんだ",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": -11.2,
+    "lng": 17.8,
+    "aliases_name": [
+      "angola",
+      "アンゴラ",
+      "あんごら"
+    ],
+    "aliases_cap": [
+      "luanda",
+      "ルアンダ",
+      "るあんだ"
+    ]
+  },
+  "MOZ": {
+    "code": "MOZ",
+    "code2": "MZ",
+    "name": "モザンビーク",
+    "capital": "マプト",
+    "furigana_name": "もざんびーく",
+    "furigana_cap": "まぷと",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": -18.6,
+    "lng": 35.5,
+    "aliases_name": [
+      "mozambique",
+      "モザンビーク",
+      "もざんびーく"
+    ],
+    "aliases_cap": [
+      "maputo",
+      "マプト",
+      "まぷと"
+    ]
+  },
+  "MDG": {
+    "code": "MDG",
+    "code2": "MG",
+    "name": "マダガスカル",
+    "capital": "アンタナナリボ",
+    "furigana_name": "まだがすかる",
+    "furigana_cap": "あんたななりぼ",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": -18.7,
+    "lng": 46.8,
+    "aliases_name": [
+      "madagascar",
+      "マダガスカル",
+      "まだがすかる"
+    ],
+    "aliases_cap": [
+      "antananarivo",
+      "アンタナナリボ",
+      "あんたななりぼ"
+    ]
+  },
+  "COD": {
+    "code": "COD",
+    "code2": "CD",
+    "name": "コンゴ民主共和国",
+    "capital": "キンシャサ",
+    "furigana_name": "こんごみんしゅきょうわこく",
+    "furigana_cap": "きんしゃさ",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": -4.0,
+    "lng": 21.7,
+    "aliases_name": [
+      "旧ザイール",
+      "コンゴ金",
+      "drc",
+      "democratic republic of the congo",
+      "コンゴ民主共和国",
+      "こんごみんしゅきょうわこく"
+    ],
+    "aliases_cap": [
+      "kinshasa",
+      "キンシャサ",
+      "きんしゃさ"
+    ]
+  },
+  "SDN": {
+    "code": "SDN",
+    "code2": "SD",
+    "name": "スーダン",
+    "capital": "ハルツーム",
+    "furigana_name": "すーだん",
+    "furigana_cap": "はるつーむ",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": 12.8,
+    "lng": 30.2,
+    "aliases_name": [
+      "sudan",
+      "スーダン",
+      "すーだん"
+    ],
+    "aliases_cap": [
+      "khartoum",
+      "ハルツーム",
+      "はるつーむ"
+    ]
+  },
+  "LBY": {
+    "code": "LBY",
+    "code2": "LY",
+    "name": "リビア",
+    "capital": "トリポリ",
+    "furigana_name": "りびあ",
+    "furigana_cap": "とりぽり",
+    "region": "アフリカ",
+    "level": 3,
+    "lat": 26.3,
+    "lng": 17.2,
+    "aliases_name": [
+      "libya",
+      "リビア",
+      "りびあ"
+    ],
+    "aliases_cap": [
+      "tripoli",
+      "トリポリ",
+      "とりぽり"
+    ]
+  },
+  "RWA": {
+    "code": "RWA",
+    "code2": "RW",
+    "name": "ルワンダ",
+    "capital": "キガリ",
+    "furigana_name": "るわんだ",
+    "furigana_cap": "きがり",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": -1.9,
+    "lng": 29.8,
+    "aliases_name": [
+      "rwanda",
+      "ルワンダ",
+      "るわんだ"
+    ],
+    "aliases_cap": [
+      "kigali",
+      "キガリ",
+      "きがり"
+    ]
+  },
+  "BWA": {
+    "code": "BWA",
+    "code2": "BW",
+    "name": "ボツワナ",
+    "capital": "ハボローネ",
+    "furigana_name": "ぼつわな",
+    "furigana_cap": "はぼろーね",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": -22.3,
+    "lng": 24.6,
+    "aliases_name": [
+      "botswana",
+      "ボツワナ",
+      "ぼつわな"
+    ],
+    "aliases_cap": [
+      "gaborone",
+      "ハボローネ",
+      "はぼろーね"
+    ]
+  },
+  "NAM": {
+    "code": "NAM",
+    "code2": "NA",
+    "name": "ナミビア",
+    "capital": "ウィントフック",
+    "furigana_name": "なみびあ",
+    "furigana_cap": "うぃんとふっく",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": -22.9,
+    "lng": 18.4,
+    "aliases_name": [
+      "namibia",
+      "ナミビア",
+      "なみびあ"
+    ],
+    "aliases_cap": [
+      "windhoek",
+      "ウィントフック",
+      "うぃんとふっく"
+    ]
+  },
+  "MUS": {
+    "code": "MUS",
+    "code2": "MU",
+    "name": "モーリシャス",
+    "capital": "ポートルイス",
+    "furigana_name": "もーりしゃす",
+    "furigana_cap": "ぽーとるいす",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": -20.3,
+    "lng": 57.5,
+    "aliases_name": [
+      "mauritius",
+      "モーリシャス",
+      "もーりしゃす"
+    ],
+    "aliases_cap": [
+      "port louis",
+      "ポートルイス",
+      "ぽーとるいす"
+    ]
+  },
+  "SYC": {
+    "code": "SYC",
+    "code2": "SC",
+    "name": "セーシェル",
+    "capital": "ビクトリア",
+    "furigana_name": "せーしぇる",
+    "furigana_cap": "びくとりあ",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": -4.6,
+    "lng": 55.4,
+    "aliases_name": [
+      "seychelles",
+      "セーシェル",
+      "せーしぇる"
+    ],
+    "aliases_cap": [
+      "victoria",
+      "ビクトリア",
+      "びくとりあ"
+    ]
+  },
+  "CPV": {
+    "code": "CPV",
+    "code2": "CV",
+    "name": "カーボベルデ",
+    "capital": "プライア",
+    "furigana_name": "かーぼべるで",
+    "furigana_cap": "ぷらいあ",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 16.5,
+    "lng": -23.0,
+    "aliases_name": [
+      "cabo verde",
+      "cape verde",
+      "カーボベルデ",
+      "かーぼべるで"
+    ],
+    "aliases_cap": [
+      "praia",
+      "プライア",
+      "ぷらいあ"
+    ]
+  },
+  "BEN": {
+    "code": "BEN",
+    "code2": "BJ",
+    "name": "ベナン",
+    "capital": "ポルトノボ",
+    "furigana_name": "べなん",
+    "furigana_cap": "ぽるとのぼ",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 9.3,
+    "lng": 2.3,
+    "aliases_name": [
+      "benin",
+      "ベナン",
+      "べなん"
+    ],
+    "aliases_cap": [
+      "コトヌー",
+      "porto-novo",
+      "ポルトノボ",
+      "ぽるとのぼ"
+    ]
+  },
+  "BFA": {
+    "code": "BFA",
+    "code2": "BF",
+    "name": "ブルキナファソ",
+    "capital": "ワガドゥグー",
+    "furigana_name": "ぶるきなふぁそ",
+    "furigana_cap": "わがどぅぐー",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 12.2,
+    "lng": -1.5,
+    "aliases_name": [
+      "burkina faso",
+      "ブルキナファソ",
+      "ぶるきなふぁそ"
+    ],
+    "aliases_cap": [
+      "ouagadougou",
+      "ワガドゥグー",
+      "わがどぅぐー"
+    ]
+  },
+  "BDI": {
+    "code": "BDI",
+    "code2": "BI",
+    "name": "ブルンジ",
+    "capital": "ギテガ",
+    "furigana_name": "ぶるんじ",
+    "furigana_cap": "ぎてが",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": -3.3,
+    "lng": 29.9,
+    "aliases_name": [
+      "burundi",
+      "ブルンジ",
+      "ぶるんじ"
+    ],
+    "aliases_cap": [
+      "ブジュンブラ",
+      "gitega",
+      "ギテガ",
+      "ぎてが"
+    ]
+  },
+  "CAF": {
+    "code": "CAF",
+    "code2": "CF",
+    "name": "中央アフリカ",
+    "capital": "バンギ",
+    "furigana_name": "ちゅうおうあふりか",
+    "furigana_cap": "ばんぎ",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 6.6,
+    "lng": 20.9,
+    "aliases_name": [
+      "中央アフリカ共和国",
+      "central african republic",
+      "中央アフリカ",
+      "ちゅうおうあふりか"
+    ],
+    "aliases_cap": [
+      "bangui",
+      "バンギ",
+      "ばんぎ"
+    ]
+  },
+  "TCD": {
+    "code": "TCD",
+    "code2": "TD",
+    "name": "チャド",
+    "capital": "ンジャメナ",
+    "furigana_name": "ちゃど",
+    "furigana_cap": "んじゃめな",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 15.4,
+    "lng": 18.7,
+    "aliases_name": [
+      "chad",
+      "チャド",
+      "ちゃど"
+    ],
+    "aliases_cap": [
+      "n'djamena",
+      "ンジャメナ",
+      "んじゃめな"
+    ]
+  },
+  "COG": {
+    "code": "COG",
+    "code2": "CG",
+    "name": "コンゴ共和国",
+    "capital": "ブラザビル",
+    "furigana_name": "こんごきょうわこく",
+    "furigana_cap": "ぶらざびる",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": -0.2,
+    "lng": 15.8,
+    "aliases_name": [
+      "コンゴブラザ",
+      "republic of the congo",
+      "コンゴ共和国",
+      "こんごきょうわこく"
+    ],
+    "aliases_cap": [
+      "brazzaville",
+      "ブラザビル",
+      "ぶらざびる"
+    ]
+  },
+  "DJI": {
+    "code": "DJI",
+    "code2": "DJ",
+    "name": "ジブチ",
+    "capital": "ジブチ",
+    "furigana_name": "じぶち",
+    "furigana_cap": "じぶち",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 11.8,
+    "lng": 42.5,
+    "aliases_name": [
+      "djibouti",
+      "ジブチ",
+      "じぶち"
+    ],
+    "aliases_cap": [
+      "djibouti",
+      "ジブチ",
+      "じぶち"
+    ]
+  },
+  "GNQ": {
+    "code": "GNQ",
+    "code2": "GQ",
+    "name": "赤道ギニア",
+    "capital": "マラボ",
+    "furigana_name": "せきどうぎにあ",
+    "furigana_cap": "まらぼ",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 1.6,
+    "lng": 10.2,
+    "aliases_name": [
+      "equatorial guinea",
+      "赤道ギニア",
+      "せきどうぎにあ"
+    ],
+    "aliases_cap": [
+      "malabo",
+      "マラボ",
+      "まらぼ"
+    ]
+  },
+  "ERI": {
+    "code": "ERI",
+    "code2": "ER",
+    "name": "エリトリア",
+    "capital": "アスマラ",
+    "furigana_name": "えりとりあ",
+    "furigana_cap": "あすまら",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 15.1,
+    "lng": 39.7,
+    "aliases_name": [
+      "eritrea",
+      "エリトリア",
+      "えりとりあ"
+    ],
+    "aliases_cap": [
+      "asmara",
+      "アスマラ",
+      "あすまら"
+    ]
+  },
+  "SWZ": {
+    "code": "SWZ",
+    "code2": "SZ",
+    "name": "エスワティニ",
+    "capital": "ムババーネ",
+    "furigana_name": "えすわてぃに",
+    "furigana_cap": "むばばーね",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": -26.5,
+    "lng": 31.4,
+    "aliases_name": [
+      "スワジランド",
+      "eswatini",
+      "エスワティニ",
+      "えすわてぃに"
+    ],
+    "aliases_cap": [
+      "ロバンバ",
+      "mbabane",
+      "ムババーネ",
+      "むばばーね"
+    ]
+  },
+  "GAB": {
+    "code": "GAB",
+    "code2": "GA",
+    "name": "ガボン",
+    "capital": "リーブルビル",
+    "furigana_name": "がぼん",
+    "furigana_cap": "りーぶるびる",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": -0.8,
+    "lng": 11.6,
+    "aliases_name": [
+      "gabon",
+      "ガボン",
+      "がぼん"
+    ],
+    "aliases_cap": [
+      "libreville",
+      "リーブルビル",
+      "りーぶるびる"
+    ]
+  },
+  "GMB": {
+    "code": "GMB",
+    "code2": "GM",
+    "name": "ガンビア",
+    "capital": "バンジュール",
+    "furigana_name": "がんびあ",
+    "furigana_cap": "ばんじゅーる",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 13.4,
+    "lng": -15.3,
+    "aliases_name": [
+      "gambia",
+      "ガンビア",
+      "がんびあ"
+    ],
+    "aliases_cap": [
+      "banjul",
+      "バンジュール",
+      "ばんじゅーる"
+    ]
+  },
+  "GIN": {
+    "code": "GIN",
+    "code2": "GN",
+    "name": "ギニア",
+    "capital": "コナクリ",
+    "furigana_name": "ぎにあ",
+    "furigana_cap": "こなくり",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 9.9,
+    "lng": -9.6,
+    "aliases_name": [
+      "guinea",
+      "ギニア",
+      "ぎにあ"
+    ],
+    "aliases_cap": [
+      "conakry",
+      "コナクリ",
+      "こなくり"
+    ]
+  },
+  "GNB": {
+    "code": "GNB",
+    "code2": "GW",
+    "name": "ギニアビサウ",
+    "capital": "ビサウ",
+    "furigana_name": "ぎにあびさう",
+    "furigana_cap": "びさう",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 11.8,
+    "lng": -15.1,
+    "aliases_name": [
+      "guinea-bissau",
+      "ギニアビサウ",
+      "ぎにあびさう"
+    ],
+    "aliases_cap": [
+      "bissau",
+      "ビサウ",
+      "びさう"
+    ]
+  },
+  "LSO": {
+    "code": "LSO",
+    "code2": "LS",
+    "name": "レソト",
+    "capital": "マセル",
+    "furigana_name": "れそと",
+    "furigana_cap": "ませる",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": -29.6,
+    "lng": 28.2,
+    "aliases_name": [
+      "lesotho",
+      "レソト",
+      "れそと"
+    ],
+    "aliases_cap": [
+      "maseru",
+      "マセル",
+      "ませる"
+    ]
+  },
+  "LBR": {
+    "code": "LBR",
+    "code2": "LR",
+    "name": "リベリア",
+    "capital": "モンロビア",
+    "furigana_name": "りべりあ",
+    "furigana_cap": "もんろびあ",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 6.4,
+    "lng": -9.4,
+    "aliases_name": [
+      "liberia",
+      "リベリア",
+      "りべりあ"
+    ],
+    "aliases_cap": [
+      "monrovia",
+      "モンロビア",
+      "もんろびあ"
+    ]
+  },
+  "MWI": {
+    "code": "MWI",
+    "code2": "MW",
+    "name": "マラウイ",
+    "capital": "リロングウェ",
+    "furigana_name": "まらうい",
+    "furigana_cap": "りろんぐうぇ",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": -13.2,
+    "lng": 34.3,
+    "aliases_name": [
+      "malawi",
+      "マラウイ",
+      "まらうい"
+    ],
+    "aliases_cap": [
+      "lilongwe",
+      "リロングウェ",
+      "りろんぐうぇ"
+    ]
+  },
+  "MLI": {
+    "code": "MLI",
+    "code2": "ML",
+    "name": "マリ",
+    "capital": "バマコ",
+    "furigana_name": "まり",
+    "furigana_cap": "ばまこ",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 17.5,
+    "lng": -3.9,
+    "aliases_name": [
+      "マリ共和国",
+      "mali",
+      "マリ",
+      "まり"
+    ],
+    "aliases_cap": [
+      "bamako",
+      "バマコ",
+      "ばまこ"
+    ]
+  },
+  "MRT": {
+    "code": "MRT",
+    "code2": "MR",
+    "name": "モーリタニア",
+    "capital": "ヌアクショット",
+    "furigana_name": "もーりたにあ",
+    "furigana_cap": "ぬあくしょっと",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 21.0,
+    "lng": -10.9,
+    "aliases_name": [
+      "mauritania",
+      "モーリタニア",
+      "もーりたにあ"
+    ],
+    "aliases_cap": [
+      "nouakchott",
+      "ヌアクショット",
+      "ぬあくしょっと"
+    ]
+  },
+  "NER": {
+    "code": "NER",
+    "code2": "NE",
+    "name": "ニジェール",
+    "capital": "ニアメ",
+    "furigana_name": "にじぇーる",
+    "furigana_cap": "にあめ",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 17.6,
+    "lng": 8.0,
+    "aliases_name": [
+      "niger",
+      "ニジェール",
+      "にじぇーる"
+    ],
+    "aliases_cap": [
+      "niamey",
+      "ニアメ",
+      "にあめ"
+    ]
+  },
+  "STP": {
+    "code": "STP",
+    "code2": "ST",
+    "name": "サントメ・プリンシペ",
+    "capital": "サントメ",
+    "furigana_name": "さんとめぷりんしぺ",
+    "furigana_cap": "さんとめ",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 0.1,
+    "lng": 6.6,
+    "aliases_name": [
+      "sao tome and principe",
+      "サントメ・プリンシペ",
+      "さんとめぷりんしぺ"
+    ],
+    "aliases_cap": [
+      "sao tome",
+      "サントメ",
+      "さんとめ"
+    ]
+  },
+  "SLE": {
+    "code": "SLE",
+    "code2": "SL",
+    "name": "シエラレオネ",
+    "capital": "フリータウン",
+    "furigana_name": "しえられおね",
+    "furigana_cap": "ふりーたうん",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 8.4,
+    "lng": -11.7,
+    "aliases_name": [
+      "sierra leone",
+      "シエラレオネ",
+      "しえられおね"
+    ],
+    "aliases_cap": [
+      "freetown",
+      "フリータウン",
+      "ふりーたうん"
+    ]
+  },
+  "SOM": {
+    "code": "SOM",
+    "code2": "SO",
+    "name": "ソマリア",
+    "capital": "モガディシオ",
+    "furigana_name": "そまりあ",
+    "furigana_cap": "もがでぃしお",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 5.1,
+    "lng": 46.1,
+    "aliases_name": [
+      "somalia",
+      "ソマリア",
+      "そまりあ"
+    ],
+    "aliases_cap": [
+      "mogadishu",
+      "モガディシオ",
+      "もがでぃしお"
+    ]
+  },
+  "SSD": {
+    "code": "SSD",
+    "code2": "SS",
+    "name": "南スーダン",
+    "capital": "ジュバ",
+    "furigana_name": "みなみすーだん",
+    "furigana_cap": "じゅば",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 6.8,
+    "lng": 31.3,
+    "aliases_name": [
+      "south sudan",
+      "南スーダン",
+      "みなみすーだん"
+    ],
+    "aliases_cap": [
+      "juba",
+      "ジュバ",
+      "じゅば"
+    ]
+  },
+  "TGO": {
+    "code": "TGO",
+    "code2": "TG",
+    "name": "トーゴ",
+    "capital": "ロメ",
+    "furigana_name": "とーご",
+    "furigana_cap": "ろめ",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": 8.6,
+    "lng": 0.8,
+    "aliases_name": [
+      "togo",
+      "トーゴ",
+      "とーご"
+    ],
+    "aliases_cap": [
+      "lome",
+      "ロメ",
+      "ろめ"
+    ]
+  },
+  "COM": {
+    "code": "COM",
+    "code2": "KM",
+    "name": "コモロ",
+    "capital": "モロニ",
+    "furigana_name": "こもろ",
+    "furigana_cap": "もろに",
+    "region": "アフリカ",
+    "level": 4,
+    "lat": -11.6,
+    "lng": 43.3,
+    "aliases_name": [
+      "comoros",
+      "コモロ",
+      "こもろ"
+    ],
+    "aliases_cap": [
+      "moroni",
+      "モロニ",
+      "もろに"
+    ]
+  },
+  "AUS": {
+    "code": "AUS",
+    "code2": "AU",
+    "name": "オーストラリア",
+    "capital": "キャンベラ",
+    "furigana_name": "おーすとらりあ",
+    "furigana_cap": "きゃんべら",
+    "region": "オセアニア",
+    "level": 1,
+    "lat": -25.2,
+    "lng": 133.7,
+    "aliases_name": [
+      "豪州",
+      "australia",
+      "オーストラリア",
+      "おーすとらりあ"
+    ],
+    "aliases_cap": [
+      "canberra",
+      "キャンベラ",
+      "きゃんべら"
+    ]
+  },
+  "NZL": {
+    "code": "NZL",
+    "code2": "NZ",
+    "name": "ニュージーランド",
+    "capital": "ウェリントン",
+    "furigana_name": "にゅーじーらんど",
+    "furigana_cap": "うぇりんとん",
+    "region": "オセアニア",
+    "level": 1,
+    "lat": -40.9,
+    "lng": 174.8,
+    "aliases_name": [
+      "new zealand",
+      "ニュージーランド",
+      "にゅーじーらんど"
+    ],
+    "aliases_cap": [
+      "wellington",
+      "ウェリントン",
+      "うぇりんとん"
+    ]
+  },
+  "PNG": {
+    "code": "PNG",
+    "code2": "PG",
+    "name": "パプアニューギニア",
+    "capital": "ポートモレスビー",
+    "furigana_name": "ぱぷあにゅーぎにあ",
+    "furigana_cap": "ぽーともれすびー",
+    "region": "オセアニア",
+    "level": 3,
+    "lat": -6.3,
+    "lng": 143.9,
+    "aliases_name": [
+      "papua new guinea",
+      "パプアニューギニア",
+      "ぱぷあにゅーぎにあ"
+    ],
+    "aliases_cap": [
+      "port moresby",
+      "ポートモレスビー",
+      "ぽーともれすびー"
+    ]
+  },
+  "FJI": {
+    "code": "FJI",
+    "code2": "FJ",
+    "name": "フィジー",
+    "capital": "スバ",
+    "furigana_name": "ふぃじー",
+    "furigana_cap": "すば",
+    "region": "オセアニア",
+    "level": 3,
+    "lat": -17.7,
+    "lng": 178.0,
+    "aliases_name": [
+      "fiji",
+      "フィジー",
+      "ふぃじー"
+    ],
+    "aliases_cap": [
+      "suva",
+      "スバ",
+      "すば"
+    ]
+  },
+  "SLB": {
+    "code": "SLB",
+    "code2": "SB",
+    "name": "ソロモン諸島",
+    "capital": "ホニアラ",
+    "furigana_name": "そろもんしょとう",
+    "furigana_cap": "ほにあら",
+    "region": "オセアニア",
+    "level": 4,
+    "lat": -9.6,
+    "lng": 160.1,
+    "aliases_name": [
+      "solomon islands",
+      "ソロモン諸島",
+      "そろもんしょとう"
+    ],
+    "aliases_cap": [
+      "honiara",
+      "ホニアラ",
+      "ほにあら"
+    ]
+  },
+  "VUT": {
+    "code": "VUT",
+    "code2": "VU",
+    "name": "バヌアツ",
+    "capital": "ポートビラ",
+    "furigana_name": "ばぬあつ",
+    "furigana_cap": "ぽーとびら",
+    "region": "オセアニア",
+    "level": 4,
+    "lat": -15.3,
+    "lng": 166.9,
+    "aliases_name": [
+      "vanuatu",
+      "バヌアツ",
+      "ばぬあつ"
+    ],
+    "aliases_cap": [
+      "port vila",
+      "ポートビラ",
+      "ぽーとびら"
+    ]
+  },
+  "WSM": {
+    "code": "WSM",
+    "code2": "WS",
+    "name": "サモア",
+    "capital": "アピア",
+    "furigana_name": "さもあ",
+    "furigana_cap": "あぴあ",
+    "region": "オセアニア",
+    "level": 4,
+    "lat": -13.7,
+    "lng": -172.1,
+    "aliases_name": [
+      "西サモア",
+      "samoa",
+      "サモア",
+      "さもあ"
+    ],
+    "aliases_cap": [
+      "apia",
+      "アピア",
+      "あぴあ"
+    ]
+  },
+  "KIR": {
+    "code": "KIR",
+    "code2": "KI",
+    "name": "キリバス",
+    "capital": "タラワ",
+    "furigana_name": "きりばす",
+    "furigana_cap": "たらわ",
+    "region": "オセアニア",
+    "level": 4,
+    "lat": -3.3,
+    "lng": -168.7,
+    "aliases_name": [
+      "kiribati",
+      "キリバス",
+      "きりばす"
+    ],
+    "aliases_cap": [
+      "サウスタラワ",
+      "tarawa",
+      "タラワ",
+      "たらわ"
+    ]
+  },
+  "FSM": {
+    "code": "FSM",
+    "code2": "FM",
+    "name": "ミクロネシア連邦",
+    "capital": "パリキール",
+    "furigana_name": "みくろねしあれんぽう",
+    "furigana_cap": "ぱりきーる",
+    "region": "オセアニア",
+    "level": 4,
+    "lat": 7.4,
+    "lng": 150.5,
+    "aliases_name": [
+      "ミクロネシア",
+      "micronesia",
+      "ミクロネシア連邦",
+      "みくろねしあれんぽう"
+    ],
+    "aliases_cap": [
+      "palikir",
+      "パリキール",
+      "ぱりきーる"
+    ]
+  },
+  "MHL": {
+    "code": "MHL",
+    "code2": "MH",
+    "name": "マーシャル諸島",
+    "capital": "マジュロ",
+    "furigana_name": "まーしゃるしょとう",
+    "furigana_cap": "まじゅろ",
+    "region": "オセアニア",
+    "level": 4,
+    "lat": 7.1,
+    "lng": 171.1,
+    "aliases_name": [
+      "marshall islands",
+      "マーシャル諸島",
+      "まーしゃるしょとう"
+    ],
+    "aliases_cap": [
+      "majuro",
+      "マジュロ",
+      "まじゅろ"
+    ]
+  },
+  "PLW": {
+    "code": "PLW",
+    "code2": "PW",
+    "name": "パラオ",
+    "capital": "マルキョク",
+    "furigana_name": "ぱらお",
+    "furigana_cap": "まるきょく",
+    "region": "オセアニア",
+    "level": 4,
+    "lat": 7.5,
+    "lng": 134.5,
+    "aliases_name": [
+      "palau",
+      "パラオ",
+      "ぱらお"
+    ],
+    "aliases_cap": [
+      "ンゲルルムッド",
+      "melekeok",
+      "ngerulmud",
+      "マルキョク",
+      "まるきょく"
+    ]
+  },
+  "NRU": {
+    "code": "NRU",
+    "code2": "NR",
+    "name": "ナウル",
+    "capital": "ヤレン",
+    "furigana_name": "なうる",
+    "furigana_cap": "やれん",
+    "region": "オセアニア",
+    "level": 4,
+    "lat": -0.5,
+    "lng": 166.9,
+    "aliases_name": [
+      "nauru",
+      "ナウル",
+      "なうる"
+    ],
+    "aliases_cap": [
+      "yaren",
+      "ヤレン",
+      "やれん"
+    ]
+  },
+  "TON": {
+    "code": "TON",
+    "code2": "TO",
+    "name": "トンガ",
+    "capital": "ヌクアロファ",
+    "furigana_name": "とんが",
+    "furigana_cap": "ぬくあろふぁ",
+    "region": "オセアニア",
+    "level": 4,
+    "lat": -21.1,
+    "lng": -175.1,
+    "aliases_name": [
+      "tonga",
+      "トンガ",
+      "とんが"
+    ],
+    "aliases_cap": [
+      "nuku'alofa",
+      "ヌクアロファ",
+      "ぬくあろふぁ"
+    ]
+  },
+  "TUV": {
+    "code": "TUV",
+    "code2": "TV",
+    "name": "ツバル",
+    "capital": "フナフティ",
+    "furigana_name": "つばる",
+    "furigana_cap": "ふなふてぃ",
+    "region": "オセアニア",
+    "level": 4,
+    "lat": -7.1,
+    "lng": 177.6,
+    "aliases_name": [
+      "tuvalu",
+      "ツバル",
+      "つばる"
+    ],
+    "aliases_cap": [
+      "funafuti",
+      "フナフティ",
+      "ふなふてぃ"
+    ]
+  }
+}

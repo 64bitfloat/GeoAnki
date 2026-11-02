@@ -604,7 +604,7 @@ html_content = f'''<!DOCTYPE html>
               <span id="muni-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
             </div>
             <form id="muni-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="event.preventDefault(); return false;">
-              <input type="text" id="muni-input-type" placeholder="例: 沼津市、函南町" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
+              <input type="text" id="muni-input-type" placeholder="自治体名を入力（市区町村まで）" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
               <button type="submit" id="btn-muni-type-submit" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 shadow">回答</button>
               <button type="button" id="btn-muni-type-skip" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">スキップ →</button>
             </form>
@@ -762,7 +762,7 @@ html_content = f'''<!DOCTYPE html>
               <span id="prov-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 15</span>
             </div>
             <form id="prov-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="event.preventDefault(); return false;">
-              <input type="text" id="prov-input-type" placeholder="例: 武蔵、むさし" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
+              <input type="text" id="prov-input-type" placeholder="漢字またはひらがなで入力（例: 武蔵、むさし）" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
               <button type="submit" id="btn-prov-type-submit" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 shadow">回答</button>
               <button type="button" id="btn-prov-type-skip" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">スキップ →</button>
             </form>
@@ -1003,7 +1003,7 @@ html_content = f'''<!DOCTYPE html>
               <span id="world-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
             </div>
             <form id="world-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="event.preventDefault(); return false;">
-              <input type="text" id="world-input-type" placeholder="例: フランス、パリ" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
+              <input type="text" id="world-input-type" placeholder="カタカナで国名を入力（例: フランス）" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
               <button type="submit" id="btn-world-type-submit" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 shadow">回答</button>
               <button type="button" id="btn-world-type-skip" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">スキップ →</button>
             </form>
@@ -2984,7 +2984,7 @@ html_content = f'''<!DOCTYPE html>
             : '黄色の国の【国名】を入力：';
           const input = document.getElementById('world-input-type');
           input.value = '';
-          input.placeholder = (this.targetType === 'capital') ? `例: ${{q.capital}}` : `例: ${{q.name}}`;
+          input.placeholder = (this.targetType === 'capital') ? 'カタカナで首都名を入力（例: パリ）' : 'カタカナで国名を入力（例: フランス）';
           input.focus();
           this.highlightQuestionPolygon();
         }}

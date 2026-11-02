@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 """
 GeoAnki Suite — 地理暗記学習プラットフォーム統合ビルドスクリプト
-市区町村暗記のUIデザイン・UX・パフォーマンスを「旧国名」および「世界の国名・首都名」に完全踏襲
+1. 全国1,741市区町村暗記モジュール
+2. 令制国・旧国名暗記モジュール（地域選択撤廃・全国一括・4段階レベル分け）
+3. 世界の国名・首都名暗記モジュール（レベル対象外国のホバー/クリック完全無効化）
+市区町村暗記のUI/UX品質を全モジュールで完全踏襲
 """
 
 import json
 import os
 
-print("=== Building GeoAnki Suite (index.html) with Unified Municipality UI Design ===")
+print("=== Building GeoAnki Suite (index.html) with Refined Features ===")
 
 # -------------------------------------------------------------
 # 1. 市区町村データ読み込み (Municipalities)
@@ -91,18 +94,6 @@ with open("provinces_master.json", "r", encoding="utf-8") as f:
 with open("provinces.geojson", "r", encoding="utf-8") as f:
     provinces_geojson = json.load(f)
 
-DOH_LIST = [
-    {"id": "ALL", "name": "全国 (68国)", "desc": "五畿七道 68国すべてを網羅"},
-    {"id": "kinai", "name": "畿内（五畿）", "filter": "畿内", "desc": "山城・大和・河内・和泉・摂津の5国"},
-    {"id": "tokaido", "name": "東海道", "filter": "東海道", "desc": "伊賀から常陸まで太平洋側の15国"},
-    {"id": "tosando", "name": "東山道", "filter": "東山道", "desc": "近江・信濃から奥羽（陸奥・出羽）の8国"},
-    {"id": "hokurikudo", "name": "北陸道", "filter": "北陸道", "desc": "若狭・越前・加賀から越後・佐渡の7国"},
-    {"id": "sanindo", "name": "山陰道", "filter": "山陰道", "desc": "丹波・丹後から出雲・石見・隠岐の8国"},
-    {"id": "sanyodo", "name": "山陽道", "filter": "山陽道", "desc": "播磨から安芸・長門まで瀬戸内側の8国"},
-    {"id": "nankaido", "name": "南海道", "filter": "南海道", "desc": "紀伊・淡路・四国4国の計6国"},
-    {"id": "saikaido", "name": "西海道", "filter": "西海道", "desc": "九州各州および壱岐・対馬の11国"},
-]
-
 # -------------------------------------------------------------
 # 3. 世界の国名・首都データ読み込み (World Countries & Capitals)
 # -------------------------------------------------------------
@@ -128,7 +119,6 @@ pref_json = json.dumps(PREFECTURES, ensure_ascii=False, separators=(',', ':'))
 
 prov_master_json = json.dumps(provinces_master, ensure_ascii=False, separators=(',', ':'))
 prov_geo_json = json.dumps(provinces_geojson, ensure_ascii=False, separators=(',', ':'))
-doh_json = json.dumps(DOH_LIST, ensure_ascii=False, separators=(',', ':'))
 
 world_master_json = json.dumps(world_master, ensure_ascii=False, separators=(',', ':'))
 world_geo_json = json.dumps(world_geojson, ensure_ascii=False, separators=(',', ':'))
@@ -140,7 +130,7 @@ html_content = f'''<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>GeoAnki Suite — 地理暗記学習プラットフォーム</title>
+  <title>GeoAnki — 地理暗記学習プラットフォーム</title>
 
   <!-- 基本メタ情報 & SEO -->
   <meta name="description" content="全国1,741市区町村・令制国旧国名（68国）・世界の国名と首都（196ヶ国）を美麗な白地図ベクターポリゴンで直感暗記！GeoGuessr・地理学習特化アプリ。" />
@@ -151,17 +141,17 @@ html_content = f'''<!DOCTYPE html>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
   <!-- Open Graph Protocol -->
-  <meta property="og:site_name" content="GeoAnki Suite" />
+  <meta property="og:site_name" content="GeoAnki" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://64bitfloat.github.io/Anki_Geoguessr/" />
-  <meta property="og:title" content="GeoAnki Suite — 地理暗記学習プラットフォーム" />
+  <meta property="og:url" content="https://64bitfloat.github.io/GeoAnki/" />
+  <meta property="og:title" content="GeoAnki — 地理暗記学習プラットフォーム" />
   <meta property="og:description" content="全国1,741市区町村・旧国名・世界の国名首都を白地図ベクターポリゴンで直感暗記！場所当て・4択・記入・探索・弱点復習の5大モード搭載。" />
-  <meta property="og:image" content="https://opengraph.githubassets.com/1/64bitfloat/Anki_Geoguessr" />
+  <meta property="og:image" content="https://opengraph.githubassets.com/1/64bitfloat/GeoAnki" />
   <meta property="og:locale" content="ja_JP" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="GeoAnki Suite — 地理暗記学習プラットフォーム" />
+  <meta name="twitter:title" content="GeoAnki — 地理暗記学習プラットフォーム" />
   <meta name="twitter:description" content="市区町村・旧国名・世界の国名首都を白地図ベクターで直感暗記！GeoGuessr・地理特化トレーナー。" />
 
   <!-- ファビコン -->
@@ -261,7 +251,7 @@ html_content = f'''<!DOCTYPE html>
           </div>
           <div>
             <h1 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-              GeoAnki Suite
+              GeoAnki
               <span class="text-xs font-normal text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">地理暗記ハブ</span>
             </h1>
             <p class="text-xs text-slate-400 hidden sm:block">全国市区町村・令制国・世界の国名首都 視覚ベクター暗記プラットフォーム</p>
@@ -334,12 +324,12 @@ html_content = f'''<!DOCTYPE html>
                 <div class="w-11 h-11 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl font-black group-hover:scale-110 transition">
                   📜
                 </div>
-                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">五畿七道68国</span>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">全国68国・4段階</span>
               </div>
               <div>
                 <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition">令制国・旧国名暗記</h3>
                 <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-                  武蔵・信濃・尾張・薩摩など日本の旧国名全68国を完全網羅。現代の都道府県対応や名所ヒント付き。
+                  武蔵・信濃・尾張・薩摩など日本の旧国名全68国。主要国・中堅国・一般国・小国の4段階レベルで全国一括特訓。
                 </p>
               </div>
 
@@ -540,6 +530,12 @@ html_content = f'''<!DOCTYPE html>
     <div class="flex-1 relative overflow-hidden bg-slate-950">
       <div id="muni-map" class="w-full h-full map-container"></div>
 
+      <!-- ローディング表示 -->
+      <div id="muni-loading-overlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-3 hidden">
+        <div class="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        <div class="text-sm font-semibold text-slate-200">市区町村ベクター(GeoJSON)を取得中...</div>
+      </div>
+
       <!-- 離島ボタン群 & 全体リセット -->
       <div class="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 flex flex-col gap-1 sm:gap-1.5 items-end">
         <div id="muni-island-buttons" class="flex flex-col gap-0.5 sm:gap-1 items-end"></div>
@@ -650,93 +646,18 @@ html_content = f'''<!DOCTYPE html>
   </div>
 
   <!-- ============================================================== -->
-  <!-- 画面 2A: 令制国 Hub (五畿七道選択画面) -->
-  <!-- ============================================================== -->
-  <div id="screen-prov-hub" class="hidden flex-1 flex flex-col h-full overflow-hidden">
-    <header class="bg-slate-800/90 backdrop-blur border-b border-slate-700/80 px-4 py-3 shrink-0 z-10">
-      <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
-        <div class="flex items-center gap-2.5">
-          <button class="btn-return-root p-2 rounded-lg bg-slate-700/60 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1 text-xs font-bold" title="ホームに戻る">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-            <span class="hidden sm:inline">ホーム</span>
-          </button>
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-            <span class="text-white font-black text-sm tracking-wider">令</span>
-          </div>
-          <div>
-            <h1 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-              GeoAnki 68
-              <span class="text-xs font-normal text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">五畿七道</span>
-            </h1>
-            <p class="text-xs text-slate-400 hidden sm:block">全国68令制国（旧国名）視覚ベクター暗記トレーナー</p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <div class="text-right">
-            <div class="text-xs text-slate-400">全国制覇数</div>
-            <div class="text-sm sm:text-base font-extrabold text-emerald-400">
-              <span id="prov-hub-cleared">0</span> <span class="text-xs font-normal text-slate-400">/ 68</span>
-              <span id="prov-hub-pct" class="text-xs font-semibold text-slate-300 ml-1">(0.0%)</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <div class="w-full bg-slate-800/50 border-b border-slate-700/50 px-4 py-2 shrink-0">
-      <div class="max-w-6xl mx-auto flex items-center gap-3">
-        <div class="flex-1 bg-slate-700/60 h-2.5 rounded-full overflow-hidden">
-          <div id="prov-hub-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
-        </div>
-        <div class="text-xs font-semibold text-slate-300 shrink-0">
-          制覇地域: <span id="prov-hub-completed-doh" class="text-emerald-400 font-bold">0</span> / 8道
-        </div>
-      </div>
-    </div>
-
-    <main class="flex-1 overflow-y-auto px-4 py-4 overscroll-contain">
-      <div class="max-w-6xl mx-auto space-y-4">
-        <!-- 苦手克服クイックバナー -->
-        <div id="prov-weak-banner" class="hidden bg-rose-950/40 border border-rose-800/50 rounded-xl p-3 flex items-center justify-between gap-3 shadow-lg">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-base shrink-0">
-              ⚡
-            </div>
-            <div>
-              <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
-                <span>苦手克服特訓デッキ</span>
-                <span id="prov-weak-count-badge" class="px-1.5 py-0.2 rounded-full bg-rose-500/20 text-rose-400 text-[10px] font-semibold">0国</span>
-              </div>
-              <p class="text-[11px] text-slate-400">直近で間違えた旧国を集中トレーニング</p>
-            </div>
-          </div>
-          <button id="btn-prov-start-weak-all" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition shrink-0 active:scale-95 shadow">
-            復習スタート →
-          </button>
-        </div>
-
-        <div id="prov-cards-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5"></div>
-      </div>
-    </main>
-  </div>
-
-  <!-- ============================================================== -->
-  <!-- 画面 2B: 令制国 Spoke (クイズ画面) -->
+  <!-- 画面 2: 令制国 Spoke (全国一括・クイズ画面) -->
   <!-- ============================================================== -->
   <div id="screen-prov-spoke" class="hidden flex-1 flex flex-col h-full overflow-hidden relative">
     <header class="bg-slate-800/95 backdrop-blur border-b border-slate-700/80 px-2.5 py-1.5 sm:px-3 sm:py-2 shrink-0 z-20 flex items-center justify-between gap-1.5">
       <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
-        <button id="btn-prov-back-hub" class="flex items-center gap-1 px-2 py-1.5 sm:px-2.5 sm:py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-xs sm:text-sm font-semibold text-white transition active:scale-95 shrink-0" title="地域一覧に戻る">
+        <button class="btn-return-root flex items-center gap-1 px-2 py-1.5 sm:px-2.5 sm:py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-xs sm:text-sm font-semibold text-white transition active:scale-95 shrink-0" title="ホームに戻る">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
-          <span class="hidden sm:inline">一覧</span>
-        </button>
-        <button class="btn-return-root p-1.5 sm:p-2 rounded-lg bg-slate-700/60 hover:bg-slate-600 text-slate-300 hover:text-white transition" title="ホームに戻る">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span class="hidden sm:inline">ホーム</span>
         </button>
         <div class="flex items-baseline gap-1.5 truncate">
-          <h2 id="prov-spoke-title" class="text-sm sm:text-base font-bold text-white tracking-wide truncate">東海道</h2>
-          <span id="prov-spoke-count-badge" class="text-[10px] sm:text-xs font-medium text-slate-300 bg-slate-700/70 px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">15国</span>
+          <h2 class="text-sm sm:text-base font-bold text-white tracking-wide truncate">令制国・旧国名</h2>
+          <span class="text-[10px] sm:text-xs font-medium text-slate-300 bg-slate-700/70 px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">全国68国</span>
         </div>
       </div>
 
@@ -744,7 +665,7 @@ html_content = f'''<!DOCTYPE html>
         <div class="text-right">
           <div class="text-[10px] text-slate-400 leading-none hidden sm:block mb-0.5">制覇状況</div>
           <div class="text-xs font-bold text-emerald-400">
-            <span id="prov-spoke-cleared-count">0</span>/<span id="prov-spoke-total-count">0</span>
+            <span id="prov-spoke-cleared-count">0</span>/<span id="prov-spoke-total-count">68</span>
             <span id="prov-spoke-cleared-pct" class="text-slate-300 font-normal ml-0.5 text-[10px] sm:text-xs">(0%)</span>
           </div>
         </div>
@@ -789,17 +710,17 @@ html_content = f'''<!DOCTYPE html>
           <div id="prov-dock-locate" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl">
             <div class="flex items-center justify-between gap-1.5 mb-1 sm:mb-2">
               <div class="flex items-center gap-1.5 truncate">
-                <span id="prov-locate-level-tag" class="text-[10px] sm:text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full shrink-0">Lv.1 必修</span>
+                <span id="prov-locate-level-tag" class="text-[10px] sm:text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full shrink-0">Lv.1 主要国</span>
                 <span id="prov-locate-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
               </div>
-              <span id="prov-locate-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
+              <span id="prov-locate-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 15</span>
             </div>
 
             <div class="flex items-center justify-between gap-2">
               <div class="flex-1 min-w-0">
                 <div class="text-[10px] sm:text-xs text-slate-400 flex items-center gap-1 truncate">
                   <span>地図上でタップ：</span>
-                  <span id="prov-locate-kana" class="text-slate-300 font-medium">（ふりがな）</span>
+                  <span id="prov-locate-kana" class="text-slate-300 font-medium">（ふりがな・現代地域）</span>
                 </div>
                 <div id="prov-locate-question-name" class="text-lg sm:text-2xl font-black text-white truncate tracking-wide leading-tight">
                   武蔵
@@ -823,7 +744,7 @@ html_content = f'''<!DOCTYPE html>
                 <span class="text-[11px] sm:text-xs font-bold text-amber-300 truncate">黄色の旧国名はどれ？</span>
                 <span id="prov-name-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
               </div>
-              <span id="prov-name-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
+              <span id="prov-name-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 15</span>
             </div>
             <div class="grid grid-cols-2 gap-1.5 sm:gap-2" id="prov-choice-buttons-grid"></div>
           </div>
@@ -836,7 +757,7 @@ html_content = f'''<!DOCTYPE html>
                 <span class="text-[11px] sm:text-xs font-bold text-amber-300 truncate">黄色の旧国名を入力（漢字またはひらがな）：</span>
                 <span id="prov-type-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
               </div>
-              <span id="prov-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
+              <span id="prov-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 15</span>
             </div>
             <form id="prov-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="return false;">
               <input type="text" id="prov-input-type" placeholder="例: 武蔵、むさし" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
@@ -973,7 +894,6 @@ html_content = f'''<!DOCTYPE html>
         </div>
       </div>
 
-      <!-- 右側：出題対象トグル & 制覇状況 -->
       <div class="flex items-center gap-2 shrink-0">
         <div class="flex items-center bg-slate-700/70 p-0.5 rounded-lg border border-slate-600/70 text-[11px]" id="world-target-toggle">
           <button id="btn-world-target-country" class="px-2 py-0.5 rounded text-white font-bold bg-emerald-600 transition" title="国名を問う">国名</button>
@@ -1185,7 +1105,6 @@ html_content = f'''<!DOCTYPE html>
 
     const PROVINCES_MASTER = {prov_master_json};
     const PROVINCES_GEOJSON = {prov_geo_json};
-    const DOH_LIST = {doh_json};
 
     const WORLD_MASTER = {world_master_json};
     const WORLD_GEOJSON = {world_geo_json};
@@ -1278,7 +1197,6 @@ html_content = f'''<!DOCTYPE html>
         'screen-root-hub',
         'screen-muni-hub',
         'screen-muni-spoke',
-        'screen-prov-hub',
         'screen-prov-spoke',
         'screen-world-hub',
         'screen-world-spoke'
@@ -1315,8 +1233,8 @@ html_content = f'''<!DOCTYPE html>
         }};
         document.getElementById('btn-enter-province').onclick = () => {{
           sound.init();
-          AppRouter.navigate('screen-prov-hub');
-          ProvApp.renderHub();
+          AppRouter.navigate('screen-prov-spoke');
+          ProvApp.openSpoke();
         }};
         document.getElementById('btn-enter-world').onclick = () => {{
           sound.init();
@@ -1691,19 +1609,29 @@ html_content = f'''<!DOCTYPE html>
           this.currentGeoJson = this.geoJsonCache[prefCode];
           return;
         }}
-        const cdn1 = `https://cdn.jsdelivr.net/gh/64bitfloat/Japanese_municipalities@main/data/geojson/${{prefCode}}.geojson`;
-        const cdn2 = `https://raw.githubusercontent.com/64bitfloat/Japanese_municipalities/main/data/geojson/${{prefCode}}.geojson`;
+
+        const loading = document.getElementById('muni-loading-overlay');
+        loading.classList.remove('hidden');
+
+        // 正式な全国自治体ベクターGeoJSONのURL（smartnews-smri / 国土数値情報N03-21準拠）
+        const primaryUrl = `https://cdn.jsdelivr.net/gh/smartnews-smri/japan-topography@main/data/municipality/geojson/s0010/N03-21_${{prefCode}}_210101.json`;
+        const fallbackUrl = `https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/geojson/s0010/N03-21_${{prefCode}}_210101.json`;
 
         try {{
-          let resp = await fetch(cdn1);
-          if (!resp.ok) resp = await fetch(cdn2);
+          let resp = await fetch(primaryUrl);
+          if (!resp.ok) resp = await fetch(fallbackUrl);
           if (resp.ok) {{
             const data = await resp.json();
             this.geoJsonCache[prefCode] = data;
             this.currentGeoJson = data;
+          }} else {{
+            throw new Error(`HTTP ${{resp.status}}`);
           }}
         }} catch(e) {{
           console.error("GeoJSON load failed:", e);
+          alert('地図データの読み込みに失敗しました。ネットワーク接続を確認してください。');
+        }} finally {{
+          loading.classList.add('hidden');
         }}
       }},
 
@@ -1787,16 +1715,23 @@ html_content = f'''<!DOCTYPE html>
             }};
           }},
           onEachFeature: (feature, layer) => {{
+            let code = String(feature.properties.N03_007 || feature.properties.code || '');
+            const isTarget = targetCodes.has(code) || (WARD_TO_CITY[code] && targetCodes.has(WARD_TO_CITY[code]));
+
             layer.on({{
               mouseover: (e) => {{
-                if (this.currentMode === 'locate' || this.currentMode === 'explore') {{
-                  e.target.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
-                }}
+                // 対象外の国・自治体はホバー変化させない
+                if (!isTarget && this.currentMode !== 'explore') return;
+                e.target.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
               }},
               mouseout: (e) => {{
-                if (this.geoJsonLayer) this.geoJsonLayer.resetStyle(e.target);
+                this.resetPolygonStyles();
               }},
-              click: () => this.onPolygonClick(feature, layer)
+              click: () => {{
+                // 対象外の国・自治体はクリック選択不可
+                if (!isTarget && this.currentMode !== 'explore') return;
+                this.onPolygonClick(feature, layer);
+              }}
             }});
           }}
         }}).addTo(this.map);
@@ -2065,12 +2000,11 @@ html_content = f'''<!DOCTYPE html>
     }};
 
     // ==============================================================
-    // モジュール 2: 令制国・旧国名暗記 (ProvApp)
+    // モジュール 2: 令制国・旧国名暗記 (ProvApp - 全国一括 & 4段階レベル)
     // ==============================================================
     const ProvApp = {{
       data: null,
       map: null,
-      currentDoh: null,
       geoJsonLayer: null,
       currentLevel: 'ALL',
       currentMode: 'locate',
@@ -2083,10 +2017,6 @@ html_content = f'''<!DOCTYPE html>
         this.data = STORAGE.get(KEYS.PROV, {{ records: {{}} }});
         if (!this.data.records) this.data.records = {{}};
 
-        document.getElementById('btn-prov-back-hub').onclick = () => {{
-          AppRouter.navigate('screen-prov-hub');
-          this.renderHub();
-        }};
         document.getElementById('btn-prov-reset-bounds').onclick = () => {{
           if (this.map && this.geoJsonLayer) {{
             this.map.fitBounds(this.geoJsonLayer.getBounds(), {{ padding: [20, 20] }});
@@ -2107,12 +2037,6 @@ html_content = f'''<!DOCTYPE html>
           }}
         }};
 
-        document.getElementById('btn-prov-start-weak-all').onclick = () => {{
-          const allProvs = Object.values(PROVINCES_MASTER);
-          const weak = allProvs.filter(p => this.data.records[p.id] && this.data.records[p.id].last === 'wrong');
-          if (weak.length > 0) this.openDoh(DOH_LIST[0], 'WEAK');
-        }};
-
         const typeForm = document.getElementById('prov-form-type');
         const typeInput = document.getElementById('prov-input-type');
         typeForm.onsubmit = () => {{
@@ -2123,7 +2047,7 @@ html_content = f'''<!DOCTYPE html>
           }}
           const val = typeInput.value.trim();
           const q = this.currentQuestion;
-          const isCorrect = (val === q.name || val === q.kana || q.aliases.includes(val));
+          const isCorrect = (val === q.name || val === q.kana || (q.aliases && q.aliases.includes(val)));
           this.handleAnswer(isCorrect, typeInput);
         }};
 
@@ -2134,83 +2058,7 @@ html_content = f'''<!DOCTYPE html>
         }});
       }},
 
-      renderHub() {{
-        const container = document.getElementById('prov-cards-container');
-        container.innerHTML = '';
-
-        let totalCleared = 0;
-        let weakCount = 0;
-        const allProvs = Object.values(PROVINCES_MASTER);
-        allProvs.forEach(p => {{
-          const r = this.data.records[p.id];
-          if (r && r.correct > 0) totalCleared++;
-          if (r && r.last === 'wrong') weakCount++;
-        }});
-
-        const totalPct = ((totalCleared / allProvs.length) * 100).toFixed(1);
-        document.getElementById('prov-hub-cleared').textContent = totalCleared;
-        document.getElementById('prov-hub-pct').textContent = totalPct + '%';
-        document.getElementById('prov-hub-progress-bar').style.width = totalPct + '%';
-
-        const weakBanner = document.getElementById('prov-weak-banner');
-        if (weakCount > 0) {{
-          weakBanner.classList.remove('hidden');
-          document.getElementById('prov-weak-count-badge').textContent = `${{weakCount}}国`;
-        }} else {{
-          weakBanner.classList.add('hidden');
-        }}
-
-        let completedDohCount = 0;
-        DOH_LIST.forEach(doh => {{
-          const provs = (doh.id === 'ALL') ? allProvs : allProvs.filter(p => p.doh === doh.filter);
-          let clr = 0;
-          provs.forEach(p => {{
-            const r = this.data.records[p.id];
-            if (r && r.correct > 0) clr++;
-          }});
-          const isComp = (clr === provs.length && provs.length > 0);
-          if (isComp && doh.id !== 'ALL') completedDohCount++;
-          const pct = provs.length > 0 ? Math.round((clr / provs.length) * 100) : 0;
-
-          const card = document.createElement('div');
-          card.className = `p-3 rounded-xl border cursor-pointer transition active:scale-98 ${{
-            isComp
-              ? 'bg-emerald-950/30 border-emerald-500/40 hover:border-emerald-400'
-              : 'bg-slate-800/80 border-slate-700/80 hover:border-slate-600'
-          }} flex flex-col justify-between`;
-
-          card.innerHTML = `
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-white">${{doh.name}}</span>
-              ${{isComp ? '<span class="text-[10px] text-emerald-400 font-bold">制覇!</span>' : ''}}
-            </div>
-            <div class="mt-2 space-y-1">
-              <div class="flex justify-between text-[10px] text-slate-400">
-                <span>${{clr}} / ${{provs.length}}</span>
-                <span>${{pct}}%</span>
-              </div>
-              <div class="w-full bg-slate-700/60 h-1.5 rounded-full overflow-hidden">
-                <div class="bg-emerald-500 h-full" style="width: ${{pct}}%"></div>
-              </div>
-            </div>
-          `;
-
-          card.onclick = () => this.openDoh(doh);
-          container.appendChild(card);
-        }});
-
-        document.getElementById('prov-hub-completed-doh').textContent = completedDohCount;
-      }},
-
-      openDoh(doh, initialLevel = 'ALL') {{
-        this.currentDoh = doh;
-        AppRouter.navigate('screen-prov-spoke');
-        document.getElementById('prov-spoke-title').textContent = doh.name;
-
-        const allProvs = Object.values(PROVINCES_MASTER);
-        const provs = (doh.id === 'ALL') ? allProvs : allProvs.filter(p => p.doh === doh.filter);
-        document.getElementById('prov-spoke-count-badge').textContent = `${{provs.length}}国`;
-
+      openSpoke(initialLevel = 'ALL') {{
         this.updateHeaderProgress();
 
         if (!this.map) {{
@@ -2231,23 +2079,22 @@ html_content = f'''<!DOCTYPE html>
         container.innerHTML = '';
 
         const allProvs = Object.values(PROVINCES_MASTER);
-        const baseProvs = (this.currentDoh.id === 'ALL') ? allProvs : allProvs.filter(p => p.doh === this.currentDoh.filter);
 
         const counts = {{
-          1: baseProvs.filter(p => p.level === 1).length,
-          2: baseProvs.filter(p => p.level === 2).length,
-          3: baseProvs.filter(p => p.level === 3).length,
-          4: baseProvs.filter(p => p.level === 4).length,
-          ALL: baseProvs.length,
-          WEAK: baseProvs.filter(p => this.data.records[p.id] && this.data.records[p.id].last === 'wrong').length
+          1: allProvs.filter(p => p.lvl === 1).length,
+          2: allProvs.filter(p => p.lvl === 2).length,
+          3: allProvs.filter(p => p.lvl === 3).length,
+          4: allProvs.filter(p => p.lvl === 4).length,
+          ALL: allProvs.length,
+          WEAK: allProvs.filter(p => this.data.records[p.code] && this.data.records[p.code].last === 'wrong').length
         }};
 
         const tabs = [
-          {{ id: 1, label: 'Lv.1 必修', count: counts[1] }},
-          {{ id: 2, label: 'Lv.2 基本', count: counts[2] }},
-          {{ id: 3, label: 'Lv.3 中堅', count: counts[3] }},
-          {{ id: 4, label: 'Lv.4 難関', count: counts[4] }},
-          {{ id: 'ALL', label: '全旧国', count: counts.ALL }},
+          {{ id: 1, label: 'Lv.1 主要国', count: counts[1] }},
+          {{ id: 2, label: 'Lv.2 中堅国', count: counts[2] }},
+          {{ id: 3, label: 'Lv.3 一般国', count: counts[3] }},
+          {{ id: 4, label: 'Lv.4 小国・難関', count: counts[4] }},
+          {{ id: 'ALL', label: '全68国', count: counts.ALL }},
           {{ id: 'WEAK', label: '⚠️ 弱点復習', count: counts.WEAK }}
         ];
 
@@ -2268,19 +2115,18 @@ html_content = f'''<!DOCTYPE html>
       startLevel(levelId) {{
         this.currentLevel = levelId;
         const allProvs = Object.values(PROVINCES_MASTER);
-        const baseProvs = (this.currentDoh.id === 'ALL') ? allProvs : allProvs.filter(p => p.doh === this.currentDoh.filter);
 
         if (levelId === 'ALL') {{
-          this.questionPool = [...baseProvs];
+          this.questionPool = [...allProvs];
         }} else if (levelId === 'WEAK') {{
-          this.questionPool = baseProvs.filter(p => this.data.records[p.id] && this.data.records[p.id].last === 'wrong');
+          this.questionPool = allProvs.filter(p => this.data.records[p.code] && this.data.records[p.code].last === 'wrong');
           if (this.questionPool.length === 0) {{
-            alert('この地域の弱点旧国はありません！');
+            alert('弱点の旧国はありません！');
             this.startLevel('ALL');
             return;
           }}
         }} else {{
-          this.questionPool = baseProvs.filter(p => p.level === levelId);
+          this.questionPool = allProvs.filter(p => p.lvl === levelId);
         }}
 
         this.questionPool.sort(() => Math.random() - 0.5);
@@ -2294,11 +2140,12 @@ html_content = f'''<!DOCTYPE html>
         if (!this.map || !PROVINCES_GEOJSON) return;
         if (this.geoJsonLayer) this.map.removeLayer(this.geoJsonLayer);
 
-        const targetIds = new Set(this.questionPool.map(p => p.id));
+        const targetCodes = new Set(this.questionPool.map(p => p.code));
 
         this.geoJsonLayer = L.geoJSON(PROVINCES_GEOJSON, {{
           style: (feature) => {{
-            const isTarget = targetIds.has(feature.properties.id);
+            const code = feature.properties.code;
+            const isTarget = targetCodes.has(code);
             return {{
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.65,
@@ -2308,16 +2155,23 @@ html_content = f'''<!DOCTYPE html>
             }};
           }},
           onEachFeature: (feature, layer) => {{
+            const code = feature.properties.code;
+            const isTarget = targetCodes.has(code);
+
             layer.on({{
               mouseover: (e) => {{
-                if (this.currentMode === 'locate' || this.currentMode === 'explore') {{
-                  e.target.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
-                }}
+                // レベル対象外はホバー変化しない
+                if (!isTarget && this.currentMode !== 'explore') return;
+                e.target.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
               }},
               mouseout: (e) => {{
-                if (this.geoJsonLayer) this.geoJsonLayer.resetStyle(e.target);
+                this.resetPolygonStyles();
               }},
-              click: () => this.onPolygonClick(feature, layer)
+              click: () => {{
+                // レベル対象外は選択不可
+                if (!isTarget && this.currentMode !== 'explore') return;
+                this.onPolygonClick(feature, layer);
+              }}
             }});
           }}
         }}).addTo(this.map);
@@ -2355,7 +2209,7 @@ html_content = f'''<!DOCTYPE html>
 
         if (this.currentIndex >= this.questionPool.length) {{
           sound.fanfare();
-          alert('この地域の全問題を完了しました！');
+          alert('このレベルの全問題を完了しました！');
           this.startLevel(this.currentLevel);
           return;
         }}
@@ -2364,16 +2218,18 @@ html_content = f'''<!DOCTYPE html>
         this.updateHeaderProgress();
 
         const q = this.currentQuestion;
-        const rec = this.data.records[q.id] || {{ correct: 0, wrong: 0 }};
+        const rec = this.data.records[q.code] || {{ correct: 0, wrong: 0 }};
         const total = rec.correct + rec.wrong;
         const pct = total > 0 ? Math.round((rec.correct / total) * 100) + '%' : '--%';
         const progStr = `問題 ${{this.currentIndex + 1}} / ${{this.questionPool.length}}`;
 
+        const lvlNames = {{ 1: '主要国', 2: '中堅国', 3: '一般国', 4: '小国・難関' }};
+
         if (this.currentMode === 'locate') {{
-          document.getElementById('prov-locate-level-tag').textContent = `Lv.${{q.level}} ${{q.doh}}`;
+          document.getElementById('prov-locate-level-tag').textContent = `Lv.${{q.lvl}} ${{lvlNames[q.lvl] || ''}}`;
           document.getElementById('prov-locate-accuracy-tag').textContent = `正答率: ${{pct}}`;
           document.getElementById('prov-locate-progress-tag').textContent = progStr;
-          document.getElementById('prov-locate-kana').textContent = `（${{q.kana}}・${{q.modern}}）`;
+          document.getElementById('prov-locate-kana').textContent = `（${{q.kana}}・${{q.pref || q.modern || ''}}）`;
           document.getElementById('prov-locate-question-name').textContent = q.name;
           this.resetPolygonStyles();
         }} else if (this.currentMode === 'name') {{
@@ -2393,9 +2249,9 @@ html_content = f'''<!DOCTYPE html>
 
       resetPolygonStyles() {{
         if (!this.geoJsonLayer) return;
-        const targetIds = new Set(this.questionPool.map(p => p.id));
+        const targetCodes = new Set(this.questionPool.map(p => p.code));
         this.geoJsonLayer.eachLayer(layer => {{
-          const isTarget = targetIds.has(layer.feature.properties.id);
+          const isTarget = targetCodes.has(layer.feature.properties.code);
           layer.setStyle({{
             fillColor: isTarget ? '#f8fafc' : '#334155',
             fillOpacity: isTarget ? 0.95 : 0.65,
@@ -2407,9 +2263,9 @@ html_content = f'''<!DOCTYPE html>
 
       highlightQuestionPolygon() {{
         if (!this.geoJsonLayer || !this.currentQuestion) return;
-        const targetId = this.currentQuestion.id;
+        const targetCode = this.currentQuestion.code;
         this.geoJsonLayer.eachLayer(layer => {{
-          if (layer.feature.properties.id === targetId) {{
+          if (layer.feature.properties.code === targetCode) {{
             layer.setStyle({{ fillColor: '#fbbf24', fillOpacity: 0.95, weight: 3, color: '#f59e0b' }});
             if (layer.getBounds) {{
               this.map.flyToBounds(layer.getBounds(), {{ maxZoom: 8, duration: 0.5 }});
@@ -2425,19 +2281,19 @@ html_content = f'''<!DOCTYPE html>
         grid.innerHTML = '';
         const q = this.currentQuestion;
 
-        const allProvs = Object.values(PROVINCES_MASTER).filter(p => p.id !== q.id);
+        const allProvs = Object.values(PROVINCES_MASTER).filter(p => p.code !== q.code);
         allProvs.sort(() => Math.random() - 0.5);
         const choices = [q, ...allProvs.slice(0, 3)].sort(() => Math.random() - 0.5);
 
         choices.forEach((c, idx) => {{
           const btn = document.createElement('button');
           btn.className = 'prov-choice-btn py-2 px-3 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm border border-slate-700 transition flex items-center gap-2 active:scale-95';
-          btn.dataset.id = c.id;
+          btn.dataset.code = c.code;
           btn.innerHTML = `
             <span class="w-5 h-5 rounded bg-slate-900 text-slate-400 flex items-center justify-center text-[10px] font-mono">${{idx + 1}}</span>
             <span class="truncate">${{c.name}} (${{c.kana}})</span>
           `;
-          btn.onclick = () => this.handleAnswer(c.id === q.id, btn);
+          btn.onclick = () => this.handleAnswer(c.code === q.code, btn);
           grid.appendChild(btn);
         }});
       }},
@@ -2449,25 +2305,25 @@ html_content = f'''<!DOCTYPE html>
       }},
 
       onPolygonClick(feature, layer) {{
-        const id = feature.properties.id;
-        const targetProv = PROVINCES_MASTER[id];
+        const code = feature.properties.code;
+        const targetProv = Object.values(PROVINCES_MASTER).find(p => p.code === code);
         if (!targetProv) return;
 
         if (this.currentMode === 'locate') {{
           if (this.isAnswered) return;
-          const isCorrect = (id === this.currentQuestion.id);
+          const isCorrect = (code === this.currentQuestion.code);
           this.handleAnswer(isCorrect, layer);
         }} else if (this.currentMode === 'explore') {{
           this.selectedProv = targetProv;
           document.getElementById('prov-explore-empty').classList.add('hidden');
           document.getElementById('prov-explore-detail').classList.remove('hidden');
 
-          document.getElementById('prov-exp-doh-badge').textContent = targetProv.doh;
+          document.getElementById('prov-exp-doh-badge').textContent = targetProv.doh || '五畿七道';
           document.getElementById('prov-exp-kana-text').textContent = targetProv.kana;
           document.getElementById('prov-exp-name-text').textContent = targetProv.name;
-          document.getElementById('prov-exp-modern-text').textContent = targetProv.modern;
+          document.getElementById('prov-exp-modern-text').textContent = targetProv.pref || targetProv.modern || '';
 
-          const rec = this.data.records[id] || {{ correct: 0, wrong: 0 }};
+          const rec = this.data.records[code] || {{ correct: 0, wrong: 0 }};
           const total = rec.correct + rec.wrong;
           const pct = total > 0 ? Math.round((rec.correct / total) * 100) + '%' : '--%';
           document.getElementById('prov-exp-stats-tag').textContent = `正解 ${{rec.correct}} / 不正解 ${{rec.wrong}} (正答率: ${{pct}})`;
@@ -2479,8 +2335,8 @@ html_content = f'''<!DOCTYPE html>
         this.isAnswered = true;
 
         const q = this.currentQuestion;
-        if (!this.data.records[q.id]) this.data.records[q.id] = {{ correct: 0, wrong: 0 }};
-        const rec = this.data.records[q.id];
+        if (!this.data.records[q.code]) this.data.records[q.code] = {{ correct: 0, wrong: 0 }};
+        const rec = this.data.records[q.code];
 
         if (isCorrect) {{
           sound.correct();
@@ -2526,7 +2382,7 @@ html_content = f'''<!DOCTYPE html>
             `;
           }} else if (this.currentMode === 'name') {{
             if (targetEl) targetEl.classList.add('!bg-rose-700');
-            const correctBtn = document.querySelector(`.prov-choice-btn[data-id="${{q.id}}"]`);
+            const correctBtn = document.querySelector(`.prov-choice-btn[data-code="${{q.code}}"]`);
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
             const bar = document.getElementById('prov-type-feedback-bar');
@@ -2564,15 +2420,14 @@ html_content = f'''<!DOCTYPE html>
 
       updateHeaderProgress() {{
         const allProvs = Object.values(PROVINCES_MASTER);
-        const provs = (this.currentDoh.id === 'ALL') ? allProvs : allProvs.filter(p => p.doh === this.currentDoh.filter);
         let cleared = 0;
-        provs.forEach(p => {{
-          const r = this.data.records[p.id];
+        allProvs.forEach(p => {{
+          const r = this.data.records[p.code];
           if (r && r.correct > 0) cleared++;
         }});
         document.getElementById('prov-spoke-cleared-count').textContent = cleared;
-        document.getElementById('prov-spoke-total-count').textContent = provs.length;
-        const pct = provs.length > 0 ? Math.round((cleared / provs.length) * 100) : 0;
+        document.getElementById('prov-spoke-total-count').textContent = allProvs.length;
+        const pct = allProvs.length > 0 ? Math.round((cleared / allProvs.length) * 100) : 0;
         document.getElementById('prov-spoke-cleared-pct').textContent = `(${{pct}}%)`;
       }}
     }};
@@ -2840,7 +2695,8 @@ html_content = f'''<!DOCTYPE html>
 
         this.geoJsonLayer = L.geoJSON(WORLD_GEOJSON, {{
           style: (feature) => {{
-            const isTarget = targetCodes.has(feature.properties.code);
+            const code = feature.properties.code;
+            const isTarget = targetCodes.has(code);
             return {{
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.60,
@@ -2850,16 +2706,23 @@ html_content = f'''<!DOCTYPE html>
             }};
           }},
           onEachFeature: (feature, layer) => {{
+            const code = feature.properties.code;
+            const isTarget = targetCodes.has(code);
+
             layer.on({{
               mouseover: (e) => {{
-                if (this.currentMode === 'locate' || this.currentMode === 'explore') {{
-                  e.target.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
-                }}
+                // 【重要】対象外の国はホバーしても色を変えない
+                if (!isTarget && this.currentMode !== 'explore') return;
+                e.target.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
               }},
               mouseout: (e) => {{
-                if (this.geoJsonLayer) this.geoJsonLayer.resetStyle(e.target);
+                this.resetPolygonStyles();
               }},
-              click: () => this.onPolygonClick(feature, layer)
+              click: () => {{
+                // 【重要】対象外の国はクリック選択不可
+                if (!isTarget && this.currentMode !== 'explore') return;
+                this.onPolygonClick(feature, layer);
+              }}
             }});
           }}
         }}).addTo(this.map);

@@ -1417,6 +1417,7 @@ html_content = f'''<!DOCTYPE html>
       currentPref: null,
       currentGeoJson: null,
       geoJsonLayer: null,
+      cityBoundariesLayer: null,
       currentLevel: 'ALL',
       currentMode: 'locate',
       questionPool: [],
@@ -1707,6 +1708,7 @@ html_content = f'''<!DOCTYPE html>
       renderMapLayers() {{
         if (!this.map || !this.currentGeoJson) return;
         if (this.geoJsonLayer) this.map.removeLayer(this.geoJsonLayer);
+        if (this.cityBoundariesLayer) this.map.removeLayer(this.cityBoundariesLayer);
 
         const targetCodes = new Set(this.questionPool.map(m => m[0]));
 
@@ -1714,37 +1716,98 @@ html_content = f'''<!DOCTYPE html>
           smoothFactor: 0,
           style: (feature) => {{
             let code = String(feature.properties.N03_007 || feature.properties.code || '');
-            const isTarget = targetCodes.has(code) || (WARD_TO_CITY[code] && targetCodes.has(WARD_TO_CITY[code]));
+            const isWard = Boolean(WARD_TO_CITY[code]);
+            const cityCode = WARD_TO_CITY[code] || code;
+            const isTarget = targetCodes.has(code) || targetCodes.has(cityCode);
             return {{
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.65,
-              color: '#090d16',
-              weight: 0.8,
+              color: isWard ? '#64748b' : '#090d16',
+              weight: isWard ? 0.9 : 0.8,
+              dashArray: isWard ? '3, 4' : null,
               opacity: 1
             }};
           }},
           onEachFeature: (feature, layer) => {{
             let code = String(feature.properties.N03_007 || feature.properties.code || '');
-            const isTarget = targetCodes.has(code) || (WARD_TO_CITY[code] && targetCodes.has(WARD_TO_CITY[code]));
+            const cityCode = WARD_TO_CITY[code] || code;
+            const isTarget = targetCodes.has(code) || targetCodes.has(cityCode);
 
             layer.on({{
               mouseover: (e) => {{
                 if (this.isAnswered) return;
-                // 対象外の国・自治体はホバー変化させない
                 if (!isTarget && this.currentMode !== 'explore') return;
-                e.target.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
+                // 政令指定都市の区の場合、市内の全区を連動してハイライト
+                this.geoJsonLayer.eachLayer(l => {{
+                  if (!l.feature || !l.feature.properties) return;
+                  const c = String(l.feature.properties.N03_007 || l.feature.properties.code || '');
+                  if (c === code || (WARD_TO_CITY[c] && WARD_TO_CITY[c] === cityCode)) {{
+                    l.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
+                  }}
+                }});
               }},
               mouseout: (e) => {{
                 this.resetPolygonStyles();
               }},
               click: () => {{
-                // 対象外の国・自治体はクリック選択不可
                 if (!isTarget && this.currentMode !== 'explore') return;
                 this.onPolygonClick(feature, layer);
               }}
             }});
           }}
         }}).addTo(this.map);
+
+        // 政令指定都市の外郭（City Boundary）を生成して重ね描画
+        const cityWardsMap = {{}};
+        if (this.currentGeoJson.features) {{
+          this.currentGeoJson.features.forEach(f => {{
+            const code = String(f.properties.N03_007 || f.properties.code || '');
+            const cityCode = WARD_TO_CITY[code];
+            if (cityCode) {{
+              if (!cityWardsMap[cityCode]) cityWardsMap[cityCode] = [];
+              cityWardsMap[cityCode].push(f);
+            }}
+          }});
+        }}
+
+        const cityBoundaryFeatures = [];
+        if (typeof turf !== 'undefined' && turf.union) {{
+          Object.keys(cityWardsMap).forEach(cCode => {{
+            const wards = cityWardsMap[cCode];
+            if (wards.length > 0) {{
+              try {{
+                let merged = JSON.parse(JSON.stringify(wards[0]));
+                for (let i = 1; i < wards.length; i++) {{
+                  const u = turf.union(merged, wards[i]);
+                  if (u) merged = u;
+                }}
+                if (merged) {{
+                  merged.properties = {{ cityCode: cCode }};
+                  cityBoundaryFeatures.push(merged);
+                }}
+              }} catch (err) {{
+                console.warn('City boundary merge error:', err);
+              }}
+            }}
+          }});
+        }}
+
+        if (cityBoundaryFeatures.length > 0) {{
+          this.cityBoundariesLayer = L.geoJSON({{
+            type: 'FeatureCollection',
+            features: cityBoundaryFeatures
+          }}, {{
+            smoothFactor: 0,
+            interactive: false,
+            style: {{
+              fill: false,
+              fillOpacity: 0,
+              color: '#090d16',
+              weight: 1.5,
+              opacity: 1
+            }}
+          }}).addTo(this.map);
+        }}
 
         if (this.currentPref.defaultView) {{
           this.map.fitBounds(this.currentPref.defaultView, {{ padding: [20, 20] }});
@@ -1841,6 +1904,7 @@ html_content = f'''<!DOCTYPE html>
 
           const featProps = layer.feature.properties;
           let code = String(featProps.N03_007 || featProps.code || '');
+          const isWard = Boolean(WARD_TO_CITY[code]);
           const cityCode = WARD_TO_CITY[code] || code;
           const isTarget = targetCodes.has(code) || targetCodes.has(cityCode);
 
@@ -1849,21 +1913,39 @@ html_content = f'''<!DOCTYPE html>
             const res = this.answeredResult;
             if (res.isCorrect) {{
               if (code === res.code || cityCode === res.code) {{
-                layer.setStyle({{ fillColor: '#34d399', fillOpacity: 0.95, weight: 3.5, color: '#059669' }});
+                layer.setStyle({{
+                  fillColor: '#34d399',
+                  fillOpacity: 0.95,
+                  weight: isWard ? 1.0 : 3.5,
+                  color: isWard ? '#047857' : '#059669',
+                  dashArray: isWard ? '3, 3' : null
+                }});
                 if (layer.bringToFront) layer.bringToFront();
                 return;
               }}
             }} else {{
               // 不正解時: 正解場所は黄色点滅
               if (code === res.correctCode || cityCode === res.correctCode) {{
-                layer.setStyle({{ fillColor: '#fbbf24', fillOpacity: 0.95, weight: 3.5, color: '#eab308' }});
+                layer.setStyle({{
+                  fillColor: '#fbbf24',
+                  fillOpacity: 0.95,
+                  weight: isWard ? 1.0 : 3.5,
+                  color: isWard ? '#d97706' : '#eab308',
+                  dashArray: isWard ? '3, 3' : null
+                }});
                 if (layer._path) layer._path.classList.add('polygon-pulse');
                 if (layer.bringToFront) layer.bringToFront();
                 return;
               }}
               // 誤ってタップした場所は赤色
               if (res.wrongCode && (code === res.wrongCode || cityCode === res.wrongCode)) {{
-                layer.setStyle({{ fillColor: '#f87171', fillOpacity: 0.95, weight: 3.5, color: '#dc2626' }});
+                layer.setStyle({{
+                  fillColor: '#f87171',
+                  fillOpacity: 0.95,
+                  weight: isWard ? 1.0 : 3.5,
+                  color: isWard ? '#b91c1c' : '#dc2626',
+                  dashArray: isWard ? '3, 3' : null
+                }});
                 if (layer.bringToFront) layer.bringToFront();
                 return;
               }}
@@ -1876,19 +1958,51 @@ html_content = f'''<!DOCTYPE html>
             layer.setStyle({{
               fillColor: '#fbbf24',
               fillOpacity: 0.95,
-              weight: 3.5,
-              color: '#f59e0b'
+              weight: isWard ? 1.0 : 3.5,
+              color: isWard ? '#d97706' : '#f59e0b',
+              dashArray: isWard ? '3, 3' : null
             }});
             if (layer.bringToFront) layer.bringToFront();
           }} else {{
             layer.setStyle({{
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.65,
-              color: '#090d16',
-              weight: 0.8
+              color: isWard ? '#64748b' : '#090d16',
+              weight: isWard ? 0.9 : 0.8,
+              dashArray: isWard ? '3, 4' : null
             }});
           }}
         }});
+
+        // 市外郭レイヤーのハイライト連動
+        if (this.cityBoundariesLayer) {{
+          this.cityBoundariesLayer.eachLayer(layer => {{
+            if (!layer.feature || !layer.feature.properties) return;
+            const cCode = layer.feature.properties.cityCode;
+            if (layer._path) layer._path.classList.remove('polygon-pulse');
+
+            if (this.isAnswered && this.answeredResult) {{
+              const res = this.answeredResult;
+              if (res.isCorrect && cCode === res.code) {{
+                layer.setStyle({{ color: '#059669', weight: 3.5 }});
+                if (layer.bringToFront) layer.bringToFront();
+                return;
+              }} else if (!res.isCorrect && cCode === res.correctCode) {{
+                layer.setStyle({{ color: '#eab308', weight: 3.5 }});
+                if (layer._path) layer._path.classList.add('polygon-pulse');
+                if (layer.bringToFront) layer.bringToFront();
+                return;
+              }}
+            }}
+
+            if (!this.isAnswered && currentCode && cCode === currentCode) {{
+              layer.setStyle({{ color: '#f59e0b', weight: 3.5 }});
+              if (layer.bringToFront) layer.bringToFront();
+            }} else {{
+              layer.setStyle({{ color: '#090d16', weight: 1.5 }});
+            }}
+          }});
+        }}
       }},
 
       highlightQuestionPolygon() {{

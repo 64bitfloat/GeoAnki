@@ -1,28 +1,23 @@
 # -*- coding: utf-8 -*-
 """
 GeoAnki Suite — 地理暗記学習プラットフォーム統合ビルドスクリプト
-1. 全国1,741市区町村暗記モジュール
-2. 令制国・旧国名暗記モジュール
-3. 世界の国名・首都名暗記モジュール
-3モジュール統合型ポータルランチャー (Root Hub) を含む単一SPA index.html を生成
+市区町村暗記のUIデザイン・UX・パフォーマンスを「旧国名」および「世界の国名・首都名」に完全踏襲
 """
 
 import json
 import os
 
-print("=== Building GeoAnki Suite (index.html) ===")
+print("=== Building GeoAnki Suite (index.html) with Unified Municipality UI Design ===")
 
 # -------------------------------------------------------------
 # 1. 市区町村データ読み込み (Municipalities)
 # -------------------------------------------------------------
-print("Loading municipalities data...")
 with open("municipalities.json", "r", encoding="utf-8") as f:
     muni_raw = json.load(f)
 
 with open("ward_to_city.json", "r", encoding="utf-8") as f:
     ward_to_city = json.load(f)
 
-# Compact array: [code, pref_code, pref_name, name, kana, type, lvl, lat, lng]
 muni_arr = []
 for m in muni_raw.values():
     muni_arr.append([
@@ -90,7 +85,6 @@ PREFECTURES = [
 # -------------------------------------------------------------
 # 2. 令制国データ読み込み (Provinces)
 # -------------------------------------------------------------
-print("Loading historic provinces data...")
 with open("provinces_master.json", "r", encoding="utf-8") as f:
     provinces_master = json.load(f)
 
@@ -112,7 +106,6 @@ DOH_LIST = [
 # -------------------------------------------------------------
 # 3. 世界の国名・首都データ読み込み (World Countries & Capitals)
 # -------------------------------------------------------------
-print("Loading world countries data...")
 with open("world_master.json", "r", encoding="utf-8") as f:
     world_master = json.load(f)
 
@@ -129,7 +122,6 @@ WORLD_REGIONS = [
     {"id": "oceania", "name": "オセアニア (14ヶ国)", "filter": "オセアニア", "desc": "オーストラリア、NZ、ポリネシア・ミクロネシア諸島", "bounds": [[-48.0, 110.0], [10.0, -165.0]]},
 ]
 
-# JSON strings for embedding
 muni_json = json.dumps(muni_arr, ensure_ascii=False, separators=(',', ':'))
 ward_json = json.dumps(ward_to_city, ensure_ascii=False, separators=(',', ':'))
 pref_json = json.dumps(PREFECTURES, ensure_ascii=False, separators=(',', ':'))
@@ -142,30 +134,28 @@ world_master_json = json.dumps(world_master, ensure_ascii=False, separators=(','
 world_geo_json = json.dumps(world_geojson, ensure_ascii=False, separators=(',', ':'))
 world_regions_json = json.dumps(WORLD_REGIONS, ensure_ascii=False, separators=(',', ':'))
 
-print(f"Data prepared: Muni({len(muni_arr)}), Prov({len(provinces_master)}), World({len(world_master)})")
-
-# HTML Template
+# HTML生成
 html_content = f'''<!DOCTYPE html>
-<html lang="ja" class="h-full bg-slate-950 text-slate-100">
+<html lang="ja" class="h-full bg-slate-900 text-slate-100">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>GeoAnki Suite — 地理暗記学習プラットフォーム</title>
 
   <!-- 基本メタ情報 & SEO -->
-  <meta name="description" content="市区町村（全1,741自治体）・令制国旧国名（68国）・世界の国名と首都（196ヶ国）を美麗な白地図ベクターポリゴンで直感暗記！GeoGuessr・地理・歴史学習のための統合型SPA学習プラットフォーム。" />
+  <meta name="description" content="全国1,741市区町村・令制国旧国名（68国）・世界の国名と首都（196ヶ国）を美麗な白地図ベクターポリゴンで直感暗記！GeoGuessr・地理学習特化アプリ。" />
   <meta name="keywords" content="GeoGuessr, ジオゲッサー, 市区町村, 旧国名, 令制国, 世界の国名, 首都, 地理, 暗記, Anki, 白地図" />
   <meta name="author" content="64bitfloat" />
-  <meta name="theme-color" content="#0ea5e9" />
+  <meta name="theme-color" content="#10b981" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-  <!-- Open Graph Protocol (OGP / Discord / SNS) -->
+  <!-- Open Graph Protocol -->
   <meta property="og:site_name" content="GeoAnki Suite" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://64bitfloat.github.io/Anki_Geoguessr/" />
   <meta property="og:title" content="GeoAnki Suite — 地理暗記学習プラットフォーム" />
-  <meta property="og:description" content="市区町村（全1,741）・旧国名（68国）・世界の国名と首都（196ヶ国）を白地図ベクターポリゴンで直感暗記！場所当て・4択・記入・探索・弱点復習の5大モード搭載。" />
+  <meta property="og:description" content="全国1,741市区町村・旧国名・世界の国名首都を白地図ベクターポリゴンで直感暗記！場所当て・4択・記入・探索・弱点復習の5大モード搭載。" />
   <meta property="og:image" content="https://opengraph.githubassets.com/1/64bitfloat/Anki_Geoguessr" />
   <meta property="og:locale" content="ja_JP" />
 
@@ -175,7 +165,7 @@ html_content = f'''<!DOCTYPE html>
   <meta name="twitter:description" content="市区町村・旧国名・世界の国名首都を白地図ベクターで直感暗記！GeoGuessr・地理特化トレーナー。" />
 
   <!-- ファビコン -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230284c7'/><text x='50' y='65' font-size='44' font-weight='900' fill='white' text-anchor='middle' font-family='sans-serif'>🌍</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2310b981'/><text x='50' y='64' font-size='44' font-weight='900' fill='white' text-anchor='middle' font-family='sans-serif'>🌍</text></svg>" />
 
   <!-- Tailwind CSS (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -185,11 +175,11 @@ html_content = f'''<!DOCTYPE html>
         extend: {{
           colors: {{
             brand: {{
-              50: '#f0f9ff',
-              100: '#e0f2fe',
-              400: '#38bdf8',
-              500: '#0ea5e9',
-              600: '#0284c7',
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
             }}
           }}
         }}
@@ -226,8 +216,8 @@ html_content = f'''<!DOCTYPE html>
       backface-visibility: hidden;
     }}
     @keyframes pulse-yellow {{
-      0%, 100% {{ fill-opacity: 0.95; stroke-width: 3.5px; fill: #fbbf24; stroke: #f59e0b; }}
-      50% {{ fill-opacity: 0.35; stroke-width: 5px; fill: #fef08a; stroke: #fbbf24; }}
+      0%, 100% {{ fill-opacity: 0.95; stroke-width: 3px; }}
+      50% {{ fill-opacity: 0.45; stroke-width: 4.5px; stroke: #eab308; }}
     }}
     .polygon-pulse {{
       animation: pulse-yellow 1.2s infinite ease-in-out;
@@ -256,35 +246,34 @@ html_content = f'''<!DOCTYPE html>
     }}
   </style>
 </head>
-<body class="h-full flex flex-col overflow-hidden bg-slate-950 select-none text-slate-100">
+<body class="h-full flex flex-col overflow-hidden bg-slate-900 select-none text-slate-100">
 
   <!-- ============================================================== -->
   <!-- 画面 0: Root Hub (統合ポータルランチャー画面) -->
   <!-- ============================================================== -->
   <div id="screen-root-hub" class="flex-1 flex flex-col h-full overflow-hidden">
     <!-- Hub ヘッダー -->
-    <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 py-3 shrink-0 z-10 shadow-lg">
+    <header class="bg-slate-800/90 backdrop-blur border-b border-slate-700/80 px-4 py-3 shrink-0 z-10">
       <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-sky-500/20 font-black text-white text-lg">
-            🌐
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 via-sky-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 text-lg">
+            🌍
           </div>
           <div>
             <h1 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
               GeoAnki Suite
-              <span class="text-xs font-normal text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-full border border-sky-500/20">地理暗記ハブ</span>
+              <span class="text-xs font-normal text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">地理暗記ハブ</span>
             </h1>
-            <p class="text-xs text-slate-400 hidden sm:block">市区町村・旧国名・世界の国名と首都 視覚ベクター暗記プラットフォーム</p>
+            <p class="text-xs text-slate-400 hidden sm:block">全国市区町村・令制国・世界の国名首都 視覚ベクター暗記プラットフォーム</p>
           </div>
         </div>
 
-        <!-- アクションボタン群 -->
         <div class="flex items-center gap-2">
-          <button id="btn-global-sound" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sky-400 transition" title="効果音オン/オフ">
+          <button id="btn-global-sound" class="p-2 rounded-lg bg-slate-700/60 hover:bg-slate-700 text-emerald-400 transition" title="効果音切替">
             <svg id="global-sound-icon-on" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
             <svg id="global-sound-icon-off" class="w-5 h-5 hidden text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
           </button>
-          <button id="btn-show-data-mgr" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition" title="データ管理・設定">
+          <button id="btn-show-data-mgr" class="p-2 rounded-lg bg-slate-700/60 hover:bg-slate-700 text-slate-300 hover:text-white transition" title="データ管理・設定">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           </button>
         </div>
@@ -294,20 +283,20 @@ html_content = f'''<!DOCTYPE html>
     <!-- メイン選択エリア -->
     <main class="flex-1 overflow-y-auto px-4 py-6 overscroll-contain">
       <div class="max-w-5xl mx-auto space-y-6">
-        <div class="text-center space-y-2 mb-6">
+        <div class="text-center space-y-1.5 mb-6">
           <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">暗記学習モジュールを選択</h2>
           <p class="text-xs sm:text-sm text-slate-400">暗記したい地理領域を選んで特訓を開始してください。学習履歴は自動保存されます。</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           <!-- カード 1: 市区町村 -->
-          <div class="bg-gradient-to-b from-slate-900 to-slate-900/90 border border-emerald-500/30 hover:border-emerald-500/60 rounded-2xl p-5 flex flex-col justify-between shadow-xl shadow-emerald-950/20 transition-all duration-300 hover:-translate-y-1 group">
-            <div class="space-y-4">
+          <div class="bg-slate-800/80 border border-slate-700/80 hover:border-emerald-500/60 rounded-2xl p-5 flex flex-col justify-between shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+            <div class="space-y-3.5">
               <div class="flex items-center justify-between">
-                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl font-black group-hover:scale-110 transition">
+                <div class="w-11 h-11 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl font-black group-hover:scale-110 transition">
                   🗾
                 </div>
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">JIS規格完全準拠</span>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">JIS完全準拠</span>
               </div>
               <div>
                 <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition">市区町村暗記</h3>
@@ -317,12 +306,12 @@ html_content = f'''<!DOCTYPE html>
               </div>
 
               <!-- 進捗状況 -->
-              <div class="bg-slate-950/60 rounded-xl p-3 border border-slate-800 space-y-2">
+              <div class="bg-slate-900/80 rounded-xl p-3 border border-slate-700/60 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="text-slate-400">制覇状況</span>
                   <span class="font-bold text-emerald-400"><span id="root-muni-cleared">0</span> / 1,741 (<span id="root-muni-pct">0.0%</span>)</span>
                 </div>
-                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div class="w-full bg-slate-700/60 h-2 rounded-full overflow-hidden">
                   <div id="root-muni-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
                 </div>
                 <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1">
@@ -332,36 +321,36 @@ html_content = f'''<!DOCTYPE html>
               </div>
             </div>
 
-            <button id="btn-enter-muni" class="mt-5 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 active:scale-98">
+            <button id="btn-enter-muni" class="mt-5 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 active:scale-95">
               <span>特訓を始める</span>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </button>
           </div>
 
           <!-- カード 2: 令制国・旧国名 -->
-          <div class="bg-gradient-to-b from-slate-900 to-slate-900/90 border border-sky-500/30 hover:border-sky-500/60 rounded-2xl p-5 flex flex-col justify-between shadow-xl shadow-sky-950/20 transition-all duration-300 hover:-translate-y-1 group">
-            <div class="space-y-4">
+          <div class="bg-slate-800/80 border border-slate-700/80 hover:border-emerald-500/60 rounded-2xl p-5 flex flex-col justify-between shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+            <div class="space-y-3.5">
               <div class="flex items-center justify-between">
-                <div class="w-12 h-12 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center text-2xl font-black group-hover:scale-110 transition">
+                <div class="w-11 h-11 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl font-black group-hover:scale-110 transition">
                   📜
                 </div>
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">五畿七道68国</span>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">五畿七道68国</span>
               </div>
               <div>
-                <h3 class="text-lg font-bold text-white group-hover:text-sky-400 transition">令制国・旧国名暗記</h3>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition">令制国・旧国名暗記</h3>
                 <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-                  武蔵・信濃・尾張・薩摩など日本の旧国名全68国を完全網羅。日本の歴史・古典文学・地域文化の理解を深める。
+                  武蔵・信濃・尾張・薩摩など日本の旧国名全68国を完全網羅。現代の都道府県対応や名所ヒント付き。
                 </p>
               </div>
 
               <!-- 進捗状況 -->
-              <div class="bg-slate-950/60 rounded-xl p-3 border border-slate-800 space-y-2">
+              <div class="bg-slate-900/80 rounded-xl p-3 border border-slate-700/60 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="text-slate-400">制覇状況</span>
-                  <span class="font-bold text-sky-400"><span id="root-prov-cleared">0</span> / 68 (<span id="root-prov-pct">0.0%</span>)</span>
+                  <span class="font-bold text-emerald-400"><span id="root-prov-cleared">0</span> / 68 (<span id="root-prov-pct">0.0%</span>)</span>
                 </div>
-                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div id="root-prov-bar" class="bg-gradient-to-r from-sky-500 to-cyan-400 h-full w-0 transition-all duration-500"></div>
+                <div class="w-full bg-slate-700/60 h-2 rounded-full overflow-hidden">
+                  <div id="root-prov-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
                 </div>
                 <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1">
                   <span>正答率: <strong id="root-prov-acc" class="text-slate-200">--%</strong></span>
@@ -370,36 +359,36 @@ html_content = f'''<!DOCTYPE html>
               </div>
             </div>
 
-            <button id="btn-enter-province" class="mt-5 w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-sm shadow-lg shadow-sky-600/30 transition flex items-center justify-center gap-2 active:scale-98">
+            <button id="btn-enter-province" class="mt-5 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 active:scale-95">
               <span>特訓を始める</span>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </button>
           </div>
 
           <!-- カード 3: 世界の国名・首都名 -->
-          <div class="bg-gradient-to-b from-slate-900 to-slate-900/90 border border-indigo-500/30 hover:border-indigo-500/60 rounded-2xl p-5 flex flex-col justify-between shadow-xl shadow-indigo-950/20 transition-all duration-300 hover:-translate-y-1 group">
-            <div class="space-y-4">
+          <div class="bg-slate-800/80 border border-slate-700/80 hover:border-emerald-500/60 rounded-2xl p-5 flex flex-col justify-between shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+            <div class="space-y-3.5">
               <div class="flex items-center justify-between">
-                <div class="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-2xl font-black group-hover:scale-110 transition">
+                <div class="w-11 h-11 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl font-black group-hover:scale-110 transition">
                   🌍
                 </div>
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">双方向出題・196国</span>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">双方向・196国</span>
               </div>
               <div>
-                <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">世界の国名・首都名暗記</h3>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition">世界の国名・首都名暗記</h3>
                 <p class="text-xs text-slate-400 mt-1 leading-relaxed">
                   国連加盟国193ヶ国＋主要地域を網羅。国名と首都名の双方向クイズ、難易度・地域別分類、国旗絵文字表示に対応。
                 </p>
               </div>
 
               <!-- 進捗状況 -->
-              <div class="bg-slate-950/60 rounded-xl p-3 border border-slate-800 space-y-2">
+              <div class="bg-slate-900/80 rounded-xl p-3 border border-slate-700/60 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="text-slate-400">制覇状況</span>
-                  <span class="font-bold text-indigo-400"><span id="root-world-cleared">0</span> / 196 (<span id="root-world-pct">0.0%</span>)</span>
+                  <span class="font-bold text-emerald-400"><span id="root-world-cleared">0</span> / 196 (<span id="root-world-pct">0.0%</span>)</span>
                 </div>
-                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div id="root-world-bar" class="bg-gradient-to-r from-indigo-500 to-purple-400 h-full w-0 transition-all duration-500"></div>
+                <div class="w-full bg-slate-700/60 h-2 rounded-full overflow-hidden">
+                  <div id="root-world-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
                 </div>
                 <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1">
                   <span>正答率: <strong id="root-world-acc" class="text-slate-200">--%</strong></span>
@@ -408,7 +397,7 @@ html_content = f'''<!DOCTYPE html>
               </div>
             </div>
 
-            <button id="btn-enter-world" class="mt-5 w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2 active:scale-98">
+            <button id="btn-enter-world" class="mt-5 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 active:scale-95">
               <span>特訓を始める</span>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </button>
@@ -416,13 +405,13 @@ html_content = f'''<!DOCTYPE html>
         </div>
 
         <!-- 共通インフォメーション -->
-        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 text-xs text-slate-400 space-y-2">
+        <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-4 text-xs text-slate-400 space-y-2">
           <div class="font-bold text-slate-300 flex items-center gap-1.5">
             <span>💡</span>
             <span>学習のヒント & 本プラットフォームの特徴</span>
           </div>
           <ul class="list-disc list-inside space-y-1 text-slate-400">
-            <li><strong>完全オフライン動作</strong>: 外部地図タイル通信を行わず、軽量ベクターマップのみで爆速レンダリングします。</li>
+            <li><strong>完全オフライン動作</strong>: 外部商用タイル通信を行わず、超軽量ベクターマップのみで爆速レンダリングします。</li>
             <li><strong>消去法を排除した本格暗記</strong>: 正解済みの地域も未正解と同色のダークトーンを維持し、確実な記憶定着を促します。</li>
             <li><strong>キーボード完結対応</strong>: PCでは「4択 [1]-[4]」や「記入モードのEnter連続回答」に対応しています。</li>
           </ul>
@@ -435,51 +424,49 @@ html_content = f'''<!DOCTYPE html>
   <!-- 画面 1A: 市区町村 Hub (都道府県選択画面) -->
   <!-- ============================================================== -->
   <div id="screen-muni-hub" class="hidden flex-1 flex flex-col h-full overflow-hidden">
-    <!-- Hub ヘッダー -->
-    <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 py-3 shrink-0 z-10">
+    <header class="bg-slate-800/90 backdrop-blur border-b border-slate-700/80 px-4 py-3 shrink-0 z-10">
       <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
-        <div class="flex items-center gap-2 sm:gap-3">
-          <button class="btn-return-root p-1.5 sm:p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1 text-xs font-bold" title="ホームに戻る">
+        <div class="flex items-center gap-2.5">
+          <button class="btn-return-root p-2 rounded-lg bg-slate-700/60 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1 text-xs font-bold" title="ホームに戻る">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span class="hidden sm:inline">ホーム</span>
           </button>
-          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-sm">
-            🗾
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <span class="text-white font-black text-sm tracking-wider">JP</span>
           </div>
           <div>
-            <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-1.5">
-              市区町村暗記
-              <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">1,741自治体</span>
-            </h2>
+            <h1 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              GeoAnki 1741
+              <span class="text-xs font-normal text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">JIS準拠</span>
+            </h1>
+            <p class="text-xs text-slate-400 hidden sm:block">全国1,741市区町村 視覚ベクター暗記トレーナー</p>
           </div>
         </div>
 
         <div class="flex items-center gap-3">
           <div class="text-right">
-            <div class="text-[10px] text-slate-400">制覇数</div>
-            <div class="text-xs sm:text-sm font-extrabold text-emerald-400">
-              <span id="muni-hub-cleared">0</span> <span class="text-[10px] text-slate-400">/ 1,741</span>
-              <span id="muni-hub-pct" class="text-[10px] font-semibold text-slate-300 ml-0.5">(0.0%)</span>
+            <div class="text-xs text-slate-400">全国制覇数</div>
+            <div class="text-sm sm:text-base font-extrabold text-emerald-400">
+              <span id="muni-hub-cleared">0</span> <span class="text-xs font-normal text-slate-400">/ 1,741</span>
+              <span id="muni-hub-pct" class="text-xs font-semibold text-slate-300 ml-1">(0.0%)</span>
             </div>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- プログレスバー -->
-    <div class="w-full bg-slate-900/60 border-b border-slate-800 px-4 py-2 shrink-0">
+    <div class="w-full bg-slate-800/50 border-b border-slate-700/50 px-4 py-2 shrink-0">
       <div class="max-w-6xl mx-auto flex items-center gap-3">
-        <div class="flex-1 bg-slate-800 h-2 rounded-full overflow-hidden">
+        <div class="flex-1 bg-slate-700/60 h-2.5 rounded-full overflow-hidden">
           <div id="muni-hub-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
         </div>
-        <div class="text-[11px] text-slate-300 whitespace-nowrap">
-          完了県: <span id="muni-hub-completed-prefs" class="text-emerald-400 font-bold">0</span> / 47
+        <div class="text-xs font-semibold text-slate-300 shrink-0">
+          全47都道府県中 <span id="muni-hub-completed-prefs" class="text-emerald-400 font-bold">0</span> 県コンプリート
         </div>
       </div>
     </div>
 
-    <!-- 地方フィルターピルバー -->
-    <div class="bg-slate-900/40 border-b border-slate-800 px-4 py-2 shrink-0 overflow-x-auto no-scrollbar">
+    <div class="bg-slate-900/90 border-b border-slate-800 px-4 py-2 shrink-0 overflow-x-auto no-scrollbar">
       <div class="max-w-6xl mx-auto flex gap-1.5 min-w-max" id="muni-region-filter-bar">
         <button class="muni-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500 text-white" data-region="ALL">すべて</button>
         <button class="muni-filter-btn px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 hover:bg-slate-700" data-region="北海道">北海道</button>
@@ -493,7 +480,6 @@ html_content = f'''<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- 都道府県カードグリッド -->
     <main class="flex-1 overflow-y-auto px-4 py-4 overscroll-contain">
       <div class="max-w-6xl mx-auto space-y-6" id="muni-hub-container">
       </div>
@@ -501,95 +487,165 @@ html_content = f'''<!DOCTYPE html>
   </div>
 
   <!-- ============================================================== -->
-  <!-- 画面 1B: 市区町村 Spoke (クイズ・学習画面) -->
+  <!-- 画面 1B: 市区町村 Spoke (クイズ画面) -->
   <!-- ============================================================== -->
   <div id="screen-muni-spoke" class="hidden flex-1 flex flex-col h-full overflow-hidden relative">
-    <!-- Spoke ヘッダー -->
-    <header class="bg-slate-900/95 backdrop-blur border-b border-slate-800 px-3 py-2 shrink-0 z-20 flex items-center justify-between gap-2 shadow-md">
-      <div class="flex items-center gap-2 min-w-0">
-        <button id="btn-muni-back-hub" class="p-1.5 sm:p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1 text-xs font-bold" title="都道府県選択に戻る">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+    <header class="bg-slate-800/95 backdrop-blur border-b border-slate-700/80 px-2.5 py-1.5 sm:px-3 sm:py-2 shrink-0 z-20 flex items-center justify-between gap-1.5">
+      <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+        <button id="btn-muni-back-hub" class="flex items-center gap-1 px-2 py-1.5 sm:px-2.5 sm:py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-xs sm:text-sm font-semibold text-white transition active:scale-95 shrink-0" title="都道府県選択に戻る">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
           <span class="hidden sm:inline">一覧</span>
         </button>
-        <button class="btn-return-root p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition" title="ホームに戻る">
+        <button class="btn-return-root p-1.5 sm:p-2 rounded-lg bg-slate-700/60 hover:bg-slate-600 text-slate-300 hover:text-white transition" title="ホームに戻る">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
         </button>
-        <div class="min-w-0">
-          <div class="flex items-center gap-1.5">
-            <h2 id="muni-spoke-pref-title" class="text-sm sm:text-base font-extrabold text-white truncate">東京都</h2>
-            <span id="muni-spoke-pref-count-badge" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">62自治体</span>
-          </div>
-          <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
-            <span>進捗: <strong id="muni-spoke-progress-text" class="text-slate-200">0 / 0</strong></span>
-            <span class="text-slate-600">|</span>
-            <span id="muni-spoke-accuracy-tag" class="text-slate-400">正答率: --%</span>
-          </div>
+        <div class="flex items-baseline gap-1.5 truncate">
+          <h2 id="muni-spoke-pref-title" class="text-sm sm:text-base font-bold text-white tracking-wide truncate">都道府県名</h2>
+          <span id="muni-spoke-pref-count-badge" class="text-[10px] sm:text-xs font-medium text-slate-300 bg-slate-700/70 px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">35自治体</span>
         </div>
       </div>
 
-      <div class="flex items-center gap-1.5">
-        <button id="btn-muni-reset-pref" class="p-1.5 sm:p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-400 transition" title="この県の学習記録をリセット">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-        </button>
+      <div class="flex items-center gap-2 shrink-0">
+        <div class="text-right">
+          <div class="text-[10px] text-slate-400 leading-none hidden sm:block mb-0.5">制覇状況</div>
+          <div class="text-xs font-bold text-emerald-400">
+            <span id="muni-spoke-cleared-count">0</span>/<span id="muni-spoke-total-count">0</span>
+            <span id="muni-spoke-cleared-pct" class="text-slate-300 font-normal ml-0.5 text-[10px] sm:text-xs">(0%)</span>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- サブコントロールバー (Level & モード切替) -->
-    <div class="bg-slate-900/90 border-b border-slate-800 px-3 py-1.5 shrink-0 z-20 flex flex-wrap items-center justify-between gap-2 text-xs">
-      <!-- レベルタブ -->
-      <div class="flex items-center gap-1 overflow-x-auto no-scrollbar" id="muni-level-tabs">
+    <div class="bg-slate-900 border-b border-slate-800 px-2 sm:px-3 py-1 shrink-0 flex items-center justify-between gap-1.5 z-10">
+      <div class="flex items-center gap-1 overflow-x-auto no-scrollbar flex-1 min-w-0" id="muni-level-tabs-container">
       </div>
 
-      <!-- 操作モードセグメント -->
-      <div class="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800 shrink-0" id="muni-mode-segment">
-        <button class="muni-mode-btn px-2.5 py-1 rounded-md text-[11px] font-bold transition flex items-center gap-1 bg-emerald-500 text-white" data-mode="locate">
-          <span>🎯</span><span>場所当て</span>
+      <div class="flex items-center bg-slate-800 p-0.5 rounded-lg border border-slate-700 shrink-0">
+        <button class="muni-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-semibold bg-slate-700 text-emerald-400 shadow" data-mode="locate">
+          <span>🎯</span><span class="hidden sm:inline ml-1">場所当て</span>
         </button>
-        <button class="muni-mode-btn px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition flex items-center gap-1" data-mode="name">
-          <span>🔤</span><span>4択</span>
+        <button class="muni-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white" data-mode="name">
+          <span>🔤</span><span class="hidden sm:inline ml-1">4択</span>
         </button>
-        <button class="muni-mode-btn px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition flex items-center gap-1" data-mode="type">
-          <span>✍️</span><span>記入</span>
+        <button class="muni-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white" data-mode="type">
+          <span>✍️</span><span class="hidden sm:inline ml-1">記入</span>
         </button>
-        <button class="muni-mode-btn px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition flex items-center gap-1" data-mode="explore">
-          <span>🔍</span><span>探索</span>
+        <button class="muni-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white" data-mode="explore">
+          <span>🔍</span><span class="hidden sm:inline ml-1">探索</span>
         </button>
       </div>
     </div>
 
     <!-- 地図コンテナ -->
-    <div class="flex-1 relative overflow-hidden">
+    <div class="flex-1 relative overflow-hidden bg-slate-950">
       <div id="muni-map" class="w-full h-full map-container"></div>
 
-      <!-- 離島クイック切り替えボタン群 -->
-      <div id="muni-island-buttons" class="absolute top-3 right-3 z-[1000] flex flex-col gap-1.5"></div>
-
-      <!-- 探索ポップオーバー -->
-      <div id="muni-explore-card" class="hidden absolute top-3 left-3 z-[1000] bg-slate-900/95 backdrop-blur border border-slate-700/80 rounded-xl p-3 shadow-2xl max-w-xs text-xs space-y-2">
-        <div class="flex items-start justify-between gap-2">
-          <div>
-            <div id="muni-exp-kana" class="text-[10px] text-emerald-400">ふりがな</div>
-            <div id="muni-exp-name" class="text-base font-extrabold text-white">自治体名</div>
-          </div>
-          <button id="btn-muni-close-exp" class="text-slate-400 hover:text-white p-1">✕</button>
-        </div>
-        <div class="flex items-center gap-2 text-[11px]">
-          <span id="muni-exp-type" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">市町村</span>
-          <span id="muni-exp-code" class="text-slate-400 font-mono">13101</span>
-        </div>
-        <div class="bg-slate-950/70 p-2 rounded-lg border border-slate-800 text-[11px] flex justify-between">
-          <span class="text-slate-400">学習履歴</span>
-          <span id="muni-exp-stats" class="text-slate-200 font-bold">正解 0 / 不正解 0</span>
-        </div>
-        <button id="btn-muni-test-single" class="w-full py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition">
-          この自治体をテスト 🎯
+      <!-- 離島ボタン群 & 全体リセット -->
+      <div class="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 flex flex-col gap-1 sm:gap-1.5 items-end">
+        <div id="muni-island-buttons" class="flex flex-col gap-0.5 sm:gap-1 items-end"></div>
+        <button id="btn-muni-reset-bounds" class="p-1.5 sm:p-2 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-600/70 shadow-lg backdrop-blur text-xs transition active:scale-95" title="県全体を表示">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
         </button>
       </div>
-    </div>
 
-    <!-- 下部ドックコントロール -->
-    <div id="muni-dock" class="bg-slate-900/95 backdrop-blur border-t border-slate-800 px-4 py-3 shrink-0 z-20 shadow-2xl">
-      <!-- JSで出題・回答コントロールを動的描画 -->
+      <!-- 下部操作ドック -->
+      <div class="absolute bottom-0 left-0 right-0 z-20 p-2 sm:p-4 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pointer-events-none">
+        <div class="max-w-xl mx-auto pointer-events-auto">
+
+          <!-- モード1: 場所当てドック -->
+          <div id="muni-dock-locate" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl">
+            <div class="flex items-center justify-between gap-1.5 mb-1 sm:mb-2">
+              <div class="flex items-center gap-1.5 truncate">
+                <span id="muni-locate-level-tag" class="text-[10px] sm:text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full shrink-0">Level 1 主要都市</span>
+                <span id="muni-locate-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
+              </div>
+              <span id="muni-locate-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex-1 min-w-0">
+                <div class="text-[10px] sm:text-xs text-slate-400 flex items-center gap-1 truncate">
+                  <span>地図上でタップ：</span>
+                  <span id="muni-locate-kana" class="text-slate-300 font-medium">（ふりがな）</span>
+                </div>
+                <div id="muni-locate-question-name" class="text-lg sm:text-2xl font-black text-white truncate tracking-wide leading-tight">
+                  〇〇市
+                </div>
+              </div>
+              <button id="btn-muni-locate-skip" class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">
+                スキップ →
+              </button>
+            </div>
+
+            <div id="muni-locate-feedback-bar" class="mt-2 pt-2 border-t border-slate-700/60 hidden">
+              <div id="muni-locate-feedback-content" class="flex items-center justify-between gap-2"></div>
+            </div>
+          </div>
+
+          <!-- モード2: 4択ドック -->
+          <div id="muni-dock-name" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl hidden">
+            <div class="flex items-center justify-between gap-1.5 mb-1.5 sm:mb-2">
+              <div class="flex items-center gap-1.5 truncate">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0"></span>
+                <span class="text-[11px] sm:text-xs font-bold text-amber-300 truncate">黄色の自治体はどれ？</span>
+                <span id="muni-name-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
+              </div>
+              <span id="muni-name-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 sm:gap-2" id="muni-choice-buttons-grid"></div>
+          </div>
+
+          <!-- モード3: 記入ドック -->
+          <div id="muni-dock-type" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl hidden">
+            <div class="flex items-center justify-between gap-1.5 mb-1.5 sm:mb-2">
+              <div class="flex items-center gap-1.5 truncate">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0"></span>
+                <span class="text-[11px] sm:text-xs font-bold text-amber-300 truncate">黄色の自治体名を入力（市区町村まで）：</span>
+                <span id="muni-type-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
+              </div>
+              <span id="muni-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
+            </div>
+            <form id="muni-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="return false;">
+              <input type="text" id="muni-input-type" placeholder="例: 沼津市、函南町" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
+              <button type="submit" id="btn-muni-type-submit" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 shadow">回答</button>
+              <button type="button" id="btn-muni-type-skip" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">スキップ →</button>
+            </form>
+            <div id="muni-type-feedback-bar" class="mt-2 pt-2 border-t border-slate-700/60 hidden">
+              <div id="muni-type-feedback-content" class="flex items-center justify-between gap-2"></div>
+            </div>
+          </div>
+
+          <!-- モード4: 探索ドック -->
+          <div id="muni-dock-explore" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl hidden">
+            <div id="muni-explore-empty" class="text-center py-1 sm:py-2 text-slate-400 text-xs">
+              地図上のポリゴンをタップすると自治体情報が表示されます
+            </div>
+            <div id="muni-explore-detail" class="hidden">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <div class="flex items-center gap-1.5 mb-0.5">
+                    <span id="muni-exp-type-badge" class="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">中核市</span>
+                    <span id="muni-exp-kana-text" class="text-[10px] sm:text-xs text-slate-400">ふりがな</span>
+                  </div>
+                  <h3 id="muni-exp-name-text" class="text-base sm:text-xl font-black text-white">自治体名</h3>
+                </div>
+                <div class="text-right">
+                  <div class="text-[9px] sm:text-[10px] text-slate-400">JISコード</div>
+                  <div id="muni-exp-code-text" class="text-xs font-mono font-bold text-slate-200">13101</div>
+                </div>
+              </div>
+              <div class="mt-2 pt-1.5 border-t border-slate-700/60 flex items-center justify-between text-xs">
+                <div id="muni-exp-stats-tag" class="text-[11px] sm:text-xs text-slate-400">未挑戦</div>
+                <button id="btn-muni-quiz-this" class="text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 text-[11px] sm:text-xs">
+                  <span>この自治体をテスト</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
 
@@ -597,159 +653,232 @@ html_content = f'''<!DOCTYPE html>
   <!-- 画面 2A: 令制国 Hub (五畿七道選択画面) -->
   <!-- ============================================================== -->
   <div id="screen-prov-hub" class="hidden flex-1 flex flex-col h-full overflow-hidden">
-    <!-- Hub ヘッダー -->
-    <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 py-3 shrink-0 z-10 shadow-lg">
+    <header class="bg-slate-800/90 backdrop-blur border-b border-slate-700/80 px-4 py-3 shrink-0 z-10">
       <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
-        <div class="flex items-center gap-2 sm:gap-3">
-          <button class="btn-return-root p-1.5 sm:p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1 text-xs font-bold" title="ホームに戻る">
+        <div class="flex items-center gap-2.5">
+          <button class="btn-return-root p-2 rounded-lg bg-slate-700/60 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1 text-xs font-bold" title="ホームに戻る">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span class="hidden sm:inline">ホーム</span>
           </button>
-          <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-black text-sm">
-            📜
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <span class="text-white font-black text-sm tracking-wider">令</span>
           </div>
           <div>
-            <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-1.5">
-              令制国・旧国名暗記
-              <span class="text-[10px] text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">五畿七道</span>
-            </h2>
+            <h1 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              GeoAnki 68
+              <span class="text-xs font-normal text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">五畿七道</span>
+            </h1>
+            <p class="text-xs text-slate-400 hidden sm:block">全国68令制国（旧国名）視覚ベクター暗記トレーナー</p>
           </div>
         </div>
 
         <div class="flex items-center gap-3">
           <div class="text-right">
-            <div class="text-[10px] text-slate-400">全国制覇数</div>
-            <div class="text-xs sm:text-sm font-extrabold text-sky-400">
-              <span id="prov-hub-cleared">0</span> <span class="text-[10px] text-slate-400">/ 68</span>
-              <span id="prov-hub-pct" class="text-[10px] font-semibold text-slate-300 ml-0.5">(0.0%)</span>
+            <div class="text-xs text-slate-400">全国制覇数</div>
+            <div class="text-sm sm:text-base font-extrabold text-emerald-400">
+              <span id="prov-hub-cleared">0</span> <span class="text-xs font-normal text-slate-400">/ 68</span>
+              <span id="prov-hub-pct" class="text-xs font-semibold text-slate-300 ml-1">(0.0%)</span>
             </div>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- プログレスバー -->
-    <div class="w-full bg-slate-900/60 border-b border-slate-800 px-4 py-2 shrink-0">
+    <div class="w-full bg-slate-800/50 border-b border-slate-700/50 px-4 py-2 shrink-0">
       <div class="max-w-6xl mx-auto flex items-center gap-3">
-        <div class="flex-1 bg-slate-800 h-2 rounded-full overflow-hidden">
-          <div id="prov-hub-progress-bar" class="bg-gradient-to-r from-sky-500 to-cyan-400 h-full w-0 transition-all duration-500"></div>
+        <div class="flex-1 bg-slate-700/60 h-2.5 rounded-full overflow-hidden">
+          <div id="prov-hub-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
         </div>
-        <div class="text-[11px] text-slate-400 whitespace-nowrap">
-          制覇地域: <span id="prov-hub-completed-doh" class="text-sky-400 font-bold">0</span> / 8道
+        <div class="text-xs font-semibold text-slate-300 shrink-0">
+          制覇地域: <span id="prov-hub-completed-doh" class="text-emerald-400 font-bold">0</span> / 8道
         </div>
       </div>
     </div>
 
-    <!-- 五畿七道カードグリッド -->
     <main class="flex-1 overflow-y-auto px-4 py-4 overscroll-contain">
       <div class="max-w-6xl mx-auto space-y-4">
         <!-- 苦手克服クイックバナー -->
-        <div id="prov-weak-banner" class="hidden bg-gradient-to-r from-rose-950/40 to-slate-900 border border-rose-500/30 rounded-xl p-3.5 flex items-center justify-between gap-3 shadow-lg">
+        <div id="prov-weak-banner" class="hidden bg-rose-950/40 border border-rose-800/50 rounded-xl p-3 flex items-center justify-between gap-3 shadow-lg">
           <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-lg shrink-0">
+            <div class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-base shrink-0">
               ⚡
             </div>
             <div>
-              <div class="text-sm font-bold text-white flex items-center gap-2">
-                苦手克服特訓デッキ
-                <span id="prov-weak-count-badge" class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 text-xs font-semibold">0国</span>
+              <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                <span>苦手克服特訓デッキ</span>
+                <span id="prov-weak-count-badge" class="px-1.5 py-0.2 rounded-full bg-rose-500/20 text-rose-400 text-[10px] font-semibold">0国</span>
               </div>
-              <p class="text-xs text-slate-400 mt-0.5">直近で間違えた旧国を集中トレーニング</p>
+              <p class="text-[11px] text-slate-400">直近で間違えた旧国を集中トレーニング</p>
             </div>
           </div>
-          <button id="btn-prov-start-weak-all" class="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs sm:text-sm transition shrink-0 active:scale-95 shadow">
+          <button id="btn-prov-start-weak-all" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition shrink-0 active:scale-95 shadow">
             復習スタート →
           </button>
         </div>
 
-        <div id="prov-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
+        <div id="prov-cards-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5"></div>
       </div>
     </main>
   </div>
 
   <!-- ============================================================== -->
-  <!-- 画面 2B: 令制国 Spoke (クイズ・学習画面) -->
+  <!-- 画面 2B: 令制国 Spoke (クイズ画面) -->
   <!-- ============================================================== -->
   <div id="screen-prov-spoke" class="hidden flex-1 flex flex-col h-full overflow-hidden relative">
-    <!-- Spoke ヘッダー -->
-    <header class="bg-slate-900/95 backdrop-blur border-b border-slate-800 px-3 py-2 shrink-0 z-20 flex items-center justify-between gap-2 shadow-md">
-      <div class="flex items-center gap-2 min-w-0">
-        <button id="btn-prov-back-hub" class="p-1.5 sm:p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1 text-xs font-bold" title="地域一覧に戻る">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+    <header class="bg-slate-800/95 backdrop-blur border-b border-slate-700/80 px-2.5 py-1.5 sm:px-3 sm:py-2 shrink-0 z-20 flex items-center justify-between gap-1.5">
+      <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+        <button id="btn-prov-back-hub" class="flex items-center gap-1 px-2 py-1.5 sm:px-2.5 sm:py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-xs sm:text-sm font-semibold text-white transition active:scale-95 shrink-0" title="地域一覧に戻る">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
           <span class="hidden sm:inline">一覧</span>
         </button>
-        <button class="btn-return-root p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition" title="ホームに戻る">
+        <button class="btn-return-root p-1.5 sm:p-2 rounded-lg bg-slate-700/60 hover:bg-slate-600 text-slate-300 hover:text-white transition" title="ホームに戻る">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
         </button>
-        <div class="min-w-0">
-          <div class="flex items-center gap-1.5">
-            <h2 id="prov-spoke-title" class="text-sm sm:text-base font-extrabold text-white truncate">東海道</h2>
-            <span id="prov-spoke-count-badge" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 shrink-0">15国</span>
-          </div>
-          <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
-            <span>進捗: <strong id="prov-spoke-progress-text" class="text-slate-200">0 / 0</strong></span>
-            <span class="text-slate-600">|</span>
-            <span id="prov-spoke-accuracy-tag" class="text-slate-400">正答率: --%</span>
-          </div>
+        <div class="flex items-baseline gap-1.5 truncate">
+          <h2 id="prov-spoke-title" class="text-sm sm:text-base font-bold text-white tracking-wide truncate">東海道</h2>
+          <span id="prov-spoke-count-badge" class="text-[10px] sm:text-xs font-medium text-slate-300 bg-slate-700/70 px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">15国</span>
         </div>
       </div>
 
-      <div class="flex items-center gap-1.5">
-        <button id="btn-prov-fit-all" class="p-1.5 sm:p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition" title="全体を表示">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
-        </button>
+      <div class="flex items-center gap-2 shrink-0">
+        <div class="text-right">
+          <div class="text-[10px] text-slate-400 leading-none hidden sm:block mb-0.5">制覇状況</div>
+          <div class="text-xs font-bold text-emerald-400">
+            <span id="prov-spoke-cleared-count">0</span>/<span id="prov-spoke-total-count">0</span>
+            <span id="prov-spoke-cleared-pct" class="text-slate-300 font-normal ml-0.5 text-[10px] sm:text-xs">(0%)</span>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- サブコントロールバー -->
-    <div class="bg-slate-900/90 border-b border-slate-800 px-3 py-1.5 shrink-0 z-20 flex flex-wrap items-center justify-between gap-2 text-xs">
-      <div class="flex items-center gap-1 overflow-x-auto no-scrollbar" id="prov-level-tabs">
+    <div class="bg-slate-900 border-b border-slate-800 px-2 sm:px-3 py-1 shrink-0 flex items-center justify-between gap-1.5 z-10">
+      <div class="flex items-center gap-1 overflow-x-auto no-scrollbar flex-1 min-w-0" id="prov-level-tabs-container">
       </div>
 
-      <div class="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800 shrink-0" id="prov-mode-segment">
-        <button class="prov-mode-btn px-2.5 py-1 rounded-md text-[11px] font-bold transition flex items-center gap-1 bg-sky-500 text-white" data-mode="locate">
-          <span>🎯</span><span>場所当て</span>
+      <div class="flex items-center bg-slate-800 p-0.5 rounded-lg border border-slate-700 shrink-0">
+        <button class="prov-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-semibold bg-slate-700 text-emerald-400 shadow" data-mode="locate">
+          <span>🎯</span><span class="hidden sm:inline ml-1">場所当て</span>
         </button>
-        <button class="prov-mode-btn px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition flex items-center gap-1" data-mode="name">
-          <span>🔤</span><span>4択</span>
+        <button class="prov-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white" data-mode="name">
+          <span>🔤</span><span class="hidden sm:inline ml-1">4択</span>
         </button>
-        <button class="prov-mode-btn px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition flex items-center gap-1" data-mode="type">
-          <span>✍️</span><span>記入</span>
+        <button class="prov-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white" data-mode="type">
+          <span>✍️</span><span class="hidden sm:inline ml-1">記入</span>
         </button>
-        <button class="prov-mode-btn px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition flex items-center gap-1" data-mode="explore">
-          <span>🔍</span><span>探索</span>
+        <button class="prov-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white" data-mode="explore">
+          <span>🔍</span><span class="hidden sm:inline ml-1">探索</span>
         </button>
       </div>
     </div>
 
     <!-- 地図コンテナ -->
-    <div class="flex-1 relative overflow-hidden">
+    <div class="flex-1 relative overflow-hidden bg-slate-950">
       <div id="prov-map" class="w-full h-full map-container"></div>
 
-      <!-- 探索ポップオーバー -->
-      <div id="prov-explore-card" class="hidden absolute top-3 left-3 z-[1000] bg-slate-900/95 backdrop-blur border border-slate-700/80 rounded-xl p-3 shadow-2xl max-w-xs text-xs space-y-2">
-        <div class="flex items-start justify-between gap-2">
-          <div>
-            <div id="prov-exp-kana" class="text-[10px] text-sky-400">むさし</div>
-            <div id="prov-exp-name" class="text-base font-extrabold text-white">武蔵</div>
-          </div>
-          <button id="btn-prov-close-exp" class="text-slate-400 hover:text-white p-1">✕</button>
-        </div>
-        <div class="text-[11px] text-slate-300">
-          現代の地域: <span id="prov-exp-modern" class="text-slate-100 font-semibold">東京都・埼玉県・神奈川県東部</span>
-        </div>
-        <div class="bg-slate-950/70 p-2 rounded-lg border border-slate-800 text-[11px] flex justify-between">
-          <span class="text-slate-400">学習成績</span>
-          <span id="prov-exp-stats" class="text-slate-200 font-bold">正解 0 / 不正解 0</span>
-        </div>
-        <button id="btn-prov-test-single" class="w-full py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition">
-          この旧国をテスト 🎯
+      <div class="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 flex flex-col gap-1 sm:gap-1.5 items-end">
+        <button id="btn-prov-reset-bounds" class="p-1.5 sm:p-2 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-600/70 shadow-lg backdrop-blur text-xs transition active:scale-95" title="全体を表示">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
         </button>
       </div>
-    </div>
 
-    <!-- 下部ドック -->
-    <div id="prov-dock" class="bg-slate-900/95 backdrop-blur border-t border-slate-800 px-4 py-3 shrink-0 z-20 shadow-2xl">
+      <!-- 下部操作ドック -->
+      <div class="absolute bottom-0 left-0 right-0 z-20 p-2 sm:p-4 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pointer-events-none">
+        <div class="max-w-xl mx-auto pointer-events-auto">
+
+          <!-- モード1: 場所当てドック -->
+          <div id="prov-dock-locate" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl">
+            <div class="flex items-center justify-between gap-1.5 mb-1 sm:mb-2">
+              <div class="flex items-center gap-1.5 truncate">
+                <span id="prov-locate-level-tag" class="text-[10px] sm:text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full shrink-0">Lv.1 必修</span>
+                <span id="prov-locate-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
+              </div>
+              <span id="prov-locate-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex-1 min-w-0">
+                <div class="text-[10px] sm:text-xs text-slate-400 flex items-center gap-1 truncate">
+                  <span>地図上でタップ：</span>
+                  <span id="prov-locate-kana" class="text-slate-300 font-medium">（ふりがな）</span>
+                </div>
+                <div id="prov-locate-question-name" class="text-lg sm:text-2xl font-black text-white truncate tracking-wide leading-tight">
+                  武蔵
+                </div>
+              </div>
+              <button id="btn-prov-locate-skip" class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">
+                スキップ →
+              </button>
+            </div>
+
+            <div id="prov-locate-feedback-bar" class="mt-2 pt-2 border-t border-slate-700/60 hidden">
+              <div id="prov-locate-feedback-content" class="flex items-center justify-between gap-2"></div>
+            </div>
+          </div>
+
+          <!-- モード2: 4択ドック -->
+          <div id="prov-dock-name" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl hidden">
+            <div class="flex items-center justify-between gap-1.5 mb-1.5 sm:mb-2">
+              <div class="flex items-center gap-1.5 truncate">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0"></span>
+                <span class="text-[11px] sm:text-xs font-bold text-amber-300 truncate">黄色の旧国名はどれ？</span>
+                <span id="prov-name-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
+              </div>
+              <span id="prov-name-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 sm:gap-2" id="prov-choice-buttons-grid"></div>
+          </div>
+
+          <!-- モード3: 記入ドック -->
+          <div id="prov-dock-type" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl hidden">
+            <div class="flex items-center justify-between gap-1.5 mb-1.5 sm:mb-2">
+              <div class="flex items-center gap-1.5 truncate">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0"></span>
+                <span class="text-[11px] sm:text-xs font-bold text-amber-300 truncate">黄色の旧国名を入力（漢字またはひらがな）：</span>
+                <span id="prov-type-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
+              </div>
+              <span id="prov-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
+            </div>
+            <form id="prov-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="return false;">
+              <input type="text" id="prov-input-type" placeholder="例: 武蔵、むさし" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
+              <button type="submit" id="btn-prov-type-submit" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 shadow">回答</button>
+              <button type="button" id="btn-prov-type-skip" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">スキップ →</button>
+            </form>
+            <div id="prov-type-feedback-bar" class="mt-2 pt-2 border-t border-slate-700/60 hidden">
+              <div id="prov-type-feedback-content" class="flex items-center justify-between gap-2"></div>
+            </div>
+          </div>
+
+          <!-- モード4: 探索ドック -->
+          <div id="prov-dock-explore" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl hidden">
+            <div id="prov-explore-empty" class="text-center py-1 sm:py-2 text-slate-400 text-xs">
+              地図上のポリゴンをタップすると旧国情報が表示されます
+            </div>
+            <div id="prov-explore-detail" class="hidden">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <div class="flex items-center gap-1.5 mb-0.5">
+                    <span id="prov-exp-doh-badge" class="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">東海道</span>
+                    <span id="prov-exp-kana-text" class="text-[10px] sm:text-xs text-slate-400">むさし</span>
+                  </div>
+                  <h3 id="prov-exp-name-text" class="text-base sm:text-xl font-black text-white">武蔵</h3>
+                </div>
+                <div class="text-right">
+                  <div class="text-[9px] sm:text-[10px] text-slate-400">現代の地域</div>
+                  <div id="prov-exp-modern-text" class="text-xs font-bold text-slate-200">東京都・埼玉県</div>
+                </div>
+              </div>
+              <div class="mt-2 pt-1.5 border-t border-slate-700/60 flex items-center justify-between text-xs">
+                <div id="prov-exp-stats-tag" class="text-[11px] sm:text-xs text-slate-400">未挑戦</div>
+                <button id="btn-prov-quiz-this" class="text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 text-[11px] sm:text-xs">
+                  <span>この旧国をテスト</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
 
@@ -757,193 +886,264 @@ html_content = f'''<!DOCTYPE html>
   <!-- 画面 3A: 世界の国名・首都 Hub (地域選択画面) -->
   <!-- ============================================================== -->
   <div id="screen-world-hub" class="hidden flex-1 flex flex-col h-full overflow-hidden">
-    <!-- Hub ヘッダー -->
-    <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 py-3 shrink-0 z-10 shadow-lg">
+    <header class="bg-slate-800/90 backdrop-blur border-b border-slate-700/80 px-4 py-3 shrink-0 z-10">
       <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
-        <div class="flex items-center gap-2 sm:gap-3">
-          <button class="btn-return-root p-1.5 sm:p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1 text-xs font-bold" title="ホームに戻る">
+        <div class="flex items-center gap-2.5">
+          <button class="btn-return-root p-2 rounded-lg bg-slate-700/60 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1 text-xs font-bold" title="ホームに戻る">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span class="hidden sm:inline">ホーム</span>
           </button>
-          <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-black text-sm">
-            🌍
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <span class="text-white font-black text-sm tracking-wider">国</span>
           </div>
           <div>
-            <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-1.5">
-              世界の国名・首都名暗記
-              <span class="text-[10px] text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/20">196ヶ国・地域</span>
-            </h2>
+            <h1 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              GeoAnki World
+              <span class="text-xs font-normal text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">196ヶ国</span>
+            </h1>
+            <p class="text-xs text-slate-400 hidden sm:block">世界の国名・首都名 視覚ベクター暗記トレーナー</p>
           </div>
         </div>
 
         <div class="flex items-center gap-3">
           <div class="text-right">
-            <div class="text-[10px] text-slate-400">全世界制覇数</div>
-            <div class="text-xs sm:text-sm font-extrabold text-indigo-400">
-              <span id="world-hub-cleared">0</span> <span class="text-[10px] text-slate-400">/ 196</span>
-              <span id="world-hub-pct" class="text-[10px] font-semibold text-slate-300 ml-0.5">(0.0%)</span>
+            <div class="text-xs text-slate-400">全世界制覇数</div>
+            <div class="text-sm sm:text-base font-extrabold text-emerald-400">
+              <span id="world-hub-cleared">0</span> <span class="text-xs font-normal text-slate-400">/ 196</span>
+              <span id="world-hub-pct" class="text-xs font-semibold text-slate-300 ml-1">(0.0%)</span>
             </div>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- プログレスバー -->
-    <div class="w-full bg-slate-900/60 border-b border-slate-800 px-4 py-2 shrink-0">
+    <div class="w-full bg-slate-800/50 border-b border-slate-700/50 px-4 py-2 shrink-0">
       <div class="max-w-6xl mx-auto flex items-center gap-3">
-        <div class="flex-1 bg-slate-800 h-2 rounded-full overflow-hidden">
-          <div id="world-hub-progress-bar" class="bg-gradient-to-r from-indigo-500 to-purple-400 h-full w-0 transition-all duration-500"></div>
+        <div class="flex-1 bg-slate-700/60 h-2.5 rounded-full overflow-hidden">
+          <div id="world-hub-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
         </div>
-        <div class="text-[11px] text-slate-400 whitespace-nowrap">
-          制覇地域: <span id="world-hub-completed-regions" class="text-indigo-400 font-bold">0</span> / 6州
+        <div class="text-xs font-semibold text-slate-300 shrink-0">
+          制覇地域: <span id="world-hub-completed-regions" class="text-emerald-400 font-bold">0</span> / 6州
         </div>
       </div>
     </div>
 
-    <!-- 世界地域カードグリッド -->
     <main class="flex-1 overflow-y-auto px-4 py-4 overscroll-contain">
       <div class="max-w-6xl mx-auto space-y-4">
         <!-- 苦手克服クイックバナー -->
-        <div id="world-weak-banner" class="hidden bg-gradient-to-r from-rose-950/40 to-slate-900 border border-rose-500/30 rounded-xl p-3.5 flex items-center justify-between gap-3 shadow-lg">
+        <div id="world-weak-banner" class="hidden bg-rose-950/40 border border-rose-800/50 rounded-xl p-3 flex items-center justify-between gap-3 shadow-lg">
           <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-lg shrink-0">
+            <div class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-base shrink-0">
               ⚡
             </div>
             <div>
-              <div class="text-sm font-bold text-white flex items-center gap-2">
-                世界の苦手克服特訓デッキ
-                <span id="world-weak-count-badge" class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 text-xs font-semibold">0国</span>
+              <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                <span>世界の苦手克服特訓デッキ</span>
+                <span id="world-weak-count-badge" class="px-1.5 py-0.2 rounded-full bg-rose-500/20 text-rose-400 text-[10px] font-semibold">0国</span>
               </div>
-              <p class="text-xs text-slate-400 mt-0.5">直近で間違えた国・首都を集中トレーニング</p>
+              <p class="text-[11px] text-slate-400">直近で間違えた国・首都を集中トレーニング</p>
             </div>
           </div>
-          <button id="btn-world-start-weak-all" class="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs sm:text-sm transition shrink-0 active:scale-95 shadow">
+          <button id="btn-world-start-weak-all" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition shrink-0 active:scale-95 shadow">
             復習スタート →
           </button>
         </div>
 
-        <div id="world-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
+        <div id="world-cards-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2.5"></div>
       </div>
     </main>
   </div>
 
   <!-- ============================================================== -->
-  <!-- 画面 3B: 世界の国名・首都 Spoke (クイズ・学習画面) -->
+  <!-- 画面 3B: 世界の国名・首都 Spoke (クイズ画面) -->
   <!-- ============================================================== -->
   <div id="screen-world-spoke" class="hidden flex-1 flex flex-col h-full overflow-hidden relative">
-    <!-- Spoke ヘッダー -->
-    <header class="bg-slate-900/95 backdrop-blur border-b border-slate-800 px-3 py-2 shrink-0 z-20 flex items-center justify-between gap-2 shadow-md">
-      <div class="flex items-center gap-2 min-w-0">
-        <button id="btn-world-back-hub" class="p-1.5 sm:p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1 text-xs font-bold" title="地域一覧に戻る">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+    <header class="bg-slate-800/95 backdrop-blur border-b border-slate-700/80 px-2.5 py-1.5 sm:px-3 sm:py-2 shrink-0 z-20 flex items-center justify-between gap-1.5">
+      <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+        <button id="btn-world-back-hub" class="flex items-center gap-1 px-2 py-1.5 sm:px-2.5 sm:py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-xs sm:text-sm font-semibold text-white transition active:scale-95 shrink-0" title="地域一覧に戻る">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
           <span class="hidden sm:inline">一覧</span>
         </button>
-        <button class="btn-return-root p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition" title="ホームに戻る">
+        <button class="btn-return-root p-1.5 sm:p-2 rounded-lg bg-slate-700/60 hover:bg-slate-600 text-slate-300 hover:text-white transition" title="ホームに戻る">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
         </button>
-        <div class="min-w-0">
-          <div class="flex items-center gap-1.5">
-            <h2 id="world-spoke-title" class="text-sm sm:text-base font-extrabold text-white truncate">全世界</h2>
-            <span id="world-spoke-count-badge" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 shrink-0">196国</span>
-          </div>
-          <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
-            <span>進捗: <strong id="world-spoke-progress-text" class="text-slate-200">0 / 0</strong></span>
-            <span class="text-slate-600">|</span>
-            <span id="world-spoke-accuracy-tag" class="text-slate-400">正答率: --%</span>
-          </div>
+        <div class="flex items-baseline gap-1.5 truncate">
+          <h2 id="world-spoke-title" class="text-sm sm:text-base font-bold text-white tracking-wide truncate">全世界</h2>
+          <span id="world-spoke-count-badge" class="text-[10px] sm:text-xs font-medium text-slate-300 bg-slate-700/70 px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">196国</span>
         </div>
       </div>
 
-      <div class="flex items-center gap-1.5">
-        <!-- 4択/場所当ての出題モードトグル (国名 ↔ 首都名) -->
-        <div class="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800 text-[11px]" id="world-quiz-target-toggle">
-          <button id="btn-world-target-country" class="px-2 py-1 rounded text-white font-bold bg-indigo-600 transition" title="国名を問う">🗺️ 国名</button>
-          <button id="btn-world-target-capital" class="px-2 py-1 rounded text-slate-400 hover:text-white transition" title="首都名を問う">🏛️ 首都</button>
+      <!-- 右側：出題対象トグル & 制覇状況 -->
+      <div class="flex items-center gap-2 shrink-0">
+        <div class="flex items-center bg-slate-700/70 p-0.5 rounded-lg border border-slate-600/70 text-[11px]" id="world-target-toggle">
+          <button id="btn-world-target-country" class="px-2 py-0.5 rounded text-white font-bold bg-emerald-600 transition" title="国名を問う">国名</button>
+          <button id="btn-world-target-capital" class="px-2 py-0.5 rounded text-slate-300 hover:text-white transition" title="首都名を問う">首都</button>
         </div>
 
-        <button id="btn-world-fit-all" class="p-1.5 sm:p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition" title="地域全体を表示">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
-        </button>
+        <div class="text-right">
+          <div class="text-[10px] text-slate-400 leading-none hidden sm:block mb-0.5">制覇状況</div>
+          <div class="text-xs font-bold text-emerald-400">
+            <span id="world-spoke-cleared-count">0</span>/<span id="world-spoke-total-count">0</span>
+            <span id="world-spoke-cleared-pct" class="text-slate-300 font-normal ml-0.5 text-[10px] sm:text-xs">(0%)</span>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- サブコントロールバー -->
-    <div class="bg-slate-900/90 border-b border-slate-800 px-3 py-1.5 shrink-0 z-20 flex flex-wrap items-center justify-between gap-2 text-xs">
-      <div class="flex items-center gap-1 overflow-x-auto no-scrollbar" id="world-level-tabs">
+    <div class="bg-slate-900 border-b border-slate-800 px-2 sm:px-3 py-1 shrink-0 flex items-center justify-between gap-1.5 z-10">
+      <div class="flex items-center gap-1 overflow-x-auto no-scrollbar flex-1 min-w-0" id="world-level-tabs-container">
       </div>
 
-      <div class="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800 shrink-0" id="world-mode-segment">
-        <button class="world-mode-btn px-2.5 py-1 rounded-md text-[11px] font-bold transition flex items-center gap-1 bg-indigo-500 text-white" data-mode="locate">
-          <span>🎯</span><span>場所当て</span>
+      <div class="flex items-center bg-slate-800 p-0.5 rounded-lg border border-slate-700 shrink-0">
+        <button class="world-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-semibold bg-slate-700 text-emerald-400 shadow" data-mode="locate">
+          <span>🎯</span><span class="hidden sm:inline ml-1">場所当て</span>
         </button>
-        <button class="world-mode-btn px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition flex items-center gap-1" data-mode="name">
-          <span>🔤</span><span>4択</span>
+        <button class="world-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white" data-mode="name">
+          <span>🔤</span><span class="hidden sm:inline ml-1">4択</span>
         </button>
-        <button class="world-mode-btn px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition flex items-center gap-1" data-mode="type">
-          <span>✍️</span><span>記入</span>
+        <button class="world-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white" data-mode="type">
+          <span>✍️</span><span class="hidden sm:inline ml-1">記入</span>
         </button>
-        <button class="world-mode-btn px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-400 hover:text-white transition flex items-center gap-1" data-mode="explore">
-          <span>🔍</span><span>探索</span>
+        <button class="world-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white" data-mode="explore">
+          <span>🔍</span><span class="hidden sm:inline ml-1">探索</span>
         </button>
       </div>
     </div>
 
     <!-- 地図コンテナ -->
-    <div class="flex-1 relative overflow-hidden">
+    <div class="flex-1 relative overflow-hidden bg-slate-950">
       <div id="world-map" class="w-full h-full map-container"></div>
 
-      <!-- 探索ポップオーバー -->
-      <div id="world-explore-card" class="hidden absolute top-3 left-3 z-[1000] bg-slate-900/95 backdrop-blur border border-slate-700/80 rounded-xl p-3.5 shadow-2xl max-w-xs text-xs space-y-2.5">
-        <div class="flex items-start justify-between gap-2">
-          <div class="flex items-center gap-2">
-            <span id="world-exp-flag" class="text-2xl">🇯🇵</span>
-            <div>
-              <div id="world-exp-kana" class="text-[10px] text-indigo-400">ふらんす</div>
-              <div id="world-exp-name" class="text-base font-extrabold text-white">フランス</div>
-            </div>
-          </div>
-          <button id="btn-world-close-exp" class="text-slate-400 hover:text-white p-1">✕</button>
-        </div>
-        <div class="bg-slate-950/70 p-2.5 rounded-lg border border-slate-800 space-y-1.5 text-[11px]">
-          <div class="flex justify-between">
-            <span class="text-slate-400">🏛️ 首都</span>
-            <span id="world-exp-capital" class="text-white font-bold">パリ (ぱり)</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-slate-400">🌍 地域 / ISO</span>
-            <span id="world-exp-region" class="text-slate-300">ヨーロッパ (FRA)</span>
-          </div>
-          <div class="flex justify-between pt-1 border-t border-slate-800">
-            <span class="text-slate-400">📊 学習成績</span>
-            <span id="world-exp-stats" class="text-slate-200 font-bold">正解 0 / 不正解 0</span>
-          </div>
-        </div>
-        <button id="btn-world-test-single" class="w-full py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition">
-          この国をテスト 🎯
+      <div class="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 flex flex-col gap-1 sm:gap-1.5 items-end">
+        <button id="btn-world-reset-bounds" class="p-1.5 sm:p-2 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-600/70 shadow-lg backdrop-blur text-xs transition active:scale-95" title="地域全体を表示">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
         </button>
       </div>
-    </div>
 
-    <!-- 下部ドック -->
-    <div id="world-dock" class="bg-slate-900/95 backdrop-blur border-t border-slate-800 px-4 py-3 shrink-0 z-20 shadow-2xl">
+      <!-- 下部操作ドック -->
+      <div class="absolute bottom-0 left-0 right-0 z-20 p-2 sm:p-4 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pointer-events-none">
+        <div class="max-w-xl mx-auto pointer-events-auto">
+
+          <!-- モード1: 場所当てドック -->
+          <div id="world-dock-locate" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl">
+            <div class="flex items-center justify-between gap-1.5 mb-1 sm:mb-2">
+              <div class="flex items-center gap-1.5 truncate">
+                <span id="world-locate-level-tag" class="text-[10px] sm:text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full shrink-0">Level 1 主要国</span>
+                <span id="world-locate-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
+              </div>
+              <span id="world-locate-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex-1 min-w-0 flex items-center gap-2 sm:gap-3">
+                <span id="world-locate-flag" class="text-2xl sm:text-3xl shrink-0">🇫🇷</span>
+                <div class="min-w-0">
+                  <div class="text-[10px] sm:text-xs text-slate-400 flex items-center gap-1 truncate">
+                    <span id="world-locate-prompt-label">地図上でタップ：</span>
+                    <span id="world-locate-kana" class="text-slate-300 font-medium">（ふりがな）</span>
+                  </div>
+                  <div id="world-locate-question-name" class="text-lg sm:text-2xl font-black text-white truncate tracking-wide leading-tight">
+                    フランス
+                  </div>
+                </div>
+              </div>
+              <button id="btn-world-locate-skip" class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">
+                スキップ →
+              </button>
+            </div>
+
+            <div id="world-locate-feedback-bar" class="mt-2 pt-2 border-t border-slate-700/60 hidden">
+              <div id="world-locate-feedback-content" class="flex items-center justify-between gap-2"></div>
+            </div>
+          </div>
+
+          <!-- モード2: 4択ドック -->
+          <div id="world-dock-name" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl hidden">
+            <div class="flex items-center justify-between gap-1.5 mb-1.5 sm:mb-2">
+              <div class="flex items-center gap-1.5 truncate">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0"></span>
+                <span id="world-name-prompt-label" class="text-[11px] sm:text-xs font-bold text-amber-300 truncate">黄色の国の名前はどれ？</span>
+                <span id="world-name-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
+              </div>
+              <span id="world-name-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 sm:gap-2" id="world-choice-buttons-grid"></div>
+          </div>
+
+          <!-- モード3: 記入ドック -->
+          <div id="world-dock-type" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl hidden">
+            <div class="flex items-center justify-between gap-1.5 mb-1.5 sm:mb-2">
+              <div class="flex items-center gap-1.5 truncate">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0"></span>
+                <span id="world-type-prompt-label" class="text-[11px] sm:text-xs font-bold text-amber-300 truncate">黄色の国の国名を入力：</span>
+                <span id="world-type-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
+              </div>
+              <span id="world-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
+            </div>
+            <form id="world-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="return false;">
+              <input type="text" id="world-input-type" placeholder="例: フランス、パリ" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
+              <button type="submit" id="btn-world-type-submit" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 shadow">回答</button>
+              <button type="button" id="btn-world-type-skip" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">スキップ →</button>
+            </form>
+            <div id="world-type-feedback-bar" class="mt-2 pt-2 border-t border-slate-700/60 hidden">
+              <div id="world-type-feedback-content" class="flex items-center justify-between gap-2"></div>
+            </div>
+          </div>
+
+          <!-- モード4: 探索ドック -->
+          <div id="world-dock-explore" class="bg-slate-800/95 backdrop-blur-md border border-slate-700/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-2xl hidden">
+            <div id="world-explore-empty" class="text-center py-1 sm:py-2 text-slate-400 text-xs">
+              地図上の国をタップすると国名・首都情報が表示されます
+            </div>
+            <div id="world-explore-detail" class="hidden">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-center gap-2 sm:gap-3">
+                  <span id="world-exp-flag-text" class="text-2xl sm:text-3xl shrink-0">🇯🇵</span>
+                  <div>
+                    <div class="flex items-center gap-1.5 mb-0.5">
+                      <span id="world-exp-region-badge" class="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">ヨーロッパ</span>
+                      <span id="world-exp-kana-text" class="text-[10px] sm:text-xs text-slate-400">ふらんす</span>
+                    </div>
+                    <h3 id="world-exp-name-text" class="text-base sm:text-xl font-black text-white">フランス</h3>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-[9px] sm:text-[10px] text-slate-400">首都 (ISO)</div>
+                  <div id="world-exp-capital-text" class="text-xs font-bold text-slate-200">パリ (FRA)</div>
+                </div>
+              </div>
+              <div class="mt-2 pt-1.5 border-t border-slate-700/60 flex items-center justify-between text-xs">
+                <div id="world-exp-stats-tag" class="text-[11px] sm:text-xs text-slate-400">未挑戦</div>
+                <button id="btn-world-quiz-this" class="text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 text-[11px] sm:text-xs">
+                  <span>この国をテスト</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- ============================================================== -->
   <!-- 共通モーダル: データ管理 & 設定 -->
   <!-- ============================================================== -->
-  <div id="modal-data-mgr" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+  <div id="modal-data-mgr" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-3">
         <h3 class="text-base font-bold text-white flex items-center gap-2">
           <span>⚙️</span>
           <span>データ管理 & 設定</span>
         </h3>
-        <button id="btn-close-data-mgr" class="text-slate-400 hover:text-white p-1">✕</button>
+        <button id="btn-close-data-mgr" class="text-slate-400 hover:text-white p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
       </div>
 
       <div class="space-y-3 text-xs">
-        <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-2">
+        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700/60 space-y-2">
           <div class="font-bold text-slate-300">各モジュールの学習データリセット</div>
           <div class="grid grid-cols-3 gap-2">
             <button id="btn-reset-muni-data" class="py-1.5 px-2 rounded bg-slate-800 hover:bg-rose-950 hover:text-rose-400 text-slate-300 transition text-[11px] font-medium border border-slate-700">
@@ -958,11 +1158,11 @@ html_content = f'''<!DOCTYPE html>
           </div>
         </div>
 
-        <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-2">
+        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700/60 space-y-2">
           <div class="font-bold text-slate-300">データのエクスポート / インポート</div>
           <p class="text-slate-400 text-[11px]">学習履歴（正誤回数、制覇記録）をJSON形式でバックアップ・移行できます。</p>
           <div class="flex gap-2">
-            <button id="btn-export-all-data" class="flex-1 py-1.5 rounded bg-sky-600 hover:bg-sky-500 text-white font-bold transition text-[11px]">
+            <button id="btn-export-all-data" class="flex-1 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition text-[11px]">
               📥 バックアップ出力
             </button>
             <button id="btn-import-all-data" class="flex-1 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition text-[11px] border border-slate-700">
@@ -993,17 +1193,16 @@ html_content = f'''<!DOCTYPE html>
   </script>
 
   <!-- ============================================================== -->
-  <!-- メインスクリプト (統合システム & 各モジュール) -->
+  <!-- メインスクリプト -->
   <!-- ============================================================== -->
   <script>
-    // --- 共通ユーティリティ: 国旗絵文字生成 ---
     function getFlagEmoji(alpha2) {{
       if (!alpha2 || alpha2.length !== 2) return '🌐';
       const codePoints = [...alpha2.toUpperCase()].map(c => 127397 + c.charCodeAt(0));
       return String.fromCodePoint(...codePoints);
     }}
 
-    // --- 共通サウンドエンジン (Web Audio API 内蔵オシレーター) ---
+    // --- Web Audio API サウンドシステム ---
     class SoundEngine {{
       constructor() {{
         this.ctx = null;
@@ -1035,12 +1234,10 @@ html_content = f'''<!DOCTYPE html>
         osc.stop(now + duration);
       }}
       correct() {{
-        // 上昇和音アルペジオ (D5 587Hz -> A5 880Hz)
         this.playTone(587.33, 'sine', 0.18, 0, 0.2);
         this.playTone(880.00, 'sine', 0.25, 0.08, 0.22);
       }}
       wrong() {{
-        // 下降濁和音 (220Hz -> 174Hz)
         this.playTone(220, 'sawtooth', 0.22, 0, 0.15);
         this.playTone(174.61, 'sawtooth', 0.25, 0.08, 0.15);
       }}
@@ -1051,7 +1248,7 @@ html_content = f'''<!DOCTYPE html>
     }}
     const sound = new SoundEngine();
 
-    // --- 共通ストレージ管理 ---
+    // --- Storage ---
     const STORAGE = {{
       get(key, defaultVal) {{
         try {{
@@ -1068,14 +1265,13 @@ html_content = f'''<!DOCTYPE html>
       }}
     }};
 
-    // キー名
     const KEYS = {{
       MUNI: 'geoanki_muni_v1',
       PROV: 'geoanki_province_v1',
       WORLD: 'geoanki_world_v1'
     }};
 
-    // --- ルーティング & 画面切り替え ---
+    // --- Router ---
     const AppRouter = {{
       currentScreen: 'screen-root-hub',
       screens: [
@@ -1097,7 +1293,6 @@ html_content = f'''<!DOCTYPE html>
         }});
         this.currentScreen = targetScreenId;
 
-        // Leaflet マップのリサイズ再計算
         setTimeout(() => {{
           if (targetScreenId === 'screen-muni-spoke' && MuniApp.map) MuniApp.map.invalidateSize();
           if (targetScreenId === 'screen-prov-spoke' && ProvApp.map) ProvApp.map.invalidateSize();
@@ -1110,10 +1305,9 @@ html_content = f'''<!DOCTYPE html>
       }}
     }};
 
-    // --- Root Hub (ランチャー画面管理) ---
+    // --- Root Hub ---
     const RootHub = {{
       init() {{
-        // ボタンイベント
         document.getElementById('btn-enter-muni').onclick = () => {{
           sound.init();
           AppRouter.navigate('screen-muni-hub');
@@ -1130,12 +1324,10 @@ html_content = f'''<!DOCTYPE html>
           WorldApp.renderHub();
         }};
 
-        // 各画面のホームに戻るボタン
         document.querySelectorAll('.btn-return-root').forEach(btn => {{
           btn.onclick = () => AppRouter.navigate('screen-root-hub');
         }});
 
-        // グローバルサウンドトグル
         const btnSound = document.getElementById('btn-global-sound');
         const iconOn = document.getElementById('global-sound-icon-on');
         const iconOff = document.getElementById('global-sound-icon-off');
@@ -1157,14 +1349,12 @@ html_content = f'''<!DOCTYPE html>
         sound.enabled = STORAGE.get('geoanki_sound_enabled', true);
         updateSoundUI();
 
-        // データ管理モーダル
         const modal = document.getElementById('modal-data-mgr');
         document.getElementById('btn-show-data-mgr').onclick = () => modal.classList.remove('hidden');
         document.getElementById('btn-close-data-mgr').onclick = () => modal.classList.add('hidden');
 
-        // リセットボタン群
         document.getElementById('btn-reset-muni-data').onclick = () => {{
-          if (confirm('市区町村の全学習データをリセットしますか？この操作は取り消せません。')) {{
+          if (confirm('市区町村の全学習データをリセットしますか？')) {{
             localStorage.removeItem(KEYS.MUNI);
             RootHub.updateSummaries();
             MuniApp.data = {{ records: {{}} }};
@@ -1188,7 +1378,6 @@ html_content = f'''<!DOCTYPE html>
           }}
         }};
 
-        // エクスポート・インポート
         document.getElementById('btn-export-all-data').onclick = () => {{
           const backup = {{
             muni: STORAGE.get(KEYS.MUNI, {{ records: {{}} }}),
@@ -1302,7 +1491,6 @@ html_content = f'''<!DOCTYPE html>
       currentPref: null,
       currentGeoJson: null,
       geoJsonLayer: null,
-      wardOuterLayer: null,
       currentLevel: 'ALL',
       currentMode: 'locate',
       questionPool: [],
@@ -1316,7 +1504,6 @@ html_content = f'''<!DOCTYPE html>
         this.data = STORAGE.get(KEYS.MUNI, {{ records: {{}} }});
         if (!this.data.records) this.data.records = {{}};
 
-        // フィルターボタン
         document.querySelectorAll('.muni-filter-btn').forEach(btn => {{
           btn.onclick = () => {{
             document.querySelectorAll('.muni-filter-btn').forEach(b => {{
@@ -1330,44 +1517,45 @@ html_content = f'''<!DOCTYPE html>
           }};
         }});
 
-        // Spokeから一覧に戻る
         document.getElementById('btn-muni-back-hub').onclick = () => {{
           AppRouter.navigate('screen-muni-hub');
           this.renderHub();
         }};
+        document.getElementById('btn-muni-reset-bounds').onclick = () => {{
+          if (this.map && this.geoJsonLayer) {{
+            if (this.currentPref.defaultView) this.map.fitBounds(this.currentPref.defaultView, {{ padding: [20, 20] }});
+            else this.map.fitBounds(this.geoJsonLayer.getBounds(), {{ padding: [20, 20] }});
+          }}
+        }};
 
-        // モードボタン
-        document.querySelectorAll('.muni-mode-btn').forEach(btn => {{
-          btn.onclick = () => {{
-            this.setMode(btn.dataset.mode);
-          }};
+        document.querySelectorAll('.muni-mode-tab-btn').forEach(btn => {{
+          btn.onclick = () => this.setMode(btn.dataset.mode);
         }});
 
-        // 探索ポップアップ
-        document.getElementById('btn-muni-close-exp').onclick = () => {{
-          document.getElementById('muni-explore-card').classList.add('hidden');
-        }};
-        document.getElementById('btn-muni-test-single').onclick = () => {{
+        document.getElementById('btn-muni-locate-skip').onclick = () => this.skipQuestion();
+        document.getElementById('btn-muni-type-skip').onclick = () => this.skipQuestion();
+
+        document.getElementById('btn-muni-quiz-this').onclick = () => {{
           if (this.selectedMuni) {{
-            document.getElementById('muni-explore-card').classList.add('hidden');
             this.setMode('locate');
             this.startSingleQuestion(this.selectedMuni);
           }}
         }};
 
-        // 県データリセット
-        document.getElementById('btn-muni-reset-pref').onclick = () => {{
-          if (!this.currentPref) return;
-          if (confirm(`${{this.currentPref.name}}の学習データをリセットしますか？`)) {{
-            const prefMunis = MUNI_RAW_DATA.filter(m => m[1] === this.currentPref.code);
-            prefMunis.forEach(m => delete this.data.records[m[0]]);
-            STORAGE.set(KEYS.MUNI, this.data);
-            this.updateHeaderProgress();
-            this.startLevel(this.currentLevel);
+        const typeForm = document.getElementById('muni-form-type');
+        const typeInput = document.getElementById('muni-input-type');
+        typeForm.onsubmit = () => {{
+          if (this.isAnswered) {{
+            this.currentIndex++;
+            this.nextQuestion();
+            return;
           }}
+          const val = typeInput.value.trim();
+          const q = this.currentQuestion;
+          const isCorrect = (val === q[3] || val === q[4]);
+          this.handleAnswer(isCorrect, typeInput);
         }};
 
-        // キーボード操作
         window.addEventListener('keydown', (e) => {{
           if (AppRouter.currentScreen !== 'screen-muni-spoke') return;
           if (e.target.tagName === 'INPUT' && e.key !== 'Enter') return;
@@ -1379,7 +1567,6 @@ html_content = f'''<!DOCTYPE html>
         const container = document.getElementById('muni-hub-container');
         container.innerHTML = '';
 
-        // 進捗集計
         let totalCleared = 0;
         let completedPrefsCount = 0;
         const muniByPref = {{}};
@@ -1406,7 +1593,6 @@ html_content = f'''<!DOCTYPE html>
         document.getElementById('muni-hub-progress-bar').style.width = totalPct + '%';
         document.getElementById('muni-hub-completed-prefs').textContent = completedPrefsCount;
 
-        // 地方ごとにグルーピング
         const regions = ['北海道', '東北', '関東', '中部', '近畿', '中国', '四国', '九州・沖縄'];
         regions.forEach(reg => {{
           if (this.activeRegionFilter !== 'ALL' && this.activeRegionFilter !== reg) return;
@@ -1437,7 +1623,7 @@ html_content = f'''<!DOCTYPE html>
             card.className = `p-3 rounded-xl border cursor-pointer transition active:scale-98 ${{
               isComp
                 ? 'bg-emerald-950/30 border-emerald-500/40 hover:border-emerald-400'
-                : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+                : 'bg-slate-800/80 border-slate-700/80 hover:border-slate-600'
             }} flex flex-col justify-between`;
 
             card.innerHTML = `
@@ -1450,7 +1636,7 @@ html_content = f'''<!DOCTYPE html>
                   <span>${{clr}} / ${{list.length}}</span>
                   <span>${{pct}}%</span>
                 </div>
-                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div class="w-full bg-slate-700/60 h-1.5 rounded-full overflow-hidden">
                   <div class="bg-emerald-500 h-full" style="width: ${{pct}}%"></div>
                 </div>
               </div>
@@ -1474,7 +1660,6 @@ html_content = f'''<!DOCTYPE html>
 
         this.updateHeaderProgress();
 
-        // 地図初期化
         if (!this.map) {{
           this.map = L.map('muni-map', {{
             attributionControl: false,
@@ -1484,23 +1669,19 @@ html_content = f'''<!DOCTYPE html>
           L.control.zoom({{ position: 'bottomright' }}).addTo(this.map);
         }}
 
-        // 離島ボタンの構築
         const islandContainer = document.getElementById('muni-island-buttons');
         islandContainer.innerHTML = '';
         if (pref.islands && pref.islands.length > 0) {{
           pref.islands.forEach(isl => {{
             const btn = document.createElement('button');
-            btn.className = 'px-2 py-1 rounded bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700 text-[10px] font-bold shadow-lg';
+            btn.className = 'px-2 py-1 rounded bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-600/70 text-[10px] font-bold shadow-lg';
             btn.textContent = `📍 ${{isl.label}}`;
             btn.onclick = () => this.map.fitBounds(isl.bounds, {{ padding: [20, 20], animate: true }});
             islandContainer.appendChild(btn);
           }});
         }}
 
-        // GeoJSON のロード (二重化CDN)
         await this.loadGeoJson(pref.code);
-
-        // レベルタブ構築 & 開始
         this.renderLevelTabs();
         this.startLevel('ALL');
       }},
@@ -1510,8 +1691,6 @@ html_content = f'''<!DOCTYPE html>
           this.currentGeoJson = this.geoJsonCache[prefCode];
           return;
         }}
-
-        // ロード中表示
         const cdn1 = `https://cdn.jsdelivr.net/gh/64bitfloat/Japanese_municipalities@main/data/geojson/${{prefCode}}.geojson`;
         const cdn2 = `https://raw.githubusercontent.com/64bitfloat/Japanese_municipalities/main/data/geojson/${{prefCode}}.geojson`;
 
@@ -1529,82 +1708,69 @@ html_content = f'''<!DOCTYPE html>
       }},
 
       renderLevelTabs() {{
-        const container = document.getElementById('muni-level-tabs');
+        const container = document.getElementById('muni-level-tabs-container');
         container.innerHTML = '';
 
-        const levels = [
-          {{ id: 'ALL', name: '全自治体' }},
-          {{ id: 1, name: 'Lv.1 主要都市' }},
-          {{ id: 2, name: 'Lv.2 市' }},
-          {{ id: 3, name: 'Lv.3 町' }},
-          {{ id: 4, name: 'Lv.4 村' }},
-          {{ id: 'WEAK', name: '⚠️ 弱点復習' }}
+        const prefMunis = MUNI_RAW_DATA.filter(m => m[1] === this.currentPref.code);
+        const counts = {{
+          1: prefMunis.filter(m => m[6] === 1).length,
+          2: prefMunis.filter(m => m[6] === 2).length,
+          3: prefMunis.filter(m => m[6] === 3).length,
+          4: prefMunis.filter(m => m[6] === 4).length,
+          ALL: prefMunis.length,
+          WEAK: prefMunis.filter(m => this.data.records[m[0]] && this.data.records[m[0]].last === 'wrong').length
+        }};
+
+        const tabs = [
+          {{ id: 1, label: 'Lv.1 主要都市', count: counts[1] }},
+          {{ id: 2, label: 'Lv.2 市', count: counts[2] }},
+          {{ id: 3, label: 'Lv.3 町', count: counts[3] }},
+          {{ id: 4, label: 'Lv.4 村', count: counts[4] }},
+          {{ id: 'ALL', label: '全自治体', count: counts.ALL }},
+          {{ id: 'WEAK', label: '⚠️ 弱点復習', count: counts.WEAK }}
         ];
 
-        levels.forEach(lvl => {{
+        tabs.forEach(t => {{
+          if (t.count === 0 && t.id !== 'ALL' && t.id !== 'WEAK') return;
           const btn = document.createElement('button');
-          btn.className = `muni-lvl-btn px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition ${{
-            this.currentLevel === lvl.id
+          btn.className = `level-tab-btn px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[11px] sm:text-xs font-semibold whitespace-nowrap shrink-0 transition ${{
+            this.currentLevel === t.id
               ? 'bg-emerald-500 text-white'
               : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
           }}`;
-          btn.textContent = lvl.name;
-          btn.onclick = () => {{
-            this.startLevel(lvl.id);
-          }};
+          btn.innerHTML = `<span>${{t.label}}</span> <span class="font-normal opacity-80">(${{t.count}})</span>`;
+          btn.onclick = () => this.startLevel(t.id);
           container.appendChild(btn);
         }});
       }},
 
       startLevel(levelId) {{
         this.currentLevel = levelId;
-        document.querySelectorAll('.muni-lvl-btn').forEach(btn => {{
-          btn.classList.remove('bg-emerald-500', 'text-white');
-          btn.classList.add('bg-slate-800', 'text-slate-300');
-        }});
-        const activeBtn = [...document.querySelectorAll('.muni-lvl-btn')].find(b => b.textContent.includes(levelId === 'ALL' ? '全' : levelId === 'WEAK' ? '弱点' : `Lv.${{levelId}}`));
-        if (activeBtn) {{
-          activeBtn.classList.add('bg-emerald-500', 'text-white');
-          activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
-        }}
-
-        // 問題プール抽出
         const prefMunis = MUNI_RAW_DATA.filter(m => m[1] === this.currentPref.code);
+
         if (levelId === 'ALL') {{
           this.questionPool = [...prefMunis];
         }} else if (levelId === 'WEAK') {{
-          this.questionPool = prefMunis.filter(m => {{
-            const rec = this.data.records[m[0]];
-            return rec && rec.last === 'wrong';
-          }});
+          this.questionPool = prefMunis.filter(m => this.data.records[m[0]] && this.data.records[m[0]].last === 'wrong');
           if (this.questionPool.length === 0) {{
-            alert('弱点の自治体はありません！素晴らしい！');
+            alert('弱点の自治体はありません！');
             this.startLevel('ALL');
             return;
           }}
         }} else {{
           this.questionPool = prefMunis.filter(m => m[6] === levelId);
-          if (this.questionPool.length === 0) {{
-            alert('この難易度の自治体はこの県には存在しません。');
-            this.startLevel('ALL');
-            return;
-          }}
         }}
 
-        // シャッフル
         this.questionPool.sort(() => Math.random() - 0.5);
         this.currentIndex = 0;
-
-        // 地図レイヤーの描画
+        this.renderLevelTabs();
         this.renderMapLayers();
         this.nextQuestion();
       }},
 
       renderMapLayers() {{
         if (!this.map || !this.currentGeoJson) return;
-
         if (this.geoJsonLayer) this.map.removeLayer(this.geoJsonLayer);
-        if (this.wardOuterLayer) this.map.removeLayer(this.wardOuterLayer);
 
         const targetCodes = new Set(this.questionPool.map(m => m[0]));
 
@@ -1630,9 +1796,7 @@ html_content = f'''<!DOCTYPE html>
               mouseout: (e) => {{
                 if (this.geoJsonLayer) this.geoJsonLayer.resetStyle(e.target);
               }},
-              click: (e) => {{
-                this.onPolygonClick(feature, layer);
-              }}
+              click: () => this.onPolygonClick(feature, layer)
             }});
           }}
         }}).addTo(this.map);
@@ -1646,24 +1810,31 @@ html_content = f'''<!DOCTYPE html>
 
       setMode(mode) {{
         this.currentMode = mode;
-        document.querySelectorAll('.muni-mode-btn').forEach(btn => {{
-          btn.classList.remove('bg-emerald-500', 'text-white');
-          btn.classList.add('text-slate-400');
+        document.querySelectorAll('.muni-mode-tab-btn').forEach(btn => {{
+          if (btn.dataset.mode === mode) {{
+            btn.className = 'muni-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-semibold bg-slate-700 text-emerald-400 shadow';
+          }} else {{
+            btn.className = 'muni-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white';
+          }}
         }});
-        const active = [...document.querySelectorAll('.muni-mode-btn')].find(b => b.dataset.mode === mode);
-        if (active) {{
-          active.classList.add('bg-emerald-500', 'text-white');
-          active.classList.remove('text-slate-400');
-        }}
+
+        ['locate', 'name', 'type', 'explore'].forEach(m => {{
+          const dock = document.getElementById(`muni-dock-${{m}}`);
+          if (dock) {{
+            if (m === mode) dock.classList.remove('hidden');
+            else dock.classList.add('hidden');
+          }}
+        }});
+
         this.nextQuestion();
       }},
 
       nextQuestion() {{
         this.isAnswered = false;
-        if (this.currentMode === 'explore') {{
-          this.renderExploreDock();
-          return;
-        }}
+        document.getElementById('muni-locate-feedback-bar').classList.add('hidden');
+        document.getElementById('muni-type-feedback-bar').classList.add('hidden');
+
+        if (this.currentMode === 'explore') return;
 
         if (this.currentIndex >= this.questionPool.length) {{
           sound.fanfare();
@@ -1675,15 +1846,47 @@ html_content = f'''<!DOCTYPE html>
         this.currentQuestion = this.questionPool[this.currentIndex];
         this.updateHeaderProgress();
 
+        const q = this.currentQuestion;
+        const rec = this.data.records[q[0]] || {{ correct: 0, wrong: 0 }};
+        const total = rec.correct + rec.wrong;
+        const pct = total > 0 ? Math.round((rec.correct / total) * 100) + '%' : '--%';
+        const progStr = `問題 ${{this.currentIndex + 1}} / ${{this.questionPool.length}}`;
+
         if (this.currentMode === 'locate') {{
-          this.renderLocateDock();
+          document.getElementById('muni-locate-level-tag').textContent = `Lv.${{q[6]}} ${{q[5]}}`;
+          document.getElementById('muni-locate-accuracy-tag').textContent = `正答率: ${{pct}}`;
+          document.getElementById('muni-locate-progress-tag').textContent = progStr;
+          document.getElementById('muni-locate-kana').textContent = `（${{q[4]}}）`;
+          document.getElementById('muni-locate-question-name').textContent = q[3];
+          this.resetPolygonStyles();
         }} else if (this.currentMode === 'name') {{
+          document.getElementById('muni-name-accuracy-tag').textContent = `正答率: ${{pct}}`;
+          document.getElementById('muni-name-progress-tag').textContent = progStr;
           this.highlightQuestionPolygon();
-          this.renderNameDock();
+          this.renderNameChoices();
         }} else if (this.currentMode === 'type') {{
+          document.getElementById('muni-type-accuracy-tag').textContent = `正答率: ${{pct}}`;
+          document.getElementById('muni-type-progress-tag').textContent = progStr;
+          const input = document.getElementById('muni-input-type');
+          input.value = '';
+          input.focus();
           this.highlightQuestionPolygon();
-          this.renderTypeDock();
         }}
+      }},
+
+      resetPolygonStyles() {{
+        if (!this.geoJsonLayer) return;
+        const targetCodes = new Set(this.questionPool.map(m => m[0]));
+        this.geoJsonLayer.eachLayer(layer => {{
+          let code = String(layer.feature.properties.N03_007 || layer.feature.properties.code || '');
+          const isTarget = targetCodes.has(code) || (WARD_TO_CITY[code] && targetCodes.has(WARD_TO_CITY[code]));
+          layer.setStyle({{
+            fillColor: isTarget ? '#f8fafc' : '#334155',
+            fillOpacity: isTarget ? 0.95 : 0.65,
+            color: '#090d16',
+            weight: 1.2
+          }});
+        }});
       }},
 
       highlightQuestionPolygon() {{
@@ -1693,7 +1896,6 @@ html_content = f'''<!DOCTYPE html>
           const featCode = String(layer.feature.properties.N03_007 || layer.feature.properties.code || '');
           if (featCode === code || WARD_TO_CITY[featCode] === code) {{
             layer.setStyle({{ fillColor: '#fbbf24', fillOpacity: 0.95, weight: 3, color: '#f59e0b' }});
-            // 画面中央へ
             if (layer.getBounds) {{
               this.map.flyToBounds(layer.getBounds(), {{ maxZoom: 10.5, duration: 0.5 }});
             }}
@@ -1703,103 +1905,32 @@ html_content = f'''<!DOCTYPE html>
         }});
       }},
 
-      renderLocateDock() {{
-        const dock = document.getElementById('muni-dock');
-        const q = this.currentQuestion;
-        const rec = this.data.records[q[0]] || {{ correct: 0, wrong: 0 }};
-        const total = rec.correct + rec.wrong;
-        const pct = total > 0 ? Math.round((rec.correct / total) * 100) + '%' : '--%';
-
-        dock.innerHTML = `
-          <div class="max-w-xl mx-auto flex items-center justify-between gap-3">
-            <div>
-              <div class="text-[11px] text-emerald-400">${{q[4]}}</div>
-              <div class="text-lg font-black text-white flex items-center gap-2">
-                <span>${{q[3]}}</span>
-                <span class="text-xs font-normal text-slate-400">はどこ？</span>
-              </div>
-            </div>
-            <div class="text-right">
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">過去正答率: ${{pct}}</span>
-            </div>
-          </div>
-        `;
-      }},
-
-      renderNameDock() {{
-        const dock = document.getElementById('muni-dock');
+      renderNameChoices() {{
+        const grid = document.getElementById('muni-choice-buttons-grid');
+        grid.innerHTML = '';
         const q = this.currentQuestion;
 
-        // ダミー選択肢抽出 (同県、なるべく同Level)
         const prefMunis = MUNI_RAW_DATA.filter(m => m[1] === this.currentPref.code && m[0] !== q[0]);
         prefMunis.sort(() => Math.random() - 0.5);
         const choices = [q, ...prefMunis.slice(0, 3)].sort(() => Math.random() - 0.5);
 
-        let buttonsHtml = '';
         choices.forEach((c, idx) => {{
-          buttonsHtml += `
-            <button class="muni-choice-btn py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm border border-slate-700 transition flex items-center gap-2 active:scale-95" data-code="${{c[0]}}">
-              <span class="w-5 h-5 rounded bg-slate-900 text-slate-400 flex items-center justify-center text-[10px] font-mono">${{idx + 1}}</span>
-              <span class="truncate">${{c[3]}}</span>
-            </button>
+          const btn = document.createElement('button');
+          btn.className = 'muni-choice-btn py-2 px-3 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm border border-slate-700 transition flex items-center gap-2 active:scale-95';
+          btn.dataset.code = c[0];
+          btn.innerHTML = `
+            <span class="w-5 h-5 rounded bg-slate-900 text-slate-400 flex items-center justify-center text-[10px] font-mono">${{idx + 1}}</span>
+            <span class="truncate">${{c[3]}}</span>
           `;
-        }});
-
-        dock.innerHTML = `
-          <div class="max-w-xl mx-auto space-y-2">
-            <div class="text-xs text-slate-400 flex justify-between">
-              <span>イエロー点滅の自治体名を選択してください</span>
-              <span>[1] - [4] キー対応</span>
-            </div>
-            <div class="grid grid-cols-2 gap-2" id="muni-choices-grid">
-              ${{buttonsHtml}}
-            </div>
-          </div>
-        `;
-
-        dock.querySelectorAll('.muni-choice-btn').forEach(btn => {{
-          btn.onclick = () => this.handleAnswer(btn.dataset.code === q[0], btn);
+          btn.onclick = () => this.handleAnswer(c[0] === q[0], btn);
+          grid.appendChild(btn);
         }});
       }},
 
-      renderTypeDock() {{
-        const dock = document.getElementById('muni-dock');
-        const q = this.currentQuestion;
-
-        dock.innerHTML = `
-          <div class="max-w-xl mx-auto space-y-2">
-            <div class="text-xs text-slate-400">点滅している自治体の正式名称（市・町・村まで）を入力</div>
-            <form id="muni-type-form" class="flex gap-2">
-              <input type="text" id="muni-type-input" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 font-bold" placeholder="例: ${{q[3]}}" autofocus autocomplete="off" />
-              <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow transition">回答</button>
-            </form>
-          </div>
-        `;
-
-        const form = document.getElementById('muni-type-form');
-        const input = document.getElementById('muni-type-input');
-        input.focus();
-
-        form.onsubmit = (e) => {{
-          e.preventDefault();
-          if (this.isAnswered) {{
-            this.currentIndex++;
-            this.nextQuestion();
-            return;
-          }}
-          const val = input.value.trim();
-          const isCorrect = (val === q[3] || val === q[4]);
-          this.handleAnswer(isCorrect, input);
-        }};
-      }},
-
-      renderExploreDock() {{
-        const dock = document.getElementById('muni-dock');
-        dock.innerHTML = `
-          <div class="max-w-xl mx-auto text-center text-xs text-slate-400">
-            地図上のポリゴンを自由にタップして、自治体の名前や情報を確認できます。
-          </div>
-        `;
+      skipQuestion() {{
+        if (this.isAnswered) return;
+        this.currentIndex++;
+        this.nextQuestion();
       }},
 
       onPolygonClick(feature, layer) {{
@@ -1815,15 +1946,18 @@ html_content = f'''<!DOCTYPE html>
           this.handleAnswer(isCorrect, layer);
         }} else if (this.currentMode === 'explore') {{
           this.selectedMuni = targetMuni;
-          const card = document.getElementById('muni-explore-card');
-          card.classList.remove('hidden');
-          document.getElementById('muni-exp-kana').textContent = targetMuni[4];
-          document.getElementById('muni-exp-name').textContent = targetMuni[3];
-          document.getElementById('muni-exp-type').textContent = targetMuni[5];
-          document.getElementById('muni-exp-code').textContent = targetMuni[0];
+          document.getElementById('muni-explore-empty').classList.add('hidden');
+          document.getElementById('muni-explore-detail').classList.remove('hidden');
+
+          document.getElementById('muni-exp-type-badge').textContent = targetMuni[5];
+          document.getElementById('muni-exp-kana-text').textContent = targetMuni[4];
+          document.getElementById('muni-exp-name-text').textContent = targetMuni[3];
+          document.getElementById('muni-exp-code-text').textContent = targetMuni[0];
 
           const rec = this.data.records[targetMuni[0]] || {{ correct: 0, wrong: 0 }};
-          document.getElementById('muni-exp-stats').textContent = `正解 ${{rec.correct}} / 不正解 ${{rec.wrong}}`;
+          const total = rec.correct + rec.wrong;
+          const pct = total > 0 ? Math.round((rec.correct / total) * 100) + '%' : '--%';
+          document.getElementById('muni-exp-stats-tag').textContent = `正解 ${{rec.correct}} / 不正解 ${{rec.wrong}} (正答率: ${{pct}})`;
         }}
       }},
 
@@ -1844,9 +1978,17 @@ html_content = f'''<!DOCTYPE html>
 
           if (this.currentMode === 'locate') {{
             if (targetEl && targetEl.setStyle) targetEl.setStyle({{ fillColor: '#34d399', fillOpacity: 0.95 }});
+            const bar = document.getElementById('muni-locate-feedback-bar');
+            bar.classList.remove('hidden');
+            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
           }} else if (this.currentMode === 'name') {{
             if (targetEl) targetEl.classList.add('!bg-emerald-600', '!border-emerald-400');
+          }} else if (this.currentMode === 'type') {{
+            const bar = document.getElementById('muni-type-feedback-bar');
+            bar.classList.remove('hidden');
+            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
           }}
+
           setTimeout(() => {{
             this.currentIndex++;
             this.nextQuestion();
@@ -1860,18 +2002,37 @@ html_content = f'''<!DOCTYPE html>
 
           if (this.currentMode === 'locate') {{
             if (targetEl && targetEl.setStyle) targetEl.setStyle({{ fillColor: '#f87171', fillOpacity: 0.95 }});
-            // 正解ポリゴンをハイライト
             this.highlightQuestionPolygon();
+            const bar = document.getElementById('muni-locate-feedback-bar');
+            bar.classList.remove('hidden');
+            bar.innerHTML = `
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-rose-400">❌ 惜しい！正解は黄色点滅の場所です</span>
+                <button class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
+              </div>
+            `;
           }} else if (this.currentMode === 'name') {{
             if (targetEl) targetEl.classList.add('!bg-rose-700');
-            // 正解ボタンを緑枠に
             const correctBtn = document.querySelector(`.muni-choice-btn[data-code="${{q[0]}}"]`);
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
-            targetEl.classList.add('!border-rose-500');
-            targetEl.value = `正解: ${{q[3]}} (Enterで次へ)`;
+            const bar = document.getElementById('muni-type-feedback-bar');
+            bar.classList.remove('hidden');
+            bar.innerHTML = `
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-rose-400">❌ 正解: ${{q[3]}}</span>
+                <button class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
+              </div>
+            `;
           }}
         }}
+      }},
+
+      startSingleQuestion(muni) {{
+        this.questionPool = [muni];
+        this.currentIndex = 0;
+        this.renderMapLayers();
+        this.nextQuestion();
       }},
 
       handleKey(e) {{
@@ -1891,18 +2052,15 @@ html_content = f'''<!DOCTYPE html>
       updateHeaderProgress() {{
         if (!this.currentPref) return;
         const prefMunis = MUNI_RAW_DATA.filter(m => m[1] === this.currentPref.code);
-        let cleared = 0, correct = 0, wrong = 0;
+        let cleared = 0;
         prefMunis.forEach(m => {{
           const r = this.data.records[m[0]];
-          if (r) {{
-            if (r.correct > 0) cleared++;
-            correct += r.correct;
-            wrong += r.wrong;
-          }}
+          if (r && r.correct > 0) cleared++;
         }});
-        document.getElementById('muni-spoke-progress-text').textContent = `${{cleared}} / ${{prefMunis.length}}`;
-        const acc = (correct + wrong > 0) ? Math.round((correct / (correct + wrong)) * 100) + '%' : '--%';
-        document.getElementById('muni-spoke-accuracy-tag').textContent = `正答率: ${{acc}}`;
+        document.getElementById('muni-spoke-cleared-count').textContent = cleared;
+        document.getElementById('muni-spoke-total-count').textContent = prefMunis.length;
+        const pct = prefMunis.length > 0 ? Math.round((cleared / prefMunis.length) * 100) : 0;
+        document.getElementById('muni-spoke-cleared-pct').textContent = `(${{pct}}%)`;
       }}
     }};
 
@@ -1929,22 +2087,21 @@ html_content = f'''<!DOCTYPE html>
           AppRouter.navigate('screen-prov-hub');
           this.renderHub();
         }};
-        document.getElementById('btn-prov-fit-all').onclick = () => {{
+        document.getElementById('btn-prov-reset-bounds').onclick = () => {{
           if (this.map && this.geoJsonLayer) {{
             this.map.fitBounds(this.geoJsonLayer.getBounds(), {{ padding: [20, 20] }});
           }}
         }};
 
-        document.querySelectorAll('.prov-mode-btn').forEach(btn => {{
+        document.querySelectorAll('.prov-mode-tab-btn').forEach(btn => {{
           btn.onclick = () => this.setMode(btn.dataset.mode);
         }});
 
-        document.getElementById('btn-prov-close-exp').onclick = () => {{
-          document.getElementById('prov-explore-card').classList.add('hidden');
-        }};
-        document.getElementById('btn-prov-test-single').onclick = () => {{
+        document.getElementById('btn-prov-locate-skip').onclick = () => this.skipQuestion();
+        document.getElementById('btn-prov-type-skip').onclick = () => this.skipQuestion();
+
+        document.getElementById('btn-prov-quiz-this').onclick = () => {{
           if (this.selectedProv) {{
-            document.getElementById('prov-explore-card').classList.add('hidden');
             this.setMode('locate');
             this.startSingleQuestion(this.selectedProv);
           }}
@@ -1952,13 +2109,22 @@ html_content = f'''<!DOCTYPE html>
 
         document.getElementById('btn-prov-start-weak-all').onclick = () => {{
           const allProvs = Object.values(PROVINCES_MASTER);
-          const weakProvs = allProvs.filter(p => {{
-            const r = this.data.records[p.id];
-            return r && r.last === 'wrong';
-          }});
-          if (weakProvs.length > 0) {{
-            this.openDoh(DOH_LIST[0], 'WEAK');
+          const weak = allProvs.filter(p => this.data.records[p.id] && this.data.records[p.id].last === 'wrong');
+          if (weak.length > 0) this.openDoh(DOH_LIST[0], 'WEAK');
+        }};
+
+        const typeForm = document.getElementById('prov-form-type');
+        const typeInput = document.getElementById('prov-input-type');
+        typeForm.onsubmit = () => {{
+          if (this.isAnswered) {{
+            this.currentIndex++;
+            this.nextQuestion();
+            return;
           }}
+          const val = typeInput.value.trim();
+          const q = this.currentQuestion;
+          const isCorrect = (val === q.name || val === q.kana || q.aliases.includes(val));
+          this.handleAnswer(isCorrect, typeInput);
         }};
 
         window.addEventListener('keydown', (e) => {{
@@ -1986,7 +2152,6 @@ html_content = f'''<!DOCTYPE html>
         document.getElementById('prov-hub-pct').textContent = totalPct + '%';
         document.getElementById('prov-hub-progress-bar').style.width = totalPct + '%';
 
-        // 弱点バナー
         const weakBanner = document.getElementById('prov-weak-banner');
         if (weakCount > 0) {{
           weakBanner.classList.remove('hidden');
@@ -1995,13 +2160,9 @@ html_content = f'''<!DOCTYPE html>
           weakBanner.classList.add('hidden');
         }}
 
-        // 地域カード
         let completedDohCount = 0;
         DOH_LIST.forEach(doh => {{
-          const provs = (doh.id === 'ALL')
-            ? allProvs
-            : allProvs.filter(p => p.doh === doh.filter);
-
+          const provs = (doh.id === 'ALL') ? allProvs : allProvs.filter(p => p.doh === doh.filter);
           let clr = 0;
           provs.forEach(p => {{
             const r = this.data.records[p.id];
@@ -2012,27 +2173,24 @@ html_content = f'''<!DOCTYPE html>
           const pct = provs.length > 0 ? Math.round((clr / provs.length) * 100) : 0;
 
           const card = document.createElement('div');
-          card.className = `p-4 rounded-xl border cursor-pointer transition active:scale-98 ${{
+          card.className = `p-3 rounded-xl border cursor-pointer transition active:scale-98 ${{
             isComp
-              ? 'bg-sky-950/30 border-sky-500/40 hover:border-sky-400'
-              : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+              ? 'bg-emerald-950/30 border-emerald-500/40 hover:border-emerald-400'
+              : 'bg-slate-800/80 border-slate-700/80 hover:border-slate-600'
           }} flex flex-col justify-between`;
 
           card.innerHTML = `
-            <div>
-              <div class="flex items-center justify-between">
-                <h3 class="text-sm font-bold text-white">${{doh.name}}</h3>
-                <span class="text-[10px] px-2 py-0.5 rounded-full ${{isComp ? 'bg-sky-500/20 text-sky-400 font-bold' : 'bg-slate-800 text-slate-400'}}">${{provs.length}}国</span>
-              </div>
-              <p class="text-xs text-slate-400 mt-1">${{doh.desc}}</p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-white">${{doh.name}}</span>
+              ${{isComp ? '<span class="text-[10px] text-emerald-400 font-bold">制覇!</span>' : ''}}
             </div>
-            <div class="mt-4 space-y-1.5">
-              <div class="flex justify-between text-xs text-slate-400">
-                <span>進捗: ${{clr}} / ${{provs.length}}</span>
-                <span class="font-bold text-sky-400">${{pct}}%</span>
+            <div class="mt-2 space-y-1">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>${{clr}} / ${{provs.length}}</span>
+                <span>${{pct}}%</span>
               </div>
-              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                <div class="bg-gradient-to-r from-sky-500 to-cyan-400 h-full" style="width: ${{pct}}%"></div>
+              <div class="w-full bg-slate-700/60 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-emerald-500 h-full" style="width: ${{pct}}%"></div>
               </div>
             </div>
           `;
@@ -2053,6 +2211,8 @@ html_content = f'''<!DOCTYPE html>
         const provs = (doh.id === 'ALL') ? allProvs : allProvs.filter(p => p.doh === doh.filter);
         document.getElementById('prov-spoke-count-badge').textContent = `${{provs.length}}国`;
 
+        this.updateHeaderProgress();
+
         if (!this.map) {{
           this.map = L.map('prov-map', {{
             attributionControl: false,
@@ -2067,70 +2227,65 @@ html_content = f'''<!DOCTYPE html>
       }},
 
       renderLevelTabs() {{
-        const container = document.getElementById('prov-level-tabs');
+        const container = document.getElementById('prov-level-tabs-container');
         container.innerHTML = '';
 
-        const levels = [
-          {{ id: 'ALL', name: '全国' }},
-          {{ id: 1, name: 'Lv.1 必修' }},
-          {{ id: 2, name: 'Lv.2 基本' }},
-          {{ id: 3, name: 'Lv.3 中堅' }},
-          {{ id: 4, name: 'Lv.4 難関' }},
-          {{ id: 'WEAK', name: '⚠️ 弱点' }}
+        const allProvs = Object.values(PROVINCES_MASTER);
+        const baseProvs = (this.currentDoh.id === 'ALL') ? allProvs : allProvs.filter(p => p.doh === this.currentDoh.filter);
+
+        const counts = {{
+          1: baseProvs.filter(p => p.level === 1).length,
+          2: baseProvs.filter(p => p.level === 2).length,
+          3: baseProvs.filter(p => p.level === 3).length,
+          4: baseProvs.filter(p => p.level === 4).length,
+          ALL: baseProvs.length,
+          WEAK: baseProvs.filter(p => this.data.records[p.id] && this.data.records[p.id].last === 'wrong').length
+        }};
+
+        const tabs = [
+          {{ id: 1, label: 'Lv.1 必修', count: counts[1] }},
+          {{ id: 2, label: 'Lv.2 基本', count: counts[2] }},
+          {{ id: 3, label: 'Lv.3 中堅', count: counts[3] }},
+          {{ id: 4, label: 'Lv.4 難関', count: counts[4] }},
+          {{ id: 'ALL', label: '全旧国', count: counts.ALL }},
+          {{ id: 'WEAK', label: '⚠️ 弱点復習', count: counts.WEAK }}
         ];
 
-        levels.forEach(lvl => {{
+        tabs.forEach(t => {{
+          if (t.count === 0 && t.id !== 'ALL' && t.id !== 'WEAK') return;
           const btn = document.createElement('button');
-          btn.className = `prov-lvl-btn px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition ${{
-            this.currentLevel === lvl.id
-              ? 'bg-sky-500 text-white'
+          btn.className = `level-tab-btn px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[11px] sm:text-xs font-semibold whitespace-nowrap shrink-0 transition ${{
+            this.currentLevel === t.id
+              ? 'bg-emerald-500 text-white'
               : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
           }}`;
-          btn.textContent = lvl.name;
-          btn.onclick = () => this.startLevel(lvl.id);
+          btn.innerHTML = `<span>${{t.label}}</span> <span class="font-normal opacity-80">(${{t.count}})</span>`;
+          btn.onclick = () => this.startLevel(t.id);
           container.appendChild(btn);
         }});
       }},
 
       startLevel(levelId) {{
         this.currentLevel = levelId;
-        document.querySelectorAll('.prov-lvl-btn').forEach(btn => {{
-          btn.classList.remove('bg-sky-500', 'text-white');
-          btn.classList.add('bg-slate-800', 'text-slate-300');
-        }});
-        const activeBtn = [...document.querySelectorAll('.prov-lvl-btn')].find(b => b.textContent.includes(levelId === 'ALL' ? '全国' : levelId === 'WEAK' ? '弱点' : `Lv.${{levelId}}`));
-        if (activeBtn) {{
-          activeBtn.classList.add('bg-sky-500', 'text-white');
-          activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
-        }}
-
         const allProvs = Object.values(PROVINCES_MASTER);
-        let basePool = (this.currentDoh.id === 'ALL') ? allProvs : allProvs.filter(p => p.doh === this.currentDoh.filter);
+        const baseProvs = (this.currentDoh.id === 'ALL') ? allProvs : allProvs.filter(p => p.doh === this.currentDoh.filter);
 
         if (levelId === 'ALL') {{
-          this.questionPool = [...basePool];
+          this.questionPool = [...baseProvs];
         }} else if (levelId === 'WEAK') {{
-          this.questionPool = basePool.filter(p => {{
-            const r = this.data.records[p.id];
-            return r && r.last === 'wrong';
-          }});
+          this.questionPool = baseProvs.filter(p => this.data.records[p.id] && this.data.records[p.id].last === 'wrong');
           if (this.questionPool.length === 0) {{
             alert('この地域の弱点旧国はありません！');
             this.startLevel('ALL');
             return;
           }}
         }} else {{
-          this.questionPool = basePool.filter(p => p.level === levelId);
-          if (this.questionPool.length === 0) {{
-            alert('この難易度の旧国はこの地域にはありません。');
-            this.startLevel('ALL');
-            return;
-          }}
+          this.questionPool = baseProvs.filter(p => p.level === levelId);
         }}
 
         this.questionPool.sort(() => Math.random() - 0.5);
         this.currentIndex = 0;
-
+        this.renderLevelTabs();
         this.renderMapLayers();
         this.nextQuestion();
       }},
@@ -2143,12 +2298,11 @@ html_content = f'''<!DOCTYPE html>
 
         this.geoJsonLayer = L.geoJSON(PROVINCES_GEOJSON, {{
           style: (feature) => {{
-            const id = feature.properties.id;
-            const isTarget = targetIds.has(id);
+            const isTarget = targetIds.has(feature.properties.id);
             return {{
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.65,
-              color: '#080d1a',
+              color: '#090d16',
               weight: 1.2,
               opacity: 1
             }};
@@ -2173,24 +2327,31 @@ html_content = f'''<!DOCTYPE html>
 
       setMode(mode) {{
         this.currentMode = mode;
-        document.querySelectorAll('.prov-mode-btn').forEach(btn => {{
-          btn.classList.remove('bg-sky-500', 'text-white');
-          btn.classList.add('text-slate-400');
+        document.querySelectorAll('.prov-mode-tab-btn').forEach(btn => {{
+          if (btn.dataset.mode === mode) {{
+            btn.className = 'prov-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-semibold bg-slate-700 text-emerald-400 shadow';
+          }} else {{
+            btn.className = 'prov-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white';
+          }}
         }});
-        const active = [...document.querySelectorAll('.prov-mode-btn')].find(b => b.dataset.mode === mode);
-        if (active) {{
-          active.classList.add('bg-sky-500', 'text-white');
-          active.classList.remove('text-slate-400');
-        }}
+
+        ['locate', 'name', 'type', 'explore'].forEach(m => {{
+          const dock = document.getElementById(`prov-dock-${{m}}`);
+          if (dock) {{
+            if (m === mode) dock.classList.remove('hidden');
+            else dock.classList.add('hidden');
+          }}
+        }});
+
         this.nextQuestion();
       }},
 
       nextQuestion() {{
         this.isAnswered = false;
-        if (this.currentMode === 'explore') {{
-          this.renderExploreDock();
-          return;
-        }}
+        document.getElementById('prov-locate-feedback-bar').classList.add('hidden');
+        document.getElementById('prov-type-feedback-bar').classList.add('hidden');
+
+        if (this.currentMode === 'explore') return;
 
         if (this.currentIndex >= this.questionPool.length) {{
           sound.fanfare();
@@ -2202,15 +2363,46 @@ html_content = f'''<!DOCTYPE html>
         this.currentQuestion = this.questionPool[this.currentIndex];
         this.updateHeaderProgress();
 
+        const q = this.currentQuestion;
+        const rec = this.data.records[q.id] || {{ correct: 0, wrong: 0 }};
+        const total = rec.correct + rec.wrong;
+        const pct = total > 0 ? Math.round((rec.correct / total) * 100) + '%' : '--%';
+        const progStr = `問題 ${{this.currentIndex + 1}} / ${{this.questionPool.length}}`;
+
         if (this.currentMode === 'locate') {{
-          this.renderLocateDock();
+          document.getElementById('prov-locate-level-tag').textContent = `Lv.${{q.level}} ${{q.doh}}`;
+          document.getElementById('prov-locate-accuracy-tag').textContent = `正答率: ${{pct}}`;
+          document.getElementById('prov-locate-progress-tag').textContent = progStr;
+          document.getElementById('prov-locate-kana').textContent = `（${{q.kana}}・${{q.modern}}）`;
+          document.getElementById('prov-locate-question-name').textContent = q.name;
+          this.resetPolygonStyles();
         }} else if (this.currentMode === 'name') {{
+          document.getElementById('prov-name-accuracy-tag').textContent = `正答率: ${{pct}}`;
+          document.getElementById('prov-name-progress-tag').textContent = progStr;
           this.highlightQuestionPolygon();
-          this.renderNameDock();
+          this.renderNameChoices();
         }} else if (this.currentMode === 'type') {{
+          document.getElementById('prov-type-accuracy-tag').textContent = `正答率: ${{pct}}`;
+          document.getElementById('prov-type-progress-tag').textContent = progStr;
+          const input = document.getElementById('prov-input-type');
+          input.value = '';
+          input.focus();
           this.highlightQuestionPolygon();
-          this.renderTypeDock();
         }}
+      }},
+
+      resetPolygonStyles() {{
+        if (!this.geoJsonLayer) return;
+        const targetIds = new Set(this.questionPool.map(p => p.id));
+        this.geoJsonLayer.eachLayer(layer => {{
+          const isTarget = targetIds.has(layer.feature.properties.id);
+          layer.setStyle({{
+            fillColor: isTarget ? '#f8fafc' : '#334155',
+            fillOpacity: isTarget ? 0.95 : 0.65,
+            color: '#090d16',
+            weight: 1.2
+          }});
+        }});
       }},
 
       highlightQuestionPolygon() {{
@@ -2228,102 +2420,32 @@ html_content = f'''<!DOCTYPE html>
         }});
       }},
 
-      renderLocateDock() {{
-        const dock = document.getElementById('prov-dock');
-        const q = this.currentQuestion;
-        const rec = this.data.records[q.id] || {{ correct: 0, wrong: 0 }};
-        const total = rec.correct + rec.wrong;
-        const pct = total > 0 ? Math.round((rec.correct / total) * 100) + '%' : '--%';
-
-        dock.innerHTML = `
-          <div class="max-w-xl mx-auto flex items-center justify-between gap-3">
-            <div>
-              <div class="text-[11px] text-sky-400">${{q.kana}}（${{q.modern}}）</div>
-              <div class="text-lg font-black text-white flex items-center gap-2">
-                <span>${{q.name}}</span>
-                <span class="text-xs font-normal text-slate-400">はどこ？</span>
-              </div>
-            </div>
-            <div class="text-right">
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">過去正答率: ${{pct}}</span>
-            </div>
-          </div>
-        `;
-      }},
-
-      renderNameDock() {{
-        const dock = document.getElementById('prov-dock');
+      renderNameChoices() {{
+        const grid = document.getElementById('prov-choice-buttons-grid');
+        grid.innerHTML = '';
         const q = this.currentQuestion;
 
         const allProvs = Object.values(PROVINCES_MASTER).filter(p => p.id !== q.id);
         allProvs.sort(() => Math.random() - 0.5);
         const choices = [q, ...allProvs.slice(0, 3)].sort(() => Math.random() - 0.5);
 
-        let buttonsHtml = '';
         choices.forEach((c, idx) => {{
-          buttonsHtml += `
-            <button class="prov-choice-btn py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm border border-slate-700 transition flex items-center gap-2 active:scale-95" data-id="${{c.id}}">
-              <span class="w-5 h-5 rounded bg-slate-900 text-slate-400 flex items-center justify-center text-[10px] font-mono">${{idx + 1}}</span>
-              <span class="truncate">${{c.name}} (${{c.kana}})</span>
-            </button>
+          const btn = document.createElement('button');
+          btn.className = 'prov-choice-btn py-2 px-3 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm border border-slate-700 transition flex items-center gap-2 active:scale-95';
+          btn.dataset.id = c.id;
+          btn.innerHTML = `
+            <span class="w-5 h-5 rounded bg-slate-900 text-slate-400 flex items-center justify-center text-[10px] font-mono">${{idx + 1}}</span>
+            <span class="truncate">${{c.name}} (${{c.kana}})</span>
           `;
-        }});
-
-        dock.innerHTML = `
-          <div class="max-w-xl mx-auto space-y-2">
-            <div class="text-xs text-slate-400 flex justify-between">
-              <span>黄色点滅の旧国名を選択してください</span>
-              <span>[1] - [4] キー対応</span>
-            </div>
-            <div class="grid grid-cols-2 gap-2" id="prov-choices-grid">
-              ${{buttonsHtml}}
-            </div>
-          </div>
-        `;
-
-        dock.querySelectorAll('.prov-choice-btn').forEach(btn => {{
-          btn.onclick = () => this.handleAnswer(btn.dataset.id === q.id, btn);
+          btn.onclick = () => this.handleAnswer(c.id === q.id, btn);
+          grid.appendChild(btn);
         }});
       }},
 
-      renderTypeDock() {{
-        const dock = document.getElementById('prov-dock');
-        const q = this.currentQuestion;
-
-        dock.innerHTML = `
-          <div class="max-w-xl mx-auto space-y-2">
-            <div class="text-xs text-slate-400">点滅している旧国名を入力（漢字またはひらがな）</div>
-            <form id="prov-type-form" class="flex gap-2">
-              <input type="text" id="prov-type-input" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500 font-bold" placeholder="例: ${{q.name}}" autofocus autocomplete="off" />
-              <button type="submit" class="px-5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-sm shadow transition">回答</button>
-            </form>
-          </div>
-        `;
-
-        const form = document.getElementById('prov-type-form');
-        const input = document.getElementById('prov-type-input');
-        input.focus();
-
-        form.onsubmit = (e) => {{
-          e.preventDefault();
-          if (this.isAnswered) {{
-            this.currentIndex++;
-            this.nextQuestion();
-            return;
-          }}
-          const val = input.value.trim();
-          const isCorrect = (val === q.name || val === q.kana || q.aliases.includes(val));
-          this.handleAnswer(isCorrect, input);
-        }};
-      }},
-
-      renderExploreDock() {{
-        const dock = document.getElementById('prov-dock');
-        dock.innerHTML = `
-          <div class="max-w-xl mx-auto text-center text-xs text-slate-400">
-            地図上のポリゴンを自由にタップして、旧国名・ふりがな・現代の地域を確認できます。
-          </div>
-        `;
+      skipQuestion() {{
+        if (this.isAnswered) return;
+        this.currentIndex++;
+        this.nextQuestion();
       }},
 
       onPolygonClick(feature, layer) {{
@@ -2337,14 +2459,18 @@ html_content = f'''<!DOCTYPE html>
           this.handleAnswer(isCorrect, layer);
         }} else if (this.currentMode === 'explore') {{
           this.selectedProv = targetProv;
-          const card = document.getElementById('prov-explore-card');
-          card.classList.remove('hidden');
-          document.getElementById('prov-exp-kana').textContent = targetProv.kana;
-          document.getElementById('prov-exp-name').textContent = targetProv.name;
-          document.getElementById('prov-exp-modern').textContent = targetProv.modern;
+          document.getElementById('prov-explore-empty').classList.add('hidden');
+          document.getElementById('prov-explore-detail').classList.remove('hidden');
+
+          document.getElementById('prov-exp-doh-badge').textContent = targetProv.doh;
+          document.getElementById('prov-exp-kana-text').textContent = targetProv.kana;
+          document.getElementById('prov-exp-name-text').textContent = targetProv.name;
+          document.getElementById('prov-exp-modern-text').textContent = targetProv.modern;
 
           const rec = this.data.records[id] || {{ correct: 0, wrong: 0 }};
-          document.getElementById('prov-exp-stats').textContent = `正解 ${{rec.correct}} / 不正解 ${{rec.wrong}}`;
+          const total = rec.correct + rec.wrong;
+          const pct = total > 0 ? Math.round((rec.correct / total) * 100) + '%' : '--%';
+          document.getElementById('prov-exp-stats-tag').textContent = `正解 ${{rec.correct}} / 不正解 ${{rec.wrong}} (正答率: ${{pct}})`;
         }}
       }},
 
@@ -2365,9 +2491,17 @@ html_content = f'''<!DOCTYPE html>
 
           if (this.currentMode === 'locate') {{
             if (targetEl && targetEl.setStyle) targetEl.setStyle({{ fillColor: '#34d399', fillOpacity: 0.95 }});
+            const bar = document.getElementById('prov-locate-feedback-bar');
+            bar.classList.remove('hidden');
+            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
           }} else if (this.currentMode === 'name') {{
-            if (targetEl) targetEl.classList.add('!bg-sky-600', '!border-sky-400');
+            if (targetEl) targetEl.classList.add('!bg-emerald-600', '!border-emerald-400');
+          }} else if (this.currentMode === 'type') {{
+            const bar = document.getElementById('prov-type-feedback-bar');
+            bar.classList.remove('hidden');
+            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
           }}
+
           setTimeout(() => {{
             this.currentIndex++;
             this.nextQuestion();
@@ -2382,15 +2516,36 @@ html_content = f'''<!DOCTYPE html>
           if (this.currentMode === 'locate') {{
             if (targetEl && targetEl.setStyle) targetEl.setStyle({{ fillColor: '#f87171', fillOpacity: 0.95 }});
             this.highlightQuestionPolygon();
+            const bar = document.getElementById('prov-locate-feedback-bar');
+            bar.classList.remove('hidden');
+            bar.innerHTML = `
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-rose-400">❌ 惜しい！正解は黄色点滅の場所です</span>
+                <button class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="ProvApp.currentIndex++; ProvApp.nextQuestion();">次へ (Enter ↵)</button>
+              </div>
+            `;
           }} else if (this.currentMode === 'name') {{
             if (targetEl) targetEl.classList.add('!bg-rose-700');
             const correctBtn = document.querySelector(`.prov-choice-btn[data-id="${{q.id}}"]`);
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
-            targetEl.classList.add('!border-rose-500');
-            targetEl.value = `正解: ${{q.name}} (Enterで次へ)`;
+            const bar = document.getElementById('prov-type-feedback-bar');
+            bar.classList.remove('hidden');
+            bar.innerHTML = `
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-rose-400">❌ 正解: ${{q.name}}</span>
+                <button class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="ProvApp.currentIndex++; ProvApp.nextQuestion();">次へ (Enter ↵)</button>
+              </div>
+            `;
           }}
         }}
+      }},
+
+      startSingleQuestion(prov) {{
+        this.questionPool = [prov];
+        this.currentIndex = 0;
+        this.renderMapLayers();
+        this.nextQuestion();
       }},
 
       handleKey(e) {{
@@ -2410,18 +2565,15 @@ html_content = f'''<!DOCTYPE html>
       updateHeaderProgress() {{
         const allProvs = Object.values(PROVINCES_MASTER);
         const provs = (this.currentDoh.id === 'ALL') ? allProvs : allProvs.filter(p => p.doh === this.currentDoh.filter);
-        let cleared = 0, correct = 0, wrong = 0;
+        let cleared = 0;
         provs.forEach(p => {{
           const r = this.data.records[p.id];
-          if (r) {{
-            if (r.correct > 0) cleared++;
-            correct += r.correct;
-            wrong += r.wrong;
-          }}
+          if (r && r.correct > 0) cleared++;
         }});
-        document.getElementById('prov-spoke-progress-text').textContent = `${{cleared}} / ${{provs.length}}`;
-        const acc = (correct + wrong > 0) ? Math.round((correct / (correct + wrong)) * 100) + '%' : '--%';
-        document.getElementById('prov-spoke-accuracy-tag').textContent = `正答率: ${{acc}}`;
+        document.getElementById('prov-spoke-cleared-count').textContent = cleared;
+        document.getElementById('prov-spoke-total-count').textContent = provs.length;
+        const pct = provs.length > 0 ? Math.round((cleared / provs.length) * 100) : 0;
+        document.getElementById('prov-spoke-cleared-pct').textContent = `(${{pct}}%)`;
       }}
     }};
 
@@ -2449,39 +2601,37 @@ html_content = f'''<!DOCTYPE html>
           AppRouter.navigate('screen-world-hub');
           this.renderHub();
         }};
-        document.getElementById('btn-world-fit-all').onclick = () => {{
+        document.getElementById('btn-world-reset-bounds').onclick = () => {{
           if (this.map && this.currentRegion) {{
             if (this.currentRegion.bounds) this.map.fitBounds(this.currentRegion.bounds, {{ padding: [20, 20] }});
             else if (this.currentRegion.center) this.map.setView(this.currentRegion.center, this.currentRegion.zoom);
           }}
         }};
 
-        // 出題対象トグル (国名 ↔ 首都名)
-        const btnTargetCountry = document.getElementById('btn-world-target-country');
-        const btnTargetCap = document.getElementById('btn-world-target-capital');
-        btnTargetCountry.onclick = () => {{
+        const btnCountry = document.getElementById('btn-world-target-country');
+        const btnCapital = document.getElementById('btn-world-target-capital');
+        btnCountry.onclick = () => {{
           this.targetType = 'country';
-          btnTargetCountry.className = 'px-2 py-1 rounded text-white font-bold bg-indigo-600 transition';
-          btnTargetCap.className = 'px-2 py-1 rounded text-slate-400 hover:text-white transition';
+          btnCountry.className = 'px-2 py-0.5 rounded text-white font-bold bg-emerald-600 transition';
+          btnCapital.className = 'px-2 py-0.5 rounded text-slate-300 hover:text-white transition';
           this.nextQuestion();
         }};
-        btnTargetCap.onclick = () => {{
+        btnCapital.onclick = () => {{
           this.targetType = 'capital';
-          btnTargetCap.className = 'px-2 py-1 rounded text-white font-bold bg-indigo-600 transition';
-          btnTargetCountry.className = 'px-2 py-1 rounded text-slate-400 hover:text-white transition';
+          btnCapital.className = 'px-2 py-0.5 rounded text-white font-bold bg-emerald-600 transition';
+          btnCountry.className = 'px-2 py-0.5 rounded text-slate-300 hover:text-white transition';
           this.nextQuestion();
         }};
 
-        document.querySelectorAll('.world-mode-btn').forEach(btn => {{
+        document.querySelectorAll('.world-mode-tab-btn').forEach(btn => {{
           btn.onclick = () => this.setMode(btn.dataset.mode);
         }});
 
-        document.getElementById('btn-world-close-exp').onclick = () => {{
-          document.getElementById('world-explore-card').classList.add('hidden');
-        }};
-        document.getElementById('btn-world-test-single').onclick = () => {{
+        document.getElementById('btn-world-locate-skip').onclick = () => this.skipQuestion();
+        document.getElementById('btn-world-type-skip').onclick = () => this.skipQuestion();
+
+        document.getElementById('btn-world-quiz-this').onclick = () => {{
           if (this.selectedCountry) {{
-            document.getElementById('world-explore-card').classList.add('hidden');
             this.setMode('locate');
             this.startSingleQuestion(this.selectedCountry);
           }}
@@ -2489,13 +2639,32 @@ html_content = f'''<!DOCTYPE html>
 
         document.getElementById('btn-world-start-weak-all').onclick = () => {{
           const allCountries = Object.values(WORLD_MASTER);
-          const weak = allCountries.filter(c => {{
-            const r = this.data.records[c.code];
-            return r && r.last === 'wrong';
-          }});
-          if (weak.length > 0) {{
-            this.openRegion(WORLD_REGIONS[0], 'WEAK');
+          const weak = allCountries.filter(c => this.data.records[c.code] && this.data.records[c.code].last === 'wrong');
+          if (weak.length > 0) this.openRegion(WORLD_REGIONS[0], 'WEAK');
+        }};
+
+        const typeForm = document.getElementById('world-form-type');
+        const typeInput = document.getElementById('world-input-type');
+        typeForm.onsubmit = () => {{
+          if (this.isAnswered) {{
+            this.currentIndex++;
+            this.nextQuestion();
+            return;
           }}
+          const val = typeInput.value.trim().toLowerCase();
+          const q = this.currentQuestion;
+          let isCorrect = false;
+
+          if (this.targetType === 'capital') {{
+            isCorrect = (val === q.capital.toLowerCase() ||
+                         val === q.furigana_cap ||
+                         q.aliases_cap.some(a => a.toLowerCase() === val));
+          }} else {{
+            isCorrect = (val === q.name.toLowerCase() ||
+                         val === q.furigana_name ||
+                         q.aliases_name.some(a => a.toLowerCase() === val));
+          }}
+          this.handleAnswer(isCorrect, typeInput);
         }};
 
         window.addEventListener('keydown', (e) => {{
@@ -2523,7 +2692,6 @@ html_content = f'''<!DOCTYPE html>
         document.getElementById('world-hub-pct').textContent = totalPct + '%';
         document.getElementById('world-hub-progress-bar').style.width = totalPct + '%';
 
-        // 弱点バナー
         const weakBanner = document.getElementById('world-weak-banner');
         if (weakCount > 0) {{
           weakBanner.classList.remove('hidden');
@@ -2532,13 +2700,9 @@ html_content = f'''<!DOCTYPE html>
           weakBanner.classList.add('hidden');
         }}
 
-        // 地域カード
         let completedRegionCount = 0;
         WORLD_REGIONS.forEach(reg => {{
-          const countries = (reg.filter === 'ALL')
-            ? allCountries
-            : allCountries.filter(c => c.region === reg.filter);
-
+          const countries = (reg.filter === 'ALL') ? allCountries : allCountries.filter(c => c.region === reg.filter);
           let clr = 0;
           countries.forEach(c => {{
             const r = this.data.records[c.code];
@@ -2549,27 +2713,24 @@ html_content = f'''<!DOCTYPE html>
           const pct = countries.length > 0 ? Math.round((clr / countries.length) * 100) : 0;
 
           const card = document.createElement('div');
-          card.className = `p-4 rounded-xl border cursor-pointer transition active:scale-98 ${{
+          card.className = `p-3 rounded-xl border cursor-pointer transition active:scale-98 ${{
             isComp
-              ? 'bg-indigo-950/30 border-indigo-500/40 hover:border-indigo-400'
-              : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+              ? 'bg-emerald-950/30 border-emerald-500/40 hover:border-emerald-400'
+              : 'bg-slate-800/80 border-slate-700/80 hover:border-slate-600'
           }} flex flex-col justify-between`;
 
           card.innerHTML = `
-            <div>
-              <div class="flex items-center justify-between">
-                <h3 class="text-sm font-bold text-white">${{reg.name}}</h3>
-                <span class="text-[10px] px-2 py-0.5 rounded-full ${{isComp ? 'bg-indigo-500/20 text-indigo-400 font-bold' : 'bg-slate-800 text-slate-400'}}">${{countries.length}}国</span>
-              </div>
-              <p class="text-xs text-slate-400 mt-1">${{reg.desc}}</p>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-white">${{reg.name}}</span>
+              ${{isComp ? '<span class="text-[10px] text-emerald-400 font-bold">制覇!</span>' : ''}}
             </div>
-            <div class="mt-4 space-y-1.5">
-              <div class="flex justify-between text-xs text-slate-400">
-                <span>進捗: ${{clr}} / ${{countries.length}}</span>
-                <span class="font-bold text-indigo-400">${{pct}}%</span>
+            <div class="mt-2 space-y-1">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>${{clr}} / ${{countries.length}}</span>
+                <span>${{pct}}%</span>
               </div>
-              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                <div class="bg-gradient-to-r from-indigo-500 to-purple-400 h-full" style="width: ${{pct}}%"></div>
+              <div class="w-full bg-slate-700/60 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-emerald-500 h-full" style="width: ${{pct}}%"></div>
               </div>
             </div>
           `;
@@ -2590,6 +2751,8 @@ html_content = f'''<!DOCTYPE html>
         const countries = (region.filter === 'ALL') ? allCountries : allCountries.filter(c => c.region === region.filter);
         document.getElementById('world-spoke-count-badge').textContent = `${{countries.length}}国`;
 
+        this.updateHeaderProgress();
+
         if (!this.map) {{
           this.map = L.map('world-map', {{
             attributionControl: false,
@@ -2606,70 +2769,65 @@ html_content = f'''<!DOCTYPE html>
       }},
 
       renderLevelTabs() {{
-        const container = document.getElementById('world-level-tabs');
+        const container = document.getElementById('world-level-tabs-container');
         container.innerHTML = '';
 
-        const levels = [
-          {{ id: 'ALL', name: '全地域' }},
-          {{ id: 1, name: 'Lv.1 主要国' }},
-          {{ id: 2, name: 'Lv.2 一般国' }},
-          {{ id: 3, name: 'Lv.3 中堅国' }},
-          {{ id: 4, name: 'Lv.4 難関国' }},
-          {{ id: 'WEAK', name: '⚠️ 弱点' }}
+        const allCountries = Object.values(WORLD_MASTER);
+        const baseCountries = (this.currentRegion.filter === 'ALL') ? allCountries : allCountries.filter(c => c.region === this.currentRegion.filter);
+
+        const counts = {{
+          1: baseCountries.filter(c => c.level === 1).length,
+          2: baseCountries.filter(c => c.level === 2).length,
+          3: baseCountries.filter(c => c.level === 3).length,
+          4: baseCountries.filter(c => c.level === 4).length,
+          ALL: baseCountries.length,
+          WEAK: baseCountries.filter(c => this.data.records[c.code] && this.data.records[c.code].last === 'wrong').length
+        }};
+
+        const tabs = [
+          {{ id: 1, label: 'Lv.1 主要国', count: counts[1] }},
+          {{ id: 2, label: 'Lv.2 一般国', count: counts[2] }},
+          {{ id: 3, label: 'Lv.3 中堅国', count: counts[3] }},
+          {{ id: 4, label: 'Lv.4 難関国', count: counts[4] }},
+          {{ id: 'ALL', label: '全地域', count: counts.ALL }},
+          {{ id: 'WEAK', label: '⚠️ 弱点復習', count: counts.WEAK }}
         ];
 
-        levels.forEach(lvl => {{
+        tabs.forEach(t => {{
+          if (t.count === 0 && t.id !== 'ALL' && t.id !== 'WEAK') return;
           const btn = document.createElement('button');
-          btn.className = `world-lvl-btn px-2.5 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap transition ${{
-            this.currentLevel === lvl.id
-              ? 'bg-indigo-500 text-white'
+          btn.className = `level-tab-btn px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[11px] sm:text-xs font-semibold whitespace-nowrap shrink-0 transition ${{
+            this.currentLevel === t.id
+              ? 'bg-emerald-500 text-white'
               : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
           }}`;
-          btn.textContent = lvl.name;
-          btn.onclick = () => this.startLevel(lvl.id);
+          btn.innerHTML = `<span>${{t.label}}</span> <span class="font-normal opacity-80">(${{t.count}})</span>`;
+          btn.onclick = () => this.startLevel(t.id);
           container.appendChild(btn);
         }});
       }},
 
       startLevel(levelId) {{
         this.currentLevel = levelId;
-        document.querySelectorAll('.world-lvl-btn').forEach(btn => {{
-          btn.classList.remove('bg-indigo-500', 'text-white');
-          btn.classList.add('bg-slate-800', 'text-slate-300');
-        }});
-        const activeBtn = [...document.querySelectorAll('.world-lvl-btn')].find(b => b.textContent.includes(levelId === 'ALL' ? '全地域' : levelId === 'WEAK' ? '弱点' : `Lv.${{levelId}}`));
-        if (activeBtn) {{
-          activeBtn.classList.add('bg-indigo-500', 'text-white');
-          activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
-        }}
-
         const allCountries = Object.values(WORLD_MASTER);
-        let basePool = (this.currentRegion.filter === 'ALL') ? allCountries : allCountries.filter(c => c.region === this.currentRegion.filter);
+        const baseCountries = (this.currentRegion.filter === 'ALL') ? allCountries : allCountries.filter(c => c.region === this.currentRegion.filter);
 
         if (levelId === 'ALL') {{
-          this.questionPool = [...basePool];
+          this.questionPool = [...baseCountries];
         }} else if (levelId === 'WEAK') {{
-          this.questionPool = basePool.filter(c => {{
-            const r = this.data.records[c.code];
-            return r && r.last === 'wrong';
-          }});
+          this.questionPool = baseCountries.filter(c => this.data.records[c.code] && this.data.records[c.code].last === 'wrong');
           if (this.questionPool.length === 0) {{
-            alert('この地域の弱点国はありません！素晴らしい！');
+            alert('この地域の弱点国はありません！');
             this.startLevel('ALL');
             return;
           }}
         }} else {{
-          this.questionPool = basePool.filter(c => c.level === levelId);
-          if (this.questionPool.length === 0) {{
-            alert('この難易度の国はこの地域にはありません。');
-            this.startLevel('ALL');
-            return;
-          }}
+          this.questionPool = baseCountries.filter(c => c.level === levelId);
         }}
 
         this.questionPool.sort(() => Math.random() - 0.5);
         this.currentIndex = 0;
-
+        this.renderLevelTabs();
         this.renderMapLayers();
         this.nextQuestion();
       }},
@@ -2682,8 +2840,7 @@ html_content = f'''<!DOCTYPE html>
 
         this.geoJsonLayer = L.geoJSON(WORLD_GEOJSON, {{
           style: (feature) => {{
-            const code = feature.properties.code;
-            const isTarget = targetCodes.has(code);
+            const isTarget = targetCodes.has(feature.properties.code);
             return {{
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.60,
@@ -2716,24 +2873,31 @@ html_content = f'''<!DOCTYPE html>
 
       setMode(mode) {{
         this.currentMode = mode;
-        document.querySelectorAll('.world-mode-btn').forEach(btn => {{
-          btn.classList.remove('bg-indigo-500', 'text-white');
-          btn.classList.add('text-slate-400');
+        document.querySelectorAll('.world-mode-tab-btn').forEach(btn => {{
+          if (btn.dataset.mode === mode) {{
+            btn.className = 'world-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-semibold bg-slate-700 text-emerald-400 shadow';
+          }} else {{
+            btn.className = 'world-mode-tab-btn px-2 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white';
+          }}
         }});
-        const active = [...document.querySelectorAll('.world-mode-btn')].find(b => b.dataset.mode === mode);
-        if (active) {{
-          active.classList.add('bg-indigo-500', 'text-white');
-          active.classList.remove('text-slate-400');
-        }}
+
+        ['locate', 'name', 'type', 'explore'].forEach(m => {{
+          const dock = document.getElementById(`world-dock-${{m}}`);
+          if (dock) {{
+            if (m === mode) dock.classList.remove('hidden');
+            else dock.classList.add('hidden');
+          }}
+        }});
+
         this.nextQuestion();
       }},
 
       nextQuestion() {{
         this.isAnswered = false;
-        if (this.currentMode === 'explore') {{
-          this.renderExploreDock();
-          return;
-        }}
+        document.getElementById('world-locate-feedback-bar').classList.add('hidden');
+        document.getElementById('world-type-feedback-bar').classList.add('hidden');
+
+        if (this.currentMode === 'explore') return;
 
         if (this.currentIndex >= this.questionPool.length) {{
           sound.fanfare();
@@ -2745,15 +2909,62 @@ html_content = f'''<!DOCTYPE html>
         this.currentQuestion = this.questionPool[this.currentIndex];
         this.updateHeaderProgress();
 
+        const q = this.currentQuestion;
+        const rec = this.data.records[q.code] || {{ correct: 0, wrong: 0 }};
+        const total = rec.correct + rec.wrong;
+        const pct = total > 0 ? Math.round((rec.correct / total) * 100) + '%' : '--%';
+        const progStr = `問題 ${{this.currentIndex + 1}} / ${{this.questionPool.length}}`;
+
         if (this.currentMode === 'locate') {{
-          this.renderLocateDock();
+          document.getElementById('world-locate-level-tag').textContent = `Lv.${{q.level}} ${{q.region}}`;
+          document.getElementById('world-locate-accuracy-tag').textContent = `正答率: ${{pct}}`;
+          document.getElementById('world-locate-progress-tag').textContent = progStr;
+          document.getElementById('world-locate-flag').textContent = getFlagEmoji(q.code2);
+
+          if (this.targetType === 'capital') {{
+            document.getElementById('world-locate-prompt-label').textContent = '地図上でタップ（首都から国を探す）：';
+            document.getElementById('world-locate-kana').textContent = `（${{q.furigana_cap}}）`;
+            document.getElementById('world-locate-question-name').textContent = `${{q.capital}}（首都）`;
+          }} else {{
+            document.getElementById('world-locate-prompt-label').textContent = '地図上でタップ：';
+            document.getElementById('world-locate-kana').textContent = `（${{q.furigana_name}}）`;
+            document.getElementById('world-locate-question-name').textContent = q.name;
+          }}
+          this.resetPolygonStyles();
         }} else if (this.currentMode === 'name') {{
+          document.getElementById('world-name-accuracy-tag').textContent = `正答率: ${{pct}}`;
+          document.getElementById('world-name-progress-tag').textContent = progStr;
+          document.getElementById('world-name-prompt-label').textContent = (this.targetType === 'capital')
+            ? '黄色の国の【首都名】はどれ？'
+            : '黄色の国の【国名】はどれ？';
           this.highlightQuestionPolygon();
-          this.renderNameDock();
+          this.renderNameChoices();
         }} else if (this.currentMode === 'type') {{
+          document.getElementById('world-type-accuracy-tag').textContent = `正答率: ${{pct}}`;
+          document.getElementById('world-type-progress-tag').textContent = progStr;
+          document.getElementById('world-type-prompt-label').textContent = (this.targetType === 'capital')
+            ? `黄色の国（${{q.name}}）の【首都名】を入力：`
+            : '黄色の国の【国名】を入力：';
+          const input = document.getElementById('world-input-type');
+          input.value = '';
+          input.placeholder = (this.targetType === 'capital') ? `例: ${{q.capital}}` : `例: ${{q.name}}`;
+          input.focus();
           this.highlightQuestionPolygon();
-          this.renderTypeDock();
         }}
+      }},
+
+      resetPolygonStyles() {{
+        if (!this.geoJsonLayer) return;
+        const targetCodes = new Set(this.questionPool.map(c => c.code));
+        this.geoJsonLayer.eachLayer(layer => {{
+          const isTarget = targetCodes.has(layer.feature.properties.code);
+          layer.setStyle({{
+            fillColor: isTarget ? '#f8fafc' : '#334155',
+            fillOpacity: isTarget ? 0.95 : 0.60,
+            color: '#090d16',
+            weight: 0.8
+          }});
+        }});
       }},
 
       highlightQuestionPolygon() {{
@@ -2771,140 +2982,43 @@ html_content = f'''<!DOCTYPE html>
         }});
       }},
 
-      renderLocateDock() {{
-        const dock = document.getElementById('world-dock');
-        const q = this.currentQuestion;
-        const rec = this.data.records[q.code] || {{ correct: 0, wrong: 0 }};
-        const total = rec.correct + rec.wrong;
-        const pct = total > 0 ? Math.round((rec.correct / total) * 100) + '%' : '--%';
-        const flag = getFlagEmoji(q.code2);
-
-        const promptText = (this.targetType === 'capital')
-          ? `🏛️ 首都: <strong class="text-white">${{q.capital}}</strong> (${{q.furigana_cap}}) の国はどこ？`
-          : `🗺️ 国名: <strong class="text-white">${{q.name}}</strong> (${{q.furigana_name}}) はどこ？`;
-
-        dock.innerHTML = `
-          <div class="max-w-xl mx-auto flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-              <span class="text-3xl">${{flag}}</span>
-              <div>
-                <div class="text-[11px] text-indigo-400">${{q.region}}・Lv.${{q.level}}</div>
-                <div class="text-sm sm:text-base font-bold text-slate-200">
-                  ${{promptText}}
-                </div>
-              </div>
-            </div>
-            <div class="text-right shrink-0">
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">正答率: ${{pct}}</span>
-            </div>
-          </div>
-        `;
-      }},
-
-      renderNameDock() {{
-        const dock = document.getElementById('world-dock');
+      renderNameChoices() {{
+        const grid = document.getElementById('world-choice-buttons-grid');
+        grid.innerHTML = '';
         const q = this.currentQuestion;
 
         const allCountries = Object.values(WORLD_MASTER).filter(c => c.code !== q.code);
         allCountries.sort(() => Math.random() - 0.5);
         const choices = [q, ...allCountries.slice(0, 3)].sort(() => Math.random() - 0.5);
 
-        let buttonsHtml = '';
         choices.forEach((c, idx) => {{
           const flag = getFlagEmoji(c.code2);
           const label = (this.targetType === 'capital')
-            ? `🏛️ ${{c.capital}}`
+            ? `${{c.capital}}`
             : `${{flag}} ${{c.name}}`;
           const sub = (this.targetType === 'capital')
             ? `${{flag}} ${{c.name}}`
             : `${{c.capital}}`;
 
-          buttonsHtml += `
-            <button class="world-choice-btn py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm border border-slate-700 transition flex items-center justify-between gap-2 active:scale-95" data-code="${{c.code}}">
-              <div class="flex items-center gap-2 truncate">
-                <span class="w-5 h-5 rounded bg-slate-900 text-slate-400 flex items-center justify-center text-[10px] font-mono">${{idx + 1}}</span>
-                <span class="truncate">${{label}}</span>
-              </div>
-              <span class="text-[10px] text-slate-400 shrink-0 font-normal">${{sub}}</span>
-            </button>
+          const btn = document.createElement('button');
+          btn.className = 'world-choice-btn py-2 px-3 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm border border-slate-700 transition flex items-center justify-between gap-2 active:scale-95';
+          btn.dataset.code = c.code;
+          btn.innerHTML = `
+            <div class="flex items-center gap-2 truncate">
+              <span class="w-5 h-5 rounded bg-slate-900 text-slate-400 flex items-center justify-center text-[10px] font-mono">${{idx + 1}}</span>
+              <span class="truncate">${{label}}</span>
+            </div>
+            <span class="text-[10px] text-slate-400 shrink-0 font-normal">${{sub}}</span>
           `;
-        }});
-
-        const promptDesc = (this.targetType === 'capital')
-          ? '点滅している国の【首都名】を選択してください'
-          : '点滅している国の【国名】を選択してください';
-
-        dock.innerHTML = `
-          <div class="max-w-xl mx-auto space-y-2">
-            <div class="text-xs text-slate-400 flex justify-between">
-              <span>${{promptDesc}}</span>
-              <span>[1] - [4] キー対応</span>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="world-choices-grid">
-              ${{buttonsHtml}}
-            </div>
-          </div>
-        `;
-
-        dock.querySelectorAll('.world-choice-btn').forEach(btn => {{
-          btn.onclick = () => this.handleAnswer(btn.dataset.code === q.code, btn);
+          btn.onclick = () => this.handleAnswer(c.code === q.code, btn);
+          grid.appendChild(btn);
         }});
       }},
 
-      renderTypeDock() {{
-        const dock = document.getElementById('world-dock');
-        const q = this.currentQuestion;
-        const flag = getFlagEmoji(q.code2);
-
-        const promptDesc = (this.targetType === 'capital')
-          ? `点滅している国（${{flag}} ${{q.name}}）の【首都名】を入力`
-          : `点滅している国の【国名】を入力（漢字・カタカナ・ひらがな）`;
-
-        dock.innerHTML = `
-          <div class="max-w-xl mx-auto space-y-2">
-            <div class="text-xs text-slate-400">${{promptDesc}}</div>
-            <form id="world-type-form" class="flex gap-2">
-              <input type="text" id="world-type-input" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 font-bold" placeholder="${{this.targetType === 'capital' ? '首都名を入力' : '国名を入力'}}" autofocus autocomplete="off" />
-              <button type="submit" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow transition">回答</button>
-            </form>
-          </div>
-        `;
-
-        const form = document.getElementById('world-type-form');
-        const input = document.getElementById('world-type-input');
-        input.focus();
-
-        form.onsubmit = (e) => {{
-          e.preventDefault();
-          if (this.isAnswered) {{
-            this.currentIndex++;
-            this.nextQuestion();
-            return;
-          }}
-          const val = input.value.trim().toLowerCase();
-          let isCorrect = false;
-
-          if (this.targetType === 'capital') {{
-            isCorrect = (val === q.capital.toLowerCase() ||
-                         val === q.furigana_cap ||
-                         q.aliases_cap.some(a => a.toLowerCase() === val));
-          }} else {{
-            isCorrect = (val === q.name.toLowerCase() ||
-                         val === q.furigana_name ||
-                         q.aliases_name.some(a => a.toLowerCase() === val));
-          }}
-
-          this.handleAnswer(isCorrect, input);
-        }};
-      }},
-
-      renderExploreDock() {{
-        const dock = document.getElementById('world-dock');
-        dock.innerHTML = `
-          <div class="max-w-xl mx-auto text-center text-xs text-slate-400">
-            地図上の国を自由にタップして、国名・首都・国旗・地域・学習履歴を確認できます。
-          </div>
-        `;
+      skipQuestion() {{
+        if (this.isAnswered) return;
+        this.currentIndex++;
+        this.nextQuestion();
       }},
 
       onPolygonClick(feature, layer) {{
@@ -2918,17 +3032,19 @@ html_content = f'''<!DOCTYPE html>
           this.handleAnswer(isCorrect, layer);
         }} else if (this.currentMode === 'explore') {{
           this.selectedCountry = targetCountry;
-          const card = document.getElementById('world-explore-card');
-          card.classList.remove('hidden');
+          document.getElementById('world-explore-empty').classList.add('hidden');
+          document.getElementById('world-explore-detail').classList.remove('hidden');
 
-          document.getElementById('world-exp-flag').textContent = getFlagEmoji(targetCountry.code2);
-          document.getElementById('world-exp-kana').textContent = targetCountry.furigana_name;
-          document.getElementById('world-exp-name').textContent = targetCountry.name;
-          document.getElementById('world-exp-capital').textContent = `${{targetCountry.capital}} (${{targetCountry.furigana_cap}})`;
-          document.getElementById('world-exp-region').textContent = `${{targetCountry.region}} (${{targetCountry.code}})`;
+          document.getElementById('world-exp-flag-text').textContent = getFlagEmoji(targetCountry.code2);
+          document.getElementById('world-exp-region-badge').textContent = targetCountry.region;
+          document.getElementById('world-exp-kana-text').textContent = targetCountry.furigana_name;
+          document.getElementById('world-exp-name-text').textContent = targetCountry.name;
+          document.getElementById('world-exp-capital-text').textContent = `${{targetCountry.capital}} (${{targetCountry.code}})`;
 
           const rec = this.data.records[code] || {{ correct: 0, wrong: 0 }};
-          document.getElementById('world-exp-stats').textContent = `正解 ${{rec.correct}} / 不正解 ${{rec.wrong}}`;
+          const total = rec.correct + rec.wrong;
+          const pct = total > 0 ? Math.round((rec.correct / total) * 100) + '%' : '--%';
+          document.getElementById('world-exp-stats-tag').textContent = `正解 ${{rec.correct}} / 不正解 ${{rec.wrong}} (正答率: ${{pct}})`;
         }}
       }},
 
@@ -2949,9 +3065,17 @@ html_content = f'''<!DOCTYPE html>
 
           if (this.currentMode === 'locate') {{
             if (targetEl && targetEl.setStyle) targetEl.setStyle({{ fillColor: '#34d399', fillOpacity: 0.95 }});
+            const bar = document.getElementById('world-locate-feedback-bar');
+            bar.classList.remove('hidden');
+            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
           }} else if (this.currentMode === 'name') {{
-            if (targetEl) targetEl.classList.add('!bg-indigo-600', '!border-indigo-400');
+            if (targetEl) targetEl.classList.add('!bg-emerald-600', '!border-emerald-400');
+          }} else if (this.currentMode === 'type') {{
+            const bar = document.getElementById('world-type-feedback-bar');
+            bar.classList.remove('hidden');
+            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
           }}
+
           setTimeout(() => {{
             this.currentIndex++;
             this.nextQuestion();
@@ -2963,19 +3087,41 @@ html_content = f'''<!DOCTYPE html>
           rec.updated = Date.now();
           STORAGE.set(KEYS.WORLD, this.data);
 
+          const answerText = (this.targetType === 'capital') ? `${{q.name}}の首都は「${{q.capital}}」` : `正解は「${{q.name}}」`;
+
           if (this.currentMode === 'locate') {{
             if (targetEl && targetEl.setStyle) targetEl.setStyle({{ fillColor: '#f87171', fillOpacity: 0.95 }});
             this.highlightQuestionPolygon();
+            const bar = document.getElementById('world-locate-feedback-bar');
+            bar.classList.remove('hidden');
+            bar.innerHTML = `
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-rose-400">❌ 惜しい！${{answerText}}（黄色点滅の場所）です</span>
+                <button class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="WorldApp.currentIndex++; WorldApp.nextQuestion();">次へ (Enter ↵)</button>
+              </div>
+            `;
           }} else if (this.currentMode === 'name') {{
             if (targetEl) targetEl.classList.add('!bg-rose-700');
             const correctBtn = document.querySelector(`.world-choice-btn[data-code="${{q.code}}"]`);
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
-            targetEl.classList.add('!border-rose-500');
-            const answerStr = (this.targetType === 'capital') ? q.capital : q.name;
-            targetEl.value = `正解: ${{answerStr}} (Enterで次へ)`;
+            const bar = document.getElementById('world-type-feedback-bar');
+            bar.classList.remove('hidden');
+            bar.innerHTML = `
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-rose-400">❌ ${{answerText}}</span>
+                <button class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="WorldApp.currentIndex++; WorldApp.nextQuestion();">次へ (Enter ↵)</button>
+              </div>
+            `;
           }}
         }}
+      }},
+
+      startSingleQuestion(country) {{
+        this.questionPool = [country];
+        this.currentIndex = 0;
+        this.renderMapLayers();
+        this.nextQuestion();
       }},
 
       handleKey(e) {{
@@ -2995,22 +3141,18 @@ html_content = f'''<!DOCTYPE html>
       updateHeaderProgress() {{
         const allCountries = Object.values(WORLD_MASTER);
         const countries = (this.currentRegion.filter === 'ALL') ? allCountries : allCountries.filter(c => c.region === this.currentRegion.filter);
-        let cleared = 0, correct = 0, wrong = 0;
+        let cleared = 0;
         countries.forEach(c => {{
           const r = this.data.records[c.code];
-          if (r) {{
-            if (r.correct > 0) cleared++;
-            correct += r.correct;
-            wrong += r.wrong;
-          }}
+          if (r && r.correct > 0) cleared++;
         }});
-        document.getElementById('world-spoke-progress-text').textContent = `${{cleared}} / ${{countries.length}}`;
-        const acc = (correct + wrong > 0) ? Math.round((correct / (correct + wrong)) * 100) + '%' : '--%';
-        document.getElementById('world-spoke-accuracy-tag').textContent = `正答率: ${{acc}}`;
+        document.getElementById('world-spoke-cleared-count').textContent = cleared;
+        document.getElementById('world-spoke-total-count').textContent = countries.length;
+        const pct = countries.length > 0 ? Math.round((cleared / countries.length) * 100) : 0;
+        document.getElementById('world-spoke-cleared-pct').textContent = `(${{pct}}%)`;
       }}
     }};
 
-    // アプリケーション初期化
     window.addEventListener('DOMContentLoaded', () => {{
       RootHub.init();
       MuniApp.init();
@@ -3022,7 +3164,6 @@ html_content = f'''<!DOCTYPE html>
 </html>
 '''
 
-print("Writing index.html...")
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 

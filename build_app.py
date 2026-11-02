@@ -1467,12 +1467,9 @@ html_content = f'''<!DOCTYPE html>
         const typeInput = document.getElementById('muni-input-type');
         typeForm.onsubmit = (e) => {{
           if (e) e.preventDefault();
-          if (this.isAnswered) {{
-            this.currentIndex++;
-            this.nextQuestion();
-            return false;
-          }}
+          if (this.isAnswered) return false;
           const val = typeInput.value.trim();
+          if (!val) return false;
           const q = this.currentQuestion;
           const isCorrect = (val === q[3] || val === q[4]);
           this.handleAnswer(isCorrect, typeInput);
@@ -1771,10 +1768,16 @@ html_content = f'''<!DOCTYPE html>
       }},
 
       nextQuestion() {{
+        if (this.nextTimer) {{
+          clearTimeout(this.nextTimer);
+          this.nextTimer = null;
+        }}
         this.isAnswered = false;
         this.answeredResult = null;
         document.getElementById('muni-locate-feedback-bar').classList.add('hidden');
         document.getElementById('muni-type-feedback-bar').classList.add('hidden');
+        const muniTypeForm = document.getElementById('muni-form-type');
+        if (muniTypeForm) muniTypeForm.classList.remove('hidden');
 
         if (this.currentMode === 'explore') return;
 
@@ -1809,6 +1812,9 @@ html_content = f'''<!DOCTYPE html>
         }} else if (this.currentMode === 'type') {{
           document.getElementById('muni-type-accuracy-tag').textContent = `正答率: ${{pct}}`;
           document.getElementById('muni-type-progress-tag').textContent = progStr;
+          document.getElementById('muni-type-feedback-bar').classList.add('hidden');
+          const form = document.getElementById('muni-form-type');
+          if (form) form.classList.remove('hidden');
           const input = document.getElementById('muni-input-type');
           input.value = '';
           input.focus();
@@ -1980,14 +1986,18 @@ html_content = f'''<!DOCTYPE html>
           }} else if (this.currentMode === 'name') {{
             if (targetEl) targetEl.classList.add('!bg-emerald-600', '!border-emerald-400');
           }} else if (this.currentMode === 'type') {{
+            const form = document.getElementById('muni-form-type');
+            if (form) form.classList.add('hidden');
+            const input = document.getElementById('muni-input-type');
+            if (input) input.blur();
             const bar = document.getElementById('muni-type-feedback-bar');
             bar.classList.remove('hidden');
-            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
+            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！${{q[3]}}（${{q[4]}}）</div>`;
           }}
 
           this.resetPolygonStyles();
 
-          setTimeout(() => {{
+          this.nextTimer = setTimeout(() => {{
             this.currentIndex++;
             this.nextQuestion();
           }}, 900);
@@ -2016,11 +2026,15 @@ html_content = f'''<!DOCTYPE html>
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
             this.resetPolygonStyles();
+            const form = document.getElementById('muni-form-type');
+            if (form) form.classList.add('hidden');
+            const input = document.getElementById('muni-input-type');
+            if (input) input.blur();
             const bar = document.getElementById('muni-type-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-bold text-rose-400">❌ 正解: ${{q[3]}}</span>
+                <span class="text-xs font-bold text-rose-400">❌ 正解: ${{q[3]}}（${{q[4]}}）</span>
                 <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
@@ -2044,6 +2058,10 @@ html_content = f'''<!DOCTYPE html>
           }}
         }}
         if (e.key === 'Enter' && this.isAnswered) {{
+          if (this.nextTimer) {{
+            clearTimeout(this.nextTimer);
+            this.nextTimer = null;
+          }}
           this.currentIndex++;
           this.nextQuestion();
         }}
@@ -2107,12 +2125,9 @@ html_content = f'''<!DOCTYPE html>
         const typeInput = document.getElementById('prov-input-type');
         typeForm.onsubmit = (e) => {{
           if (e) e.preventDefault();
-          if (this.isAnswered) {{
-            this.currentIndex++;
-            this.nextQuestion();
-            return false;
-          }}
+          if (this.isAnswered) return false;
           const val = typeInput.value.trim();
+          if (!val) return false;
           const q = this.currentQuestion;
           const isCorrect = (val === q.name || val === q.kana || (q.aliases && q.aliases.includes(val)));
           this.handleAnswer(isCorrect, typeInput);
@@ -2269,10 +2284,16 @@ html_content = f'''<!DOCTYPE html>
       }},
 
       nextQuestion() {{
+        if (this.nextTimer) {{
+          clearTimeout(this.nextTimer);
+          this.nextTimer = null;
+        }}
         this.isAnswered = false;
         this.answeredResult = null;
         document.getElementById('prov-locate-feedback-bar').classList.add('hidden');
         document.getElementById('prov-type-feedback-bar').classList.add('hidden');
+        const provTypeForm = document.getElementById('prov-form-type');
+        if (provTypeForm) provTypeForm.classList.remove('hidden');
 
         if (this.currentMode === 'explore') return;
 
@@ -2309,6 +2330,9 @@ html_content = f'''<!DOCTYPE html>
         }} else if (this.currentMode === 'type') {{
           document.getElementById('prov-type-accuracy-tag').textContent = `正答率: ${{pct}}`;
           document.getElementById('prov-type-progress-tag').textContent = progStr;
+          document.getElementById('prov-type-feedback-bar').classList.add('hidden');
+          const form = document.getElementById('prov-form-type');
+          if (form) form.classList.remove('hidden');
           const input = document.getElementById('prov-input-type');
           input.value = '';
           input.focus();
@@ -2476,6 +2500,10 @@ html_content = f'''<!DOCTYPE html>
           }} else if (this.currentMode === 'name') {{
             if (targetEl) targetEl.classList.add('!bg-emerald-600', '!border-emerald-400');
           }} else if (this.currentMode === 'type') {{
+            const form = document.getElementById('prov-form-type');
+            if (form) form.classList.add('hidden');
+            const input = document.getElementById('prov-input-type');
+            if (input) input.blur();
             const bar = document.getElementById('prov-type-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！${{q.name}} ${{modernInfo}}</div>`;
@@ -2483,7 +2511,7 @@ html_content = f'''<!DOCTYPE html>
 
           this.resetPolygonStyles();
 
-          setTimeout(() => {{
+          this.nextTimer = setTimeout(() => {{
             this.currentIndex++;
             this.nextQuestion();
           }}, 900);
@@ -2512,6 +2540,10 @@ html_content = f'''<!DOCTYPE html>
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
             this.resetPolygonStyles();
+            const form = document.getElementById('prov-form-type');
+            if (form) form.classList.add('hidden');
+            const input = document.getElementById('prov-input-type');
+            if (input) input.blur();
             const bar = document.getElementById('prov-type-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `
@@ -2540,6 +2572,10 @@ html_content = f'''<!DOCTYPE html>
           }}
         }}
         if (e.key === 'Enter' && this.isAnswered) {{
+          if (this.nextTimer) {{
+            clearTimeout(this.nextTimer);
+            this.nextTimer = null;
+          }}
           this.currentIndex++;
           this.nextQuestion();
         }}
@@ -2630,12 +2666,9 @@ html_content = f'''<!DOCTYPE html>
         const typeInput = document.getElementById('world-input-type');
         typeForm.onsubmit = (e) => {{
           if (e) e.preventDefault();
-          if (this.isAnswered) {{
-            this.currentIndex++;
-            this.nextQuestion();
-            return false;
-          }}
+          if (this.isAnswered) return false;
           const val = typeInput.value.trim().toLowerCase();
+          if (!val) return false;
           const q = this.currentQuestion;
           let isCorrect = false;
 
@@ -2887,10 +2920,16 @@ html_content = f'''<!DOCTYPE html>
       }},
 
       nextQuestion() {{
+        if (this.nextTimer) {{
+          clearTimeout(this.nextTimer);
+          this.nextTimer = null;
+        }}
         this.isAnswered = false;
         this.answeredResult = null;
         document.getElementById('world-locate-feedback-bar').classList.add('hidden');
         document.getElementById('world-type-feedback-bar').classList.add('hidden');
+        const worldTypeForm = document.getElementById('world-form-type');
+        if (worldTypeForm) worldTypeForm.classList.remove('hidden');
 
         if (this.currentMode === 'explore') return;
 
@@ -2937,6 +2976,9 @@ html_content = f'''<!DOCTYPE html>
         }} else if (this.currentMode === 'type') {{
           document.getElementById('world-type-accuracy-tag').textContent = `正答率: ${{pct}}`;
           document.getElementById('world-type-progress-tag').textContent = progStr;
+          document.getElementById('world-type-feedback-bar').classList.add('hidden');
+          const form = document.getElementById('world-form-type');
+          if (form) form.classList.remove('hidden');
           document.getElementById('world-type-prompt-label').textContent = (this.targetType === 'capital')
             ? `黄色の国（${{q.name}}）の【首都名】を入力：`
             : '黄色の国の【国名】を入力：';
@@ -3118,14 +3160,19 @@ html_content = f'''<!DOCTYPE html>
           }} else if (this.currentMode === 'name') {{
             if (targetEl) targetEl.classList.add('!bg-emerald-600', '!border-emerald-400');
           }} else if (this.currentMode === 'type') {{
+            const form = document.getElementById('world-form-type');
+            if (form) form.classList.add('hidden');
+            const input = document.getElementById('world-input-type');
+            if (input) input.blur();
             const bar = document.getElementById('world-type-feedback-bar');
             bar.classList.remove('hidden');
-            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
+            const ansText = (this.targetType === 'capital') ? `${{q.name}}の首都: ${{q.capital}}` : `${{q.name}}`;
+            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！${{ansText}}</div>`;
           }}
 
           this.resetPolygonStyles();
 
-          setTimeout(() => {{
+          this.nextTimer = setTimeout(() => {{
             this.currentIndex++;
             this.nextQuestion();
           }}, 900);
@@ -3156,6 +3203,10 @@ html_content = f'''<!DOCTYPE html>
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
             this.resetPolygonStyles();
+            const form = document.getElementById('world-form-type');
+            if (form) form.classList.add('hidden');
+            const input = document.getElementById('world-input-type');
+            if (input) input.blur();
             const bar = document.getElementById('world-type-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `
@@ -3184,6 +3235,10 @@ html_content = f'''<!DOCTYPE html>
           }}
         }}
         if (e.key === 'Enter' && this.isAnswered) {{
+          if (this.nextTimer) {{
+            clearTimeout(this.nextTimer);
+            this.nextTimer = null;
+          }}
           this.currentIndex++;
           this.nextQuestion();
         }}

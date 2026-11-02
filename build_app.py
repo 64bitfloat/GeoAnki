@@ -206,6 +206,12 @@ html_content = f'''<!DOCTYPE html>
     .leaflet-pane > svg {{
       transform: translate3d(0, 0, 0);
       backface-visibility: hidden;
+      shape-rendering: geometricPrecision;
+    }}
+    .leaflet-pane > svg path {{
+      shape-rendering: geometricPrecision;
+      stroke-linejoin: round;
+      stroke-linecap: round;
     }}
     @keyframes pulse-yellow {{
       0%, 100% {{ fill-opacity: 0.95; stroke-width: 3px; }}
@@ -1584,7 +1590,7 @@ html_content = f'''<!DOCTYPE html>
           this.map = L.map('muni-map', {{
             attributionControl: false,
             zoomControl: false,
-            renderer: L.svg({{ padding: 1.5 }})
+            renderer: L.svg({{ padding: 1.5, tolerance: 0 }})
           }});
           L.control.zoom({{ position: 'bottomright' }}).addTo(this.map);
         }}
@@ -1705,6 +1711,7 @@ html_content = f'''<!DOCTYPE html>
         const targetCodes = new Set(this.questionPool.map(m => m[0]));
 
         this.geoJsonLayer = L.geoJSON(this.currentGeoJson, {{
+          smoothFactor: 0,
           style: (feature) => {{
             let code = String(feature.properties.N03_007 || feature.properties.code || '');
             const isTarget = targetCodes.has(code) || (WARD_TO_CITY[code] && targetCodes.has(WARD_TO_CITY[code]));
@@ -1712,7 +1719,7 @@ html_content = f'''<!DOCTYPE html>
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.65,
               color: '#090d16',
-              weight: 1.2,
+              weight: 0.8,
               opacity: 1
             }};
           }},
@@ -1878,7 +1885,7 @@ html_content = f'''<!DOCTYPE html>
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.65,
               color: '#090d16',
-              weight: 1.2
+              weight: 0.8
             }});
           }}
         }});
@@ -2148,7 +2155,7 @@ html_content = f'''<!DOCTYPE html>
           this.map = L.map('prov-map', {{
             attributionControl: false,
             zoomControl: false,
-            renderer: L.svg({{ padding: 1.5 }})
+            renderer: L.svg({{ padding: 1.5, tolerance: 0 }})
           }});
           L.control.zoom({{ position: 'bottomright' }}).addTo(this.map);
         }}
@@ -2226,6 +2233,7 @@ html_content = f'''<!DOCTYPE html>
         const targetCodes = new Set(this.questionPool.map(p => p.code));
 
         this.geoJsonLayer = L.geoJSON(PROVINCES_GEOJSON, {{
+          smoothFactor: 0,
           style: (feature) => {{
             const code = feature.properties.code;
             const isTarget = targetCodes.has(code);
@@ -2233,7 +2241,7 @@ html_content = f'''<!DOCTYPE html>
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.65,
               color: '#090d16',
-              weight: 1.2,
+              weight: 0.8,
               opacity: 1
             }};
           }},
@@ -2394,7 +2402,7 @@ html_content = f'''<!DOCTYPE html>
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.65,
               color: '#090d16',
-              weight: 1.2
+              weight: 0.8
             }});
           }}
         }});
@@ -2775,7 +2783,7 @@ html_content = f'''<!DOCTYPE html>
           this.map = L.map('world-map', {{
             attributionControl: false,
             zoomControl: false,
-            renderer: L.svg({{ padding: 1.5 }}),
+            renderer: L.svg({{ padding: 1.5, tolerance: 0 }}),
             minZoom: 1.5,
             maxZoom: 9
           }});
@@ -2857,6 +2865,7 @@ html_content = f'''<!DOCTYPE html>
         const targetCodes = new Set(this.questionPool.map(c => c.code));
 
         this.geoJsonLayer = L.geoJSON(WORLD_GEOJSON, {{
+          smoothFactor: 0,
           style: (feature) => {{
             const code = feature.properties.code;
             const isTarget = targetCodes.has(code);
@@ -2864,7 +2873,7 @@ html_content = f'''<!DOCTYPE html>
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.60,
               color: '#090d16',
-              weight: 0.8,
+              weight: 0.7,
               opacity: 1
             }};
           }},
@@ -3044,7 +3053,7 @@ html_content = f'''<!DOCTYPE html>
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.60,
               color: '#090d16',
-              weight: 0.8
+              weight: 0.7
             }});
           }}
         }});

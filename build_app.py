@@ -722,7 +722,7 @@ html_content = f'''<!DOCTYPE html>
               <div class="flex-1 min-w-0">
                 <div class="text-[10px] sm:text-xs text-slate-400 flex items-center gap-1 truncate">
                   <span>地図上でタップ：</span>
-                  <span id="prov-locate-kana" class="text-slate-300 font-medium">（ふりがな・現代地域）</span>
+                  <span id="prov-locate-kana" class="text-slate-300 font-medium">（ふりがな）</span>
                 </div>
                 <div id="prov-locate-question-name" class="text-lg sm:text-2xl font-black text-white truncate tracking-wide leading-tight">
                   武蔵
@@ -2298,7 +2298,7 @@ html_content = f'''<!DOCTYPE html>
           document.getElementById('prov-locate-level-tag').textContent = `Lv.${{q.lvl}} ${{lvlNames[q.lvl] || ''}}`;
           document.getElementById('prov-locate-accuracy-tag').textContent = `正答率: ${{pct}}`;
           document.getElementById('prov-locate-progress-tag').textContent = progStr;
-          document.getElementById('prov-locate-kana').textContent = `（${{q.kana}}・${{q.pref || q.modern || ''}}）`;
+          document.getElementById('prov-locate-kana').textContent = `（${{q.kana}}）`;
           document.getElementById('prov-locate-question-name').textContent = q.name;
           this.resetPolygonStyles();
         }} else if (this.currentMode === 'name') {{
@@ -2459,6 +2459,8 @@ html_content = f'''<!DOCTYPE html>
         if (!this.data.records[q.code]) this.data.records[q.code] = {{ correct: 0, wrong: 0 }};
         const rec = this.data.records[q.code];
 
+        const modernInfo = (q.pref || q.modern) ? `（現代: ${{q.pref || q.modern}}）` : '';
+
         if (isCorrect) {{
           this.answeredResult = {{ isCorrect: true, code: q.code }};
           sound.correct();
@@ -2470,13 +2472,13 @@ html_content = f'''<!DOCTYPE html>
           if (this.currentMode === 'locate') {{
             const bar = document.getElementById('prov-locate-feedback-bar');
             bar.classList.remove('hidden');
-            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
+            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！${{q.name}} ${{modernInfo}}</div>`;
           }} else if (this.currentMode === 'name') {{
             if (targetEl) targetEl.classList.add('!bg-emerald-600', '!border-emerald-400');
           }} else if (this.currentMode === 'type') {{
             const bar = document.getElementById('prov-type-feedback-bar');
             bar.classList.remove('hidden');
-            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
+            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！${{q.name}} ${{modernInfo}}</div>`;
           }}
 
           this.resetPolygonStyles();
@@ -2499,7 +2501,7 @@ html_content = f'''<!DOCTYPE html>
             bar.classList.remove('hidden');
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-bold text-rose-400">❌ 惜しい！正解は黄色点滅の場所です</span>
+                <span class="text-xs font-bold text-rose-400">❌ 惜しい！正解は「${{q.name}}」${{modernInfo}}（黄色点滅）です</span>
                 <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="ProvApp.currentIndex++; ProvApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
@@ -2514,7 +2516,7 @@ html_content = f'''<!DOCTYPE html>
             bar.classList.remove('hidden');
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-bold text-rose-400">❌ 正解: ${{q.name}}</span>
+                <span class="text-xs font-bold text-rose-400">❌ 正解: ${{q.name}} ${{modernInfo}}</span>
                 <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="ProvApp.currentIndex++; ProvApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;

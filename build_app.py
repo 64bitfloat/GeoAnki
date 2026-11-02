@@ -603,7 +603,7 @@ html_content = f'''<!DOCTYPE html>
               </div>
               <span id="muni-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
             </div>
-            <form id="muni-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="return false;">
+            <form id="muni-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="event.preventDefault(); return false;">
               <input type="text" id="muni-input-type" placeholder="例: 沼津市、函南町" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
               <button type="submit" id="btn-muni-type-submit" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 shadow">回答</button>
               <button type="button" id="btn-muni-type-skip" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">スキップ →</button>
@@ -761,7 +761,7 @@ html_content = f'''<!DOCTYPE html>
               </div>
               <span id="prov-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 15</span>
             </div>
-            <form id="prov-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="return false;">
+            <form id="prov-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="event.preventDefault(); return false;">
               <input type="text" id="prov-input-type" placeholder="例: 武蔵、むさし" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
               <button type="submit" id="btn-prov-type-submit" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 shadow">回答</button>
               <button type="button" id="btn-prov-type-skip" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">スキップ →</button>
@@ -1002,7 +1002,7 @@ html_content = f'''<!DOCTYPE html>
               </div>
               <span id="world-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
             </div>
-            <form id="world-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="return false;">
+            <form id="world-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="event.preventDefault(); return false;">
               <input type="text" id="world-input-type" placeholder="例: フランス、パリ" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
               <button type="submit" id="btn-world-type-submit" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 shadow">回答</button>
               <button type="button" id="btn-world-type-skip" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">スキップ →</button>
@@ -1464,16 +1464,18 @@ html_content = f'''<!DOCTYPE html>
 
         const typeForm = document.getElementById('muni-form-type');
         const typeInput = document.getElementById('muni-input-type');
-        typeForm.onsubmit = () => {{
+        typeForm.onsubmit = (e) => {{
+          if (e) e.preventDefault();
           if (this.isAnswered) {{
             this.currentIndex++;
             this.nextQuestion();
-            return;
+            return false;
           }}
           const val = typeInput.value.trim();
           const q = this.currentQuestion;
           const isCorrect = (val === q[3] || val === q[4]);
           this.handleAnswer(isCorrect, typeInput);
+          return false;
         }};
 
         window.addEventListener('keydown', (e) => {{
@@ -1969,7 +1971,7 @@ html_content = f'''<!DOCTYPE html>
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-bold text-rose-400">❌ 惜しい！正解は黄色点滅の場所です</span>
-                <button class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
+                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
           }} else if (this.currentMode === 'name') {{
@@ -1982,7 +1984,7 @@ html_content = f'''<!DOCTYPE html>
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-bold text-rose-400">❌ 正解: ${{q[3]}}</span>
-                <button class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
+                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
           }}
@@ -2065,16 +2067,18 @@ html_content = f'''<!DOCTYPE html>
 
         const typeForm = document.getElementById('prov-form-type');
         const typeInput = document.getElementById('prov-input-type');
-        typeForm.onsubmit = () => {{
+        typeForm.onsubmit = (e) => {{
+          if (e) e.preventDefault();
           if (this.isAnswered) {{
             this.currentIndex++;
             this.nextQuestion();
-            return;
+            return false;
           }}
           const val = typeInput.value.trim();
           const q = this.currentQuestion;
           const isCorrect = (val === q.name || val === q.kana || (q.aliases && q.aliases.includes(val)));
           this.handleAnswer(isCorrect, typeInput);
+          return false;
         }};
 
         window.addEventListener('keydown', (e) => {{
@@ -2426,7 +2430,7 @@ html_content = f'''<!DOCTYPE html>
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-bold text-rose-400">❌ 惜しい！正解は黄色点滅の場所です</span>
-                <button class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="ProvApp.currentIndex++; ProvApp.nextQuestion();">次へ (Enter ↵)</button>
+                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="ProvApp.currentIndex++; ProvApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
           }} else if (this.currentMode === 'name') {{
@@ -2439,7 +2443,7 @@ html_content = f'''<!DOCTYPE html>
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-bold text-rose-400">❌ 正解: ${{q.name}}</span>
-                <button class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="ProvApp.currentIndex++; ProvApp.nextQuestion();">次へ (Enter ↵)</button>
+                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="ProvApp.currentIndex++; ProvApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
           }}
@@ -2549,11 +2553,12 @@ html_content = f'''<!DOCTYPE html>
 
         const typeForm = document.getElementById('world-form-type');
         const typeInput = document.getElementById('world-input-type');
-        typeForm.onsubmit = () => {{
+        typeForm.onsubmit = (e) => {{
+          if (e) e.preventDefault();
           if (this.isAnswered) {{
             this.currentIndex++;
             this.nextQuestion();
-            return;
+            return false;
           }}
           const val = typeInput.value.trim().toLowerCase();
           const q = this.currentQuestion;
@@ -2569,6 +2574,7 @@ html_content = f'''<!DOCTYPE html>
                          q.aliases_name.some(a => a.toLowerCase() === val));
           }}
           this.handleAnswer(isCorrect, typeInput);
+          return false;
         }};
 
         window.addEventListener('keydown', (e) => {{
@@ -3032,7 +3038,7 @@ html_content = f'''<!DOCTYPE html>
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-bold text-rose-400">❌ 惜しい！${{answerText}}（黄色点滅の場所）です</span>
-                <button class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="WorldApp.currentIndex++; WorldApp.nextQuestion();">次へ (Enter ↵)</button>
+                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="WorldApp.currentIndex++; WorldApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
           }} else if (this.currentMode === 'name') {{
@@ -3045,7 +3051,7 @@ html_content = f'''<!DOCTYPE html>
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-bold text-rose-400">❌ ${{answerText}}</span>
-                <button class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="WorldApp.currentIndex++; WorldApp.nextQuestion();">次へ (Enter ↵)</button>
+                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="WorldApp.currentIndex++; WorldApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
           }}

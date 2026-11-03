@@ -136,6 +136,9 @@ html_content = f'''<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>GeoAnki — 地理暗記学習プラットフォーム</title>
 
+  <!-- Content Security Policy (CSP) 多層防御 -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: blob: https:; connect-src 'self' https://cdn.jsdelivr.net https://raw.githubusercontent.com; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none';" />
+
   <!-- 基本メタ情報 & SEO -->
   <meta name="description" content="全国1,741市区町村・令制国旧国名（68国）・世界の国名と首都（196ヶ国）を美麗な白地図ベクターポリゴンで直感暗記！GeoGuessr・地理学習特化アプリ。" />
   <meta name="keywords" content="GeoGuessr, ジオゲッサー, 市区町村, 旧国名, 令制国, 世界の国名, 首都, 地理, 暗記, Anki, 白地図" />
@@ -185,8 +188,8 @@ html_content = f'''<!DOCTYPE html>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-  <!-- Turf.js (政令市の外郭ポリゴン自動結合) -->
-  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+  <!-- Turf.js (政令市の外郭ポリゴン自動結合: バージョン固定およびSRI改ざん防止) -->
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js" integrity="sha384-82q0nm29xZzIo5BMtDYnh2/NxeO6FoaK1S/0nF84w3cEsqbBfun3JdMyDVYWfVY5" crossorigin="anonymous"></script>
 
   <style>
     html, body {{
@@ -1775,8 +1778,14 @@ html_content = f'''<!DOCTYPE html>
       }},
 
       async loadGeoJson(prefCode) {{
-        if (this.geoJsonCache[prefCode]) {{
-          this.currentGeoJson = this.geoJsonCache[prefCode];
+        const codeStr = String(prefCode || '');
+        if (!/^(0[1-9]|[1-4][0-7])$/.test(codeStr)) {{
+          console.error("Invalid prefecture code format:", prefCode);
+          return;
+        }}
+
+        if (this.geoJsonCache[codeStr]) {{
+          this.currentGeoJson = this.geoJsonCache[codeStr];
           return;
         }}
 
@@ -1784,15 +1793,15 @@ html_content = f'''<!DOCTYPE html>
         loading.classList.remove('hidden');
 
         // 正式な全国自治体ベクターGeoJSONのURL（smartnews-smri / 国土数値情報N03-21準拠）
-        const primaryUrl = `https://cdn.jsdelivr.net/gh/smartnews-smri/japan-topography@main/data/municipality/geojson/s0010/N03-21_${{prefCode}}_210101.json`;
-        const fallbackUrl = `https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/geojson/s0010/N03-21_${{prefCode}}_210101.json`;
+        const primaryUrl = `https://cdn.jsdelivr.net/gh/smartnews-smri/japan-topography@main/data/municipality/geojson/s0010/N03-21_${{codeStr}}_210101.json`;
+        const fallbackUrl = `https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/geojson/s0010/N03-21_${{codeStr}}_210101.json`;
 
         try {{
           let resp = await fetch(primaryUrl);
           if (!resp.ok) resp = await fetch(fallbackUrl);
           if (resp.ok) {{
             const data = await resp.json();
-            this.geoJsonCache[prefCode] = data;
+            this.geoJsonCache[codeStr] = data;
             this.currentGeoJson = data;
           }} else {{
             throw new Error(`HTTP ${{resp.status}}`);

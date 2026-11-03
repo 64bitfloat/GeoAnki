@@ -1,1 +1,25 @@
 AGENTS.md
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python Cache & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# Environment Variables & Secrets
+.env
+.env.*
+*.local
+
+# Editor & IDE Directories
+.vscode/
+.idea/
+*.swp
+*.swo

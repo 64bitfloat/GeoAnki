@@ -1589,20 +1589,32 @@ html_content = f'''<!DOCTYPE html>
           const val = typeInput.value.trim();
           if (!val) return false;
           const q = this.currentQuestion;
-          let isCorrect = (val === q[3] || val === q[4]);
+          const code = q[0];
+          const wardInfo = WARD_INFO[code];
 
-          // 区の場合の正解判定（区名のみ、もしくは市名+区名）
-          const wardInfo = WARD_INFO[q[0]];
-          if (!isCorrect && wardInfo) {{
+          let isCorrect = false;
+          if (wardInfo) {{
+            // 【行政区（例: 静岡市葵区）が出題されている場合】
+            // 静岡市は不正解！静岡市葵区もしくは葵区のみ正解（ひらがな可）
             const acceptable = [
-              wardInfo.ward,                   // 例: "葵区"
-              wardInfo.ward_kana,              // 例: "あおいく"
-              wardInfo.ward.replace('区', ''), // 例: "葵"
-              wardInfo.ward_kana.replace(/く$/, '') // 例: "あおい"
+              q[3],                                  // "静岡市葵区"
+              q[4],                                  // "しずおかしあおいく"
+              wardInfo.ward,                         // "葵区"
+              wardInfo.ward_kana,                    // "あおいく"
+              wardInfo.ward.replace('区', ''),       // "葵"
+              wardInfo.ward_kana.replace(/く$/, '')  // "あおい"
             ];
-            if (acceptable.includes(val)) {{
-              isCorrect = true;
-            }}
+            isCorrect = acceptable.includes(val);
+          }} else {{
+            // 【親市（例: 静岡市全体）や一般市町村が出題されている場合】
+            // 静岡市全体が問題なので静岡市のみ正解（葵区等は不正解）
+            const acceptable = [
+              q[3],                                  // "静岡市"
+              q[4],                                  // "しずおかし"
+              q[3].replace(/[市区町村]$/, ''),       // "静岡"
+              q[4].replace(/[しくまちむら]$/, '')    // "しずおか"
+            ];
+            isCorrect = acceptable.includes(val);
           }}
 
           this.handleAnswer(isCorrect, typeInput);
@@ -2108,8 +2120,12 @@ html_content = f'''<!DOCTYPE html>
           // 回答後のハイライト判定
           if (this.isAnswered && this.answeredResult) {{
             const res = this.answeredResult;
+            const correctTargetCode = res.correctCode || res.code;
+            const isCorrectWard = Boolean(WARD_INFO[correctTargetCode]);
+
             if (res.isCorrect) {{
-              if (code === res.code) {{
+              const isMatch = isCorrectWard ? (code === res.code) : (code === res.code || cityCode === res.code);
+              if (isMatch) {{
                 layer.setStyle({{
                   fillColor: '#34d399',
                   fillOpacity: 0.95,
@@ -2122,7 +2138,8 @@ html_content = f'''<!DOCTYPE html>
               }}
             }} else {{
               // 不正解時: 正解場所は黄色点滅
-              if (code === res.correctCode) {{
+              const isCorrectMatch = isCorrectWard ? (code === res.correctCode) : (code === res.correctCode || cityCode === res.correctCode);
+              if (isCorrectMatch) {{
                 layer.setStyle({{
                   fillColor: '#fbbf24',
                   fillOpacity: 0.95,
@@ -2150,7 +2167,8 @@ html_content = f'''<!DOCTYPE html>
           }}
 
           // 通常出題中（4択または記入）のハイライト
-          const isCurrentHighlight = !this.isAnswered && currentCode && (code === currentCode);
+          const isTargetWard = Boolean(currentCode && WARD_INFO[currentCode]);
+          const isCurrentHighlight = !this.isAnswered && currentCode && (isTargetWard ? (code === currentCode) : (code === currentCode || cityCode === currentCode));
           if (isCurrentHighlight) {{
             layer.setStyle({{
               fillColor: '#fbbf24',
@@ -2209,11 +2227,15 @@ html_content = f'''<!DOCTYPE html>
         const code = this.currentQuestion[0];
         let targetBounds = null;
 
+        const isWardQuestion = Boolean(WARD_INFO[code]);
         this.geoJsonLayer.eachLayer(layer => {{
           if (!layer.feature || !layer.feature.properties) return;
           const featProps = layer.feature.properties;
           const featCode = String(featProps.N03_007 || featProps.code || '');
-          if (featCode === code) {{
+          const cityCode = WARD_TO_CITY[featCode] || featCode;
+
+          const match = isWardQuestion ? (featCode === code) : (featCode === code || cityCode === code);
+          if (match) {{
             if (layer.getBounds && layer.getBounds().isValid()) {{
               targetBounds = targetBounds ? targetBounds.extend(layer.getBounds()) : layer.getBounds();
             }}
@@ -2221,7 +2243,7 @@ html_content = f'''<!DOCTYPE html>
         }});
 
         if (targetBounds && (this.currentMode === 'name' || this.currentMode === 'type' || this.isAnswered)) {{
-          this.map.flyToBounds(targetBounds, {{ maxZoom: 10.5, duration: 0.5 }});
+          this.map.flyToBounds(targetBounds, {{ maxZoom: isWardQuestion ? 11 : 10, duration: 0.5 }});
         }}
       }},
 
@@ -2255,14 +2277,23 @@ html_content = f'''<!DOCTYPE html>
 
       onPolygonClick(feature, layer) {{
         let code = String(feature.properties.N03_007 || feature.properties.code || '');
-        const targetMuni = MUNI_RAW_DATA.find(m => m[0] === code);
-        if (!targetMuni) return;
+        const cityCode = WARD_TO_CITY[code] || code;
+        const currentTargetCode = this.currentQuestion ? this.currentQuestion[0] : null;
 
         if (this.currentMode === 'locate') {{
-          if (this.isAnswered) return;
-          const isCorrect = (code === this.currentQuestion[0]);
+          if (this.isAnswered || !currentTargetCode) return;
+          let isCorrect = false;
+          if (WARD_INFO[currentTargetCode]) {{
+            // 出題が「区」（例: 静岡市葵区）の場合: 葵区そのものをタップしたときのみ正解
+            isCorrect = (code === currentTargetCode);
+          }} else {{
+            // 出題が親市（例: 静岡市全体）または一般市町村の場合: 静岡市内の区なら正解
+            isCorrect = (code === currentTargetCode || cityCode === currentTargetCode);
+          }}
           this.handleAnswer(isCorrect, layer, code);
         }} else if (this.currentMode === 'explore') {{
+          let targetMuni = MUNI_RAW_DATA.find(m => m[0] === code) || MUNI_RAW_DATA.find(m => m[0] === cityCode);
+          if (!targetMuni) return;
           this.selectedMuni = targetMuni;
           document.getElementById('muni-explore-empty').classList.add('hidden');
           document.getElementById('muni-explore-detail').classList.remove('hidden');

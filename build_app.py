@@ -15,8 +15,11 @@ print("=== Building GeoAnki Suite (index.html) with Refined Features ===")
 # -------------------------------------------------------------
 # 1. 市区町村データ読み込み (Municipalities)
 # -------------------------------------------------------------
-with open("municipalities.json", "r", encoding="utf-8") as f:
+with open("municipalities_with_wards.json", "r", encoding="utf-8") as f:
     muni_raw = json.load(f)
+
+with open("wards_master.json", "r", encoding="utf-8") as f:
+    wards_master = json.load(f)
 
 with open("ward_to_city.json", "r", encoding="utf-8") as f:
     ward_to_city = json.load(f)
@@ -120,6 +123,7 @@ muni_json = json.dumps(muni_arr, ensure_ascii=False, separators=(',', ':'))
 ward_json = json.dumps(ward_to_city, ensure_ascii=False, separators=(',', ':'))
 pref_json = json.dumps(PREFECTURES, ensure_ascii=False, separators=(',', ':'))
 pref_levels_json = json.dumps(pref_levels_master, ensure_ascii=False, separators=(',', ':'))
+ward_info_json = json.dumps(wards_master, ensure_ascii=False, separators=(',', ':'))
 
 prov_master_json = json.dumps(provinces_master, ensure_ascii=False, separators=(',', ':'))
 prov_geo_json = json.dumps(provinces_geojson, ensure_ascii=False, separators=(',', ':'))
@@ -314,7 +318,7 @@ html_content = f'''<!DOCTYPE html>
               <div class="bg-slate-900/80 rounded-xl p-3 border border-slate-700/60 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="text-slate-400">制覇状況</span>
-                  <span class="font-bold text-emerald-400"><span id="root-muni-cleared">0</span> / 1,741 (<span id="root-muni-pct">0.0%</span>)</span>
+                  <span class="font-bold text-emerald-400"><span id="root-muni-cleared">0</span> / <span id="root-muni-total">1,741</span> (<span id="root-muni-pct">0.0%</span>)</span>
                 </div>
                 <div class="w-full bg-slate-700/60 h-2 rounded-full overflow-hidden">
                   <div id="root-muni-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
@@ -452,7 +456,7 @@ html_content = f'''<!DOCTYPE html>
           <div class="text-right">
             <div class="text-xs text-slate-400">全国制覇数</div>
             <div class="text-sm sm:text-base font-extrabold text-emerald-400">
-              <span id="muni-hub-cleared">0</span> <span class="text-xs font-normal text-slate-400">/ 1,741</span>
+              <span id="muni-hub-cleared">0</span> <span class="text-xs font-normal text-slate-400">/ <span id="muni-hub-total">1,741</span></span>
               <span id="muni-hub-pct" class="text-xs font-semibold text-slate-300 ml-1">(0.0%)</span>
             </div>
           </div>
@@ -1182,6 +1186,7 @@ html_content = f'''<!DOCTYPE html>
     const WARD_TO_CITY = {ward_json};
     const PREFECTURES = {pref_json};
     const PREF_LEVELS_MASTER = {pref_levels_json};
+    const WARD_INFO = {ward_info_json};
 
     const PROVINCES_MASTER = {prov_master_json};
     const PROVINCES_GEOJSON = {prov_geo_json};
@@ -1433,6 +1438,7 @@ html_content = f'''<!DOCTYPE html>
         const muniAcc = (muniCorrect + muniWrong > 0) ? Math.round((muniCorrect / (muniCorrect + muniWrong)) * 100) + '%' : '--%';
 
         document.getElementById('root-muni-cleared').textContent = muniCleared;
+        document.getElementById('root-muni-total').textContent = muniTotal.toLocaleString();
         document.getElementById('root-muni-pct').textContent = muniPct + '%';
         document.getElementById('root-muni-bar').style.width = muniPct + '%';
         document.getElementById('root-muni-acc').textContent = muniAcc;
@@ -1583,7 +1589,26 @@ html_content = f'''<!DOCTYPE html>
           const val = typeInput.value.trim();
           if (!val) return false;
           const q = this.currentQuestion;
-          const isCorrect = (val === q[3] || val === q[4]);
+          let isCorrect = (val === q[3] || val === q[4]);
+
+          // 区の場合の柔軟な正解判定（区名だけでも○○市と書いても両方正解）
+          const wardInfo = WARD_INFO[q[0]];
+          if (!isCorrect && wardInfo) {{
+            const acceptable = [
+              wardInfo.ward,
+              wardInfo.ward_kana,
+              wardInfo.city,
+              wardInfo.city_kana,
+              wardInfo.ward.replace('区', ''),
+              wardInfo.city.replace('市', ''),
+              wardInfo.ward_kana.replace(/く$/, ''),
+              wardInfo.city_kana.replace(/し$/, '')
+            ];
+            if (acceptable.includes(val)) {{
+              isCorrect = true;
+            }}
+          }}
+
           this.handleAnswer(isCorrect, typeInput);
           return false;
         }};
@@ -1621,6 +1646,7 @@ html_content = f'''<!DOCTYPE html>
         const totalMuni = MUNI_RAW_DATA.length;
         const totalPct = ((totalCleared / totalMuni) * 100).toFixed(1);
         document.getElementById('muni-hub-cleared').textContent = totalCleared;
+        document.getElementById('muni-hub-total').textContent = totalMuni.toLocaleString();
         document.getElementById('muni-hub-pct').textContent = totalPct + '%';
         document.getElementById('muni-hub-progress-bar').style.width = totalPct + '%';
         document.getElementById('muni-hub-completed-prefs').textContent = completedPrefsCount;
@@ -1909,14 +1935,7 @@ html_content = f'''<!DOCTYPE html>
               mouseover: (e) => {{
                 if (this.isAnswered) return;
                 if (!isTarget && this.currentMode !== 'explore') return;
-                // 政令指定都市の区の場合、市内の全区を連動してハイライト
-                this.geoJsonLayer.eachLayer(l => {{
-                  if (!l.feature || !l.feature.properties) return;
-                  const c = String(l.feature.properties.N03_007 || l.feature.properties.code || '');
-                  if (c === code || (WARD_TO_CITY[c] && WARD_TO_CITY[c] === cityCode)) {{
-                    l.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
-                  }}
-                }});
+                layer.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
               }},
               mouseout: (e) => {{
                 this.resetPolygonStyles();
@@ -2094,7 +2113,7 @@ html_content = f'''<!DOCTYPE html>
           if (this.isAnswered && this.answeredResult) {{
             const res = this.answeredResult;
             if (res.isCorrect) {{
-              if (code === res.code || cityCode === res.code) {{
+              if (code === res.code) {{
                 layer.setStyle({{
                   fillColor: '#34d399',
                   fillOpacity: 0.95,
@@ -2107,7 +2126,7 @@ html_content = f'''<!DOCTYPE html>
               }}
             }} else {{
               // 不正解時: 正解場所は黄色点滅
-              if (code === res.correctCode || cityCode === res.correctCode) {{
+              if (code === res.correctCode) {{
                 layer.setStyle({{
                   fillColor: '#fbbf24',
                   fillOpacity: 0.95,
@@ -2120,7 +2139,7 @@ html_content = f'''<!DOCTYPE html>
                 return;
               }}
               // 誤ってタップした場所は赤色
-              if (res.wrongCode && (code === res.wrongCode || cityCode === res.wrongCode)) {{
+              if (res.wrongCode && code === res.wrongCode) {{
                 layer.setStyle({{
                   fillColor: '#f87171',
                   fillOpacity: 0.95,
@@ -2135,7 +2154,7 @@ html_content = f'''<!DOCTYPE html>
           }}
 
           // 通常出題中（4択または記入）のハイライト
-          const isCurrentHighlight = !this.isAnswered && currentCode && (code === currentCode || cityCode === currentCode);
+          const isCurrentHighlight = !this.isAnswered && currentCode && (code === currentCode);
           if (isCurrentHighlight) {{
             layer.setStyle({{
               fillColor: '#fbbf24',
@@ -2198,7 +2217,7 @@ html_content = f'''<!DOCTYPE html>
           if (!layer.feature || !layer.feature.properties) return;
           const featProps = layer.feature.properties;
           const featCode = String(featProps.N03_007 || featProps.code || '');
-          if (featCode === code || WARD_TO_CITY[featCode] === code) {{
+          if (featCode === code) {{
             if (layer.getBounds && layer.getBounds().isValid()) {{
               targetBounds = targetBounds ? targetBounds.extend(layer.getBounds()) : layer.getBounds();
             }}
@@ -2240,8 +2259,6 @@ html_content = f'''<!DOCTYPE html>
 
       onPolygonClick(feature, layer) {{
         let code = String(feature.properties.N03_007 || feature.properties.code || '');
-        if (WARD_TO_CITY[code]) code = WARD_TO_CITY[code];
-
         const targetMuni = MUNI_RAW_DATA.find(m => m[0] === code);
         if (!targetMuni) return;
 

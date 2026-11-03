@@ -1,15 +1,15 @@
 import json
 
-with open('municipalities.json', 'r', encoding='utf-8') as f:
+with open('municipalities_with_wards.json', 'r', encoding='utf-8') as f:
     muni_data = json.load(f)
 
-with open('municipality_populations.json', 'r', encoding='utf-8') as f:
+with open('municipality_populations_with_wards.json', 'r', encoding='utf-8') as f:
     pop_data = json.load(f)
 
 # 北海道のエリア判定関数
 def get_hokkaido_area(code):
     c = int(code)
-    if code == '01100': return 'central'
+    if code == '01100' or (1101 <= c <= 1110): return 'central'
     if code in ('01217', '01224', '01231', '01234', '01235'): return 'central'
     if code in ('01209', '01210', '01215', '01216', '01218', '01222', '01225', '01226', '01227', '01228'): return 'central'
     if code == '01203': return 'central'

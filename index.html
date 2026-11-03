@@ -1456,18 +1456,14 @@
           const q = this.currentQuestion;
           let isCorrect = (val === q[3] || val === q[4]);
 
-          // 区の場合の柔軟な正解判定（区名だけでも○○市と書いても両方正解）
+          // 区の場合の正解判定（区名のみ、もしくは市名+区名）
           const wardInfo = WARD_INFO[q[0]];
           if (!isCorrect && wardInfo) {
             const acceptable = [
-              wardInfo.ward,
-              wardInfo.ward_kana,
-              wardInfo.city,
-              wardInfo.city_kana,
-              wardInfo.ward.replace('区', ''),
-              wardInfo.city.replace('市', ''),
-              wardInfo.ward_kana.replace(/く$/, ''),
-              wardInfo.city_kana.replace(/し$/, '')
+              wardInfo.ward,                   // 例: "葵区"
+              wardInfo.ward_kana,              // 例: "あおいく"
+              wardInfo.ward.replace('区', ''), // 例: "葵"
+              wardInfo.ward_kana.replace(/く$/, '') // 例: "あおい"
             ];
             if (acceptable.includes(val)) {
               isCorrect = true;

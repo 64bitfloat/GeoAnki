@@ -21,6 +21,9 @@ with open("municipalities.json", "r", encoding="utf-8") as f:
 with open("ward_to_city.json", "r", encoding="utf-8") as f:
     ward_to_city = json.load(f)
 
+with open("pref_levels_master.json", "r", encoding="utf-8") as f:
+    pref_levels_master = json.load(f)
+
 muni_arr = []
 for m in muni_raw.values():
     muni_arr.append([
@@ -116,6 +119,7 @@ WORLD_REGIONS = [
 muni_json = json.dumps(muni_arr, ensure_ascii=False, separators=(',', ':'))
 ward_json = json.dumps(ward_to_city, ensure_ascii=False, separators=(',', ':'))
 pref_json = json.dumps(PREFECTURES, ensure_ascii=False, separators=(',', ':'))
+pref_levels_json = json.dumps(pref_levels_master, ensure_ascii=False, separators=(',', ':'))
 
 prov_master_json = json.dumps(provinces_master, ensure_ascii=False, separators=(',', ':'))
 prov_geo_json = json.dumps(provinces_geojson, ensure_ascii=False, separators=(',', ':'))
@@ -482,6 +486,70 @@ html_content = f'''<!DOCTYPE html>
       <div class="max-w-6xl mx-auto space-y-6" id="muni-hub-container">
       </div>
     </main>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- モーダル: 北海道 エリア選択モーダル -->
+  <!-- ============================================================== -->
+  <div id="modal-hokkaido-area" class="hidden fixed inset-0 z-[2000] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-5 sm:p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-sm">
+            北
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white">北海道 エリア選択</h3>
+            <p class="text-[11px] text-slate-400">学習する地方エリアを選択してください（全域演習も可能）</p>
+          </div>
+        </div>
+        <button id="btn-close-hokkaido-modal" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[60vh] overflow-y-auto pr-1">
+        <button class="hokkaido-area-btn col-span-1 sm:col-span-2 p-3 rounded-xl bg-gradient-to-r from-emerald-950/50 to-slate-800/80 border border-emerald-500/40 hover:border-emerald-400 text-left transition active:scale-[0.98] group" data-area-id="ALL">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-white group-hover:text-emerald-300">北海道 全域</span>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">全179自治体</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">全14振興局・179市町村を一括で演習</p>
+        </button>
+
+        <button class="hokkaido-area-btn p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-emerald-400 text-left transition active:scale-[0.98] group" data-area-id="central">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-white group-hover:text-emerald-300">道央エリア</span>
+            <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-slate-700 text-slate-300">52自治体</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1">石狩・空知・後志（札幌市、小樽市など）</p>
+        </button>
+
+        <button class="hokkaido-area-btn p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-emerald-400 text-left transition active:scale-[0.98] group" data-area-id="southern">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-white group-hover:text-emerald-300">道南エリア</span>
+            <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-slate-700 text-slate-300">36自治体</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1">渡島・檜山・胆振・日高（函館市、苫小牧市など）</p>
+        </button>
+
+        <button class="hokkaido-area-btn p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-emerald-400 text-left transition active:scale-[0.98] group" data-area-id="northern">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-white group-hover:text-emerald-300">道北エリア</span>
+            <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-slate-700 text-slate-300">41自治体</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1">上川・留萌・宗谷（旭川市、稚内市など）</p>
+        </button>
+
+        <button class="hokkaido-area-btn p-3 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-emerald-400 text-left transition active:scale-[0.98] group" data-area-id="eastern">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-white group-hover:text-emerald-300">道東エリア</span>
+            <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-slate-700 text-slate-300">50自治体</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1">オホーツク・十勝・釧路・根室（釧路市、帯広市など）</p>
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- ============================================================== -->
@@ -1110,6 +1178,7 @@ html_content = f'''<!DOCTYPE html>
     const MUNI_RAW_DATA = {muni_json};
     const WARD_TO_CITY = {ward_json};
     const PREFECTURES = {pref_json};
+    const PREF_LEVELS_MASTER = {pref_levels_json};
 
     const PROVINCES_MASTER = {prov_master_json};
     const PROVINCES_GEOJSON = {prov_geo_json};
@@ -1411,14 +1480,28 @@ html_content = f'''<!DOCTYPE html>
     // ==============================================================
     // モジュール 1: 市区町村暗記 (MuniApp)
     // ==============================================================
+    // 北海道エリア定義
+    const HOKKAIDO_AREA_INFO = {{
+      ALL: {{ name: '北海道（全域）', shortName: '全域', bounds: [[41.3, 139.3], [45.6, 145.9]] }},
+      central: {{ name: '北海道（道央エリア）', shortName: '道央', bounds: [[42.5, 139.7], [44.4, 142.3]] }},
+      southern: {{ name: '北海道（道南エリア）', shortName: '道南', bounds: [[41.3, 139.3], [42.9, 143.6]] }},
+      northern: {{ name: '北海道（道北エリア）', shortName: '道北', bounds: [[43.0, 140.8], [45.6, 143.5]] }},
+      eastern: {{ name: '北海道（道東エリア）', shortName: '道東', bounds: [[42.6, 142.5], [44.7, 145.9]] }}
+    }};
+
+    // ==============================================================
+    // モジュール 1: 市区町村暗記 (MuniApp)
+    // ==============================================================
     const MuniApp = {{
       data: null,
       map: null,
       currentPref: null,
+      currentAreaId: 'ALL',
+      currentLevel: 1,
+      currentLevelObj: null,
       currentGeoJson: null,
       geoJsonLayer: null,
       cityBoundariesLayer: null,
-      currentLevel: 'ALL',
       currentMode: 'locate',
       questionPool: [],
       currentIndex: 0,
@@ -1449,6 +1532,25 @@ html_content = f'''<!DOCTYPE html>
           AppRouter.navigate('screen-muni-hub');
           this.renderHub();
         }};
+
+        const modalHk = document.getElementById('modal-hokkaido-area');
+        const btnCloseHk = document.getElementById('btn-close-hokkaido-modal');
+        if (btnCloseHk) {{
+          btnCloseHk.onclick = () => this.closeHokkaidoModal();
+        }}
+        if (modalHk) {{
+          modalHk.onclick = (e) => {{
+            if (e.target === modalHk) this.closeHokkaidoModal();
+          }};
+        }}
+        document.querySelectorAll('.hokkaido-area-btn').forEach(btn => {{
+          btn.onclick = () => {{
+            const areaId = btn.dataset.areaId;
+            this.closeHokkaidoModal();
+            const hkPref = PREFECTURES.find(p => p.code === '01');
+            if (hkPref) this.openPref(hkPref, areaId);
+          }};
+        }});
         document.getElementById('btn-muni-reset-bounds').onclick = () => {{
           if (this.map && this.geoJsonLayer) {{
             if (this.currentPref.defaultView) this.map.fitBounds(this.currentPref.defaultView, {{ padding: [20, 20] }});
@@ -1569,7 +1671,13 @@ html_content = f'''<!DOCTYPE html>
               </div>
             `;
 
-            card.onclick = () => this.openPref(pref);
+            card.onclick = () => {{
+              if (pref.code === '01') {{
+                this.openHokkaidoModal(pref);
+              }} else {{
+                this.openPref(pref, 'ALL');
+              }}
+            }};
             grid.appendChild(card);
           }});
 
@@ -1577,13 +1685,44 @@ html_content = f'''<!DOCTYPE html>
         }});
       }},
 
-      async openPref(pref) {{
+      openHokkaidoModal(pref) {{
         this.currentPref = pref;
-        AppRouter.navigate('screen-muni-spoke');
-        document.getElementById('muni-spoke-pref-title').textContent = pref.name;
+        const modal = document.getElementById('modal-hokkaido-area');
+        if (modal) modal.classList.remove('hidden');
+      }},
 
-        const prefMunis = MUNI_RAW_DATA.filter(m => m[1] === pref.code);
-        document.getElementById('muni-spoke-pref-count-badge').textContent = `${{prefMunis.length}}自治体`;
+      closeHokkaidoModal() {{
+        const modal = document.getElementById('modal-hokkaido-area');
+        if (modal) modal.classList.add('hidden');
+      }},
+
+      getAreaMunis() {{
+        if (!this.currentPref) return [];
+        const prefMunis = MUNI_RAW_DATA.filter(m => m[1] === this.currentPref.code);
+        if (this.currentPref.code !== '01' || !this.currentAreaId || this.currentAreaId === 'ALL') {{
+          return prefMunis;
+        }}
+        const levelKey = `01_${{this.currentAreaId}}`;
+        const levels = PREF_LEVELS_MASTER[levelKey];
+        if (!levels) return prefMunis;
+        const codeSet = new Set();
+        levels.forEach(lvl => lvl.codes.forEach(c => codeSet.add(c)));
+        return prefMunis.filter(m => codeSet.has(m[0]));
+      }},
+
+      async openPref(pref, areaId = 'ALL') {{
+        this.currentPref = pref;
+        this.currentAreaId = areaId;
+        AppRouter.navigate('screen-muni-spoke');
+
+        let title = pref.name;
+        if (pref.code === '01' && HOKKAIDO_AREA_INFO[areaId]) {{
+          title = HOKKAIDO_AREA_INFO[areaId].name;
+        }}
+        document.getElementById('muni-spoke-pref-title').textContent = title;
+
+        const areaMunis = this.getAreaMunis();
+        document.getElementById('muni-spoke-pref-count-badge').textContent = `${{areaMunis.length}}自治体`;
 
         this.updateHeaderProgress();
 
@@ -1598,7 +1737,24 @@ html_content = f'''<!DOCTYPE html>
 
         const islandContainer = document.getElementById('muni-island-buttons');
         islandContainer.innerHTML = '';
-        if (pref.islands && pref.islands.length > 0) {{
+
+        if (pref.code === '01') {{
+          // 北海道の場合は「エリア変更」ボタンを常設
+          const changeBtn = document.createElement('button');
+          changeBtn.className = 'px-2 py-1 rounded bg-emerald-600/90 hover:bg-emerald-500 text-white border border-emerald-400/50 text-[10px] font-bold shadow-lg flex items-center gap-1';
+          changeBtn.innerHTML = '<span>🗺️ エリア変更</span>';
+          changeBtn.onclick = () => this.openHokkaidoModal(pref);
+          islandContainer.appendChild(changeBtn);
+
+          // 離島ボタン (道北または全域の場合に利尻礼文ボタンを表示)
+          if (areaId === 'ALL' || areaId === 'northern') {{
+            const btn = document.createElement('button');
+            btn.className = 'px-2 py-1 rounded bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-600/70 text-[10px] font-bold shadow-lg';
+            btn.textContent = '📍 離島(利尻・礼文)';
+            btn.onclick = () => this.map.fitBounds([[45.0, 140.9], [45.5, 141.4]], {{ padding: [20, 20], animate: true }});
+            islandContainer.appendChild(btn);
+          }}
+        }} else if (pref.islands && pref.islands.length > 0) {{
           pref.islands.forEach(isl => {{
             const btn = document.createElement('button');
             btn.className = 'px-2 py-1 rounded bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-600/70 text-[10px] font-bold shadow-lg';
@@ -1610,7 +1766,12 @@ html_content = f'''<!DOCTYPE html>
 
         await this.loadGeoJson(pref.code);
         this.renderLevelTabs();
-        this.startLevel('ALL');
+
+        // 最適化レベルの先頭レベルを開始
+        const levelKey = (pref.code === '01' ? `01_${{areaId}}` : pref.code);
+        const levels = PREF_LEVELS_MASTER[levelKey] || [];
+        const initialLvl = (levels.length > 0) ? levels[0].level : 'ALL';
+        this.startLevel(initialLvl);
       }},
 
       async loadGeoJson(prefCode) {{
@@ -1648,24 +1809,19 @@ html_content = f'''<!DOCTYPE html>
         const container = document.getElementById('muni-level-tabs-container');
         container.innerHTML = '';
 
-        const prefMunis = MUNI_RAW_DATA.filter(m => m[1] === this.currentPref.code);
-        const counts = {{
-          1: prefMunis.filter(m => m[6] === 1).length,
-          2: prefMunis.filter(m => m[6] === 2).length,
-          3: prefMunis.filter(m => m[6] === 3).length,
-          4: prefMunis.filter(m => m[6] === 4).length,
-          ALL: prefMunis.length,
-          WEAK: prefMunis.filter(m => this.data.records[m[0]] && this.data.records[m[0]].last === 'wrong').length
-        }};
+        const levelKey = (this.currentPref.code === '01') ? `01_${{this.currentAreaId || 'ALL'}}` : this.currentPref.code;
+        const levels = PREF_LEVELS_MASTER[levelKey] || [];
+        const areaMunis = this.getAreaMunis();
+        const weakCount = areaMunis.filter(m => this.data.records[m[0]] && this.data.records[m[0]].last === 'wrong').length;
 
-        const tabs = [
-          {{ id: 1, label: 'Lv.1 主要都市', count: counts[1] }},
-          {{ id: 2, label: 'Lv.2 市', count: counts[2] }},
-          {{ id: 3, label: 'Lv.3 町', count: counts[3] }},
-          {{ id: 4, label: 'Lv.4 村', count: counts[4] }},
-          {{ id: 'ALL', label: '全自治体', count: counts.ALL }},
-          {{ id: 'WEAK', label: '⚠️ 弱点復習', count: counts.WEAK }}
-        ];
+        const tabs = levels.map(lvl => ({{
+          id: lvl.level,
+          label: `Lv.${{lvl.level}} ${{lvl.label}}`,
+          count: lvl.codes.length
+        }}));
+
+        tabs.push({{ id: 'ALL', label: '全自治体', count: areaMunis.length }});
+        tabs.push({{ id: 'WEAK', label: '⚠️ 弱点復習', count: weakCount }});
 
         tabs.forEach(t => {{
           if (t.count === 0 && t.id !== 'ALL' && t.id !== 'WEAK') return;
@@ -1683,19 +1839,26 @@ html_content = f'''<!DOCTYPE html>
 
       startLevel(levelId) {{
         this.currentLevel = levelId;
-        const prefMunis = MUNI_RAW_DATA.filter(m => m[1] === this.currentPref.code);
+        const levelKey = (this.currentPref.code === '01') ? `01_${{this.currentAreaId || 'ALL'}}` : this.currentPref.code;
+        const levels = PREF_LEVELS_MASTER[levelKey] || [];
+        const areaMunis = this.getAreaMunis();
 
         if (levelId === 'ALL') {{
-          this.questionPool = [...prefMunis];
+          this.currentLevelObj = null;
+          this.questionPool = [...areaMunis];
         }} else if (levelId === 'WEAK') {{
-          this.questionPool = prefMunis.filter(m => this.data.records[m[0]] && this.data.records[m[0]].last === 'wrong');
+          this.currentLevelObj = null;
+          this.questionPool = areaMunis.filter(m => this.data.records[m[0]] && this.data.records[m[0]].last === 'wrong');
           if (this.questionPool.length === 0) {{
             alert('弱点の自治体はありません！');
             this.startLevel('ALL');
             return;
           }}
         }} else {{
-          this.questionPool = prefMunis.filter(m => m[6] === levelId);
+          const lvlObj = levels.find(l => l.level === levelId);
+          this.currentLevelObj = lvlObj || null;
+          const codeSet = new Set(lvlObj ? lvlObj.codes : []);
+          this.questionPool = areaMunis.filter(m => codeSet.has(m[0]));
         }}
 
         this.questionPool.sort(() => Math.random() - 0.5);
@@ -1809,7 +1972,9 @@ html_content = f'''<!DOCTYPE html>
           }}).addTo(this.map);
         }}
 
-        if (this.currentPref.defaultView) {{
+        if (this.currentPref.code === '01' && HOKKAIDO_AREA_INFO[this.currentAreaId]) {{
+          this.map.fitBounds(HOKKAIDO_AREA_INFO[this.currentAreaId].bounds, {{ padding: [20, 20] }});
+        }} else if (this.currentPref.defaultView) {{
           this.map.fitBounds(this.currentPref.defaultView, {{ padding: [20, 20] }});
         }} else {{
           this.map.fitBounds(this.geoJsonLayer.getBounds(), {{ padding: [20, 20] }});
@@ -1868,7 +2033,15 @@ html_content = f'''<!DOCTYPE html>
         const progStr = `問題 ${{this.currentIndex + 1}} / ${{this.questionPool.length}}`;
 
         if (this.currentMode === 'locate') {{
-          document.getElementById('muni-locate-level-tag').textContent = `Lv.${{q[6]}} ${{q[5]}}`;
+          let lvlLabel = `Lv.${{q[6]}} ${{q[5]}}`;
+          if (this.currentLevel === 'ALL') {{
+            lvlLabel = '全自治体';
+          }} else if (this.currentLevel === 'WEAK') {{
+            lvlLabel = '⚠️ 弱点復習';
+          }} else if (this.currentLevelObj) {{
+            lvlLabel = `Lv.${{this.currentLevelObj.level}} ${{this.currentLevelObj.label}}`;
+          }}
+          document.getElementById('muni-locate-level-tag').textContent = lvlLabel;
           document.getElementById('muni-locate-accuracy-tag').textContent = `正答率: ${{pct}}`;
           document.getElementById('muni-locate-progress-tag').textContent = progStr;
           document.getElementById('muni-locate-kana').textContent = `（${{q[4]}}）`;
@@ -2190,15 +2363,15 @@ html_content = f'''<!DOCTYPE html>
 
       updateHeaderProgress() {{
         if (!this.currentPref) return;
-        const prefMunis = MUNI_RAW_DATA.filter(m => m[1] === this.currentPref.code);
+        const areaMunis = this.getAreaMunis();
         let cleared = 0;
-        prefMunis.forEach(m => {{
+        areaMunis.forEach(m => {{
           const r = this.data.records[m[0]];
           if (r && r.correct > 0) cleared++;
         }});
         document.getElementById('muni-spoke-cleared-count').textContent = cleared;
-        document.getElementById('muni-spoke-total-count').textContent = prefMunis.length;
-        const pct = prefMunis.length > 0 ? Math.round((cleared / prefMunis.length) * 100) : 0;
+        document.getElementById('muni-spoke-total-count').textContent = areaMunis.length;
+        const pct = areaMunis.length > 0 ? Math.round((cleared / areaMunis.length) * 100) : 0;
         document.getElementById('muni-spoke-cleared-pct').textContent = `(${{pct}}%)`;
       }}
     }};

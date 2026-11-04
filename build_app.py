@@ -679,13 +679,13 @@ html_content = f'''<!DOCTYPE html>
             <div class="flex items-center justify-between gap-1.5 mb-1.5 sm:mb-2">
               <div class="flex items-center gap-1.5 truncate">
                 <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0"></span>
-                <span class="text-[11px] sm:text-xs font-bold text-amber-300 truncate">黄色の自治体名を入力（市区町村まで）：</span>
+                <span class="text-[11px] sm:text-xs font-bold text-amber-300 truncate">黄色の場所の回答を入力：</span>
                 <span id="muni-type-accuracy-tag" class="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 rounded-full border shrink-0 text-slate-400 bg-slate-700/40 border-slate-600/40">正答率: --%</span>
               </div>
               <span id="muni-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
             </div>
             <form id="muni-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="event.preventDefault(); return false;">
-              <input type="text" id="muni-input-type" placeholder="自治体名を入力（市区町村まで）" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
+              <input type="text" id="muni-input-type" name="geoanki_quiz_answer" placeholder="回答を入力..." class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other" />
               <button type="submit" id="btn-muni-type-submit" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 shadow">回答</button>
               <button type="button" id="btn-muni-type-skip" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">スキップ →</button>
             </form>
@@ -843,7 +843,7 @@ html_content = f'''<!DOCTYPE html>
               <span id="prov-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 15</span>
             </div>
             <form id="prov-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="event.preventDefault(); return false;">
-              <input type="text" id="prov-input-type" placeholder="漢字またはひらがなで入力（例: 武蔵、むさし）" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
+              <input type="text" id="prov-input-type" name="geoanki_quiz_answer" placeholder="漢字またはひらがなで入力（例: 武蔵、むさし）" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other" />
               <button type="submit" id="btn-prov-type-submit" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 shadow">回答</button>
               <button type="button" id="btn-prov-type-skip" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">スキップ →</button>
             </form>
@@ -1084,7 +1084,7 @@ html_content = f'''<!DOCTYPE html>
               <span id="world-type-progress-tag" class="text-[11px] sm:text-xs font-medium text-slate-400 shrink-0">問題 1 / 10</span>
             </div>
             <form id="world-form-type" class="flex items-center gap-1.5 sm:gap-2" onsubmit="event.preventDefault(); return false;">
-              <input type="text" id="world-input-type" placeholder="カタカナで国名を入力（例: フランス）" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" />
+              <input type="text" id="world-input-type" name="geoanki_quiz_answer" placeholder="カタカナで国名を入力（例: フランス）" class="flex-1 bg-slate-900/90 border border-slate-600 text-white placeholder-slate-500 text-sm sm:text-base font-bold px-3 py-1.5 sm:py-2 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other" />
               <button type="submit" id="btn-world-type-submit" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 shadow">回答</button>
               <button type="button" id="btn-world-type-skip" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition active:scale-95 shrink-0">スキップ →</button>
             </form>
@@ -1585,7 +1585,15 @@ html_content = f'''<!DOCTYPE html>
         const typeInput = document.getElementById('muni-input-type');
         typeForm.onsubmit = (e) => {{
           if (e) e.preventDefault();
-          if (this.isAnswered) return false;
+          if (this.isAnswered) {{
+            if (this.nextTimer) {{
+              clearTimeout(this.nextTimer);
+              this.nextTimer = null;
+            }}
+            this.currentIndex++;
+            this.nextQuestion();
+            return false;
+          }}
           const val = typeInput.value.trim();
           if (!val) return false;
           const q = this.currentQuestion;
@@ -2049,6 +2057,8 @@ html_content = f'''<!DOCTYPE html>
         document.getElementById('muni-type-feedback-bar').classList.add('hidden');
         const muniTypeForm = document.getElementById('muni-form-type');
         if (muniTypeForm) muniTypeForm.classList.remove('hidden');
+        const muniTypeInput = document.getElementById('muni-input-type');
+        if (muniTypeInput) muniTypeInput.readOnly = false;
 
         if (this.currentMode === 'explore') return;
 
@@ -2095,8 +2105,11 @@ html_content = f'''<!DOCTYPE html>
           const form = document.getElementById('muni-form-type');
           if (form) form.classList.remove('hidden');
           const input = document.getElementById('muni-input-type');
-          input.value = '';
-          input.focus();
+          if (input) {{
+            input.readOnly = false;
+            input.value = '';
+            input.focus();
+          }}
           this.highlightQuestionPolygon();
         }}
       }},
@@ -2243,7 +2256,10 @@ html_content = f'''<!DOCTYPE html>
         }});
 
         if (targetBounds && (this.currentMode === 'name' || this.currentMode === 'type' || this.isAnswered)) {{
-          this.map.flyToBounds(targetBounds, {{ maxZoom: isWardQuestion ? 11 : 10, duration: 0.5 }});
+          const isMobile = window.innerWidth <= 768;
+          const maxZ = isMobile ? (isWardQuestion ? 9.0 : 8.5) : (isWardQuestion ? 11 : 10);
+          const pad = isMobile ? [30, 20] : [20, 20];
+          this.map.flyToBounds(targetBounds, {{ maxZoom: maxZ, padding: pad, duration: 0.5 }});
         }}
       }},
 
@@ -2333,13 +2349,16 @@ html_content = f'''<!DOCTYPE html>
           }} else if (this.currentMode === 'name') {{
             if (targetEl) targetEl.classList.add('!bg-emerald-600', '!border-emerald-400');
           }} else if (this.currentMode === 'type') {{
-            const form = document.getElementById('muni-form-type');
-            if (form) form.classList.add('hidden');
             const input = document.getElementById('muni-input-type');
-            if (input) input.blur();
+            if (input) input.readOnly = true;
             const bar = document.getElementById('muni-type-feedback-bar');
             bar.classList.remove('hidden');
-            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！${{q[3]}}（${{q[4]}}）</div>`;
+            bar.innerHTML = `
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-emerald-400">⭕ 正解！${{q[3]}}（${{q[4]}}）</span>
+                <button type="button" class="px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white shrink-0" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
+              </div>
+            `;
           }}
 
           this.resetPolygonStyles();
@@ -2373,16 +2392,14 @@ html_content = f'''<!DOCTYPE html>
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
             this.resetPolygonStyles();
-            const form = document.getElementById('muni-form-type');
-            if (form) form.classList.add('hidden');
             const input = document.getElementById('muni-input-type');
-            if (input) input.blur();
+            if (input) input.readOnly = true;
             const bar = document.getElementById('muni-type-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-bold text-rose-400">❌ 正解: ${{q[3]}}（${{q[4]}}）</span>
-                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
+                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white shrink-0" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
           }}
@@ -2472,7 +2489,15 @@ html_content = f'''<!DOCTYPE html>
         const typeInput = document.getElementById('prov-input-type');
         typeForm.onsubmit = (e) => {{
           if (e) e.preventDefault();
-          if (this.isAnswered) return false;
+          if (this.isAnswered) {{
+            if (this.nextTimer) {{
+              clearTimeout(this.nextTimer);
+              this.nextTimer = null;
+            }}
+            this.currentIndex++;
+            this.nextQuestion();
+            return false;
+          }}
           const val = typeInput.value.trim();
           if (!val) return false;
           const q = this.currentQuestion;
@@ -2682,8 +2707,11 @@ html_content = f'''<!DOCTYPE html>
           const form = document.getElementById('prov-form-type');
           if (form) form.classList.remove('hidden');
           const input = document.getElementById('prov-input-type');
-          input.value = '';
-          input.focus();
+          if (input) {{
+            input.readOnly = false;
+            input.value = '';
+            input.focus();
+          }}
           this.highlightQuestionPolygon();
         }}
       }},
@@ -2848,13 +2876,16 @@ html_content = f'''<!DOCTYPE html>
           }} else if (this.currentMode === 'name') {{
             if (targetEl) targetEl.classList.add('!bg-emerald-600', '!border-emerald-400');
           }} else if (this.currentMode === 'type') {{
-            const form = document.getElementById('prov-form-type');
-            if (form) form.classList.add('hidden');
             const input = document.getElementById('prov-input-type');
-            if (input) input.blur();
+            if (input) input.readOnly = true;
             const bar = document.getElementById('prov-type-feedback-bar');
             bar.classList.remove('hidden');
-            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！${{q.name}} ${{modernInfo}}</div>`;
+            bar.innerHTML = `
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-emerald-400">⭕ 正解！${{q.name}} ${{modernInfo}}</span>
+                <button type="button" class="px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white shrink-0" onclick="ProvApp.currentIndex++; ProvApp.nextQuestion();">次へ (Enter ↵)</button>
+              </div>
+            `;
           }}
 
           this.resetPolygonStyles();
@@ -2888,16 +2919,14 @@ html_content = f'''<!DOCTYPE html>
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
             this.resetPolygonStyles();
-            const form = document.getElementById('prov-form-type');
-            if (form) form.classList.add('hidden');
             const input = document.getElementById('prov-input-type');
-            if (input) input.blur();
+            if (input) input.readOnly = true;
             const bar = document.getElementById('prov-type-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-bold text-rose-400">❌ 正解: ${{q.name}} ${{modernInfo}}</span>
-                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="ProvApp.currentIndex++; ProvApp.nextQuestion();">次へ (Enter ↵)</button>
+                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white shrink-0" onclick="ProvApp.currentIndex++; ProvApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
           }}
@@ -3014,7 +3043,15 @@ html_content = f'''<!DOCTYPE html>
         const typeInput = document.getElementById('world-input-type');
         typeForm.onsubmit = (e) => {{
           if (e) e.preventDefault();
-          if (this.isAnswered) return false;
+          if (this.isAnswered) {{
+            if (this.nextTimer) {{
+              clearTimeout(this.nextTimer);
+              this.nextTimer = null;
+            }}
+            this.currentIndex++;
+            this.nextQuestion();
+            return false;
+          }}
           const val = typeInput.value.trim().toLowerCase();
           if (!val) return false;
           const q = this.currentQuestion;
@@ -3332,9 +3369,12 @@ html_content = f'''<!DOCTYPE html>
             ? `黄色の国（${{q.name}}）の【首都名】を入力：`
             : '黄色の国の【国名】を入力：';
           const input = document.getElementById('world-input-type');
-          input.value = '';
-          input.placeholder = (this.targetType === 'capital') ? 'カタカナで首都名を入力（例: パリ）' : 'カタカナで国名を入力（例: フランス）';
-          input.focus();
+          if (input) {{
+            input.readOnly = false;
+            input.value = '';
+            input.placeholder = (this.targetType === 'capital') ? 'カタカナで首都名を入力（例: パリ）' : 'カタカナで国名を入力（例: フランス）';
+            input.focus();
+          }}
           this.highlightQuestionPolygon();
         }}
       }},
@@ -3509,14 +3549,17 @@ html_content = f'''<!DOCTYPE html>
           }} else if (this.currentMode === 'name') {{
             if (targetEl) targetEl.classList.add('!bg-emerald-600', '!border-emerald-400');
           }} else if (this.currentMode === 'type') {{
-            const form = document.getElementById('world-form-type');
-            if (form) form.classList.add('hidden');
             const input = document.getElementById('world-input-type');
-            if (input) input.blur();
+            if (input) input.readOnly = true;
             const bar = document.getElementById('world-type-feedback-bar');
             bar.classList.remove('hidden');
             const ansText = (this.targetType === 'capital') ? `${{q.name}}の首都: ${{q.capital}}` : `${{q.name}}`;
-            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！${{ansText}}</div>`;
+            bar.innerHTML = `
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-emerald-400">⭕ 正解！${{ansText}}</span>
+                <button type="button" class="px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white shrink-0" onclick="WorldApp.currentIndex++; WorldApp.nextQuestion();">次へ (Enter ↵)</button>
+              </div>
+            `;
           }}
 
           this.resetPolygonStyles();
@@ -3552,16 +3595,14 @@ html_content = f'''<!DOCTYPE html>
             if (correctBtn) correctBtn.classList.add('!border-emerald-400', '!border-2');
           }} else if (this.currentMode === 'type') {{
             this.resetPolygonStyles();
-            const form = document.getElementById('world-form-type');
-            if (form) form.classList.add('hidden');
             const input = document.getElementById('world-input-type');
-            if (input) input.blur();
+            if (input) input.readOnly = true;
             const bar = document.getElementById('world-type-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-bold text-rose-400">❌ ${{answerText}}</span>
-                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="WorldApp.currentIndex++; WorldApp.nextQuestion();">次へ (Enter ↵)</button>
+                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white shrink-0" onclick="WorldApp.currentIndex++; WorldApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
           }}

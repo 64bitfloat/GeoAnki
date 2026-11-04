@@ -2233,6 +2233,40 @@ html_content = f'''<!DOCTYPE html>
         }}
       }},
 
+      getVisibleMapPadding() {{
+        const isMobile = window.innerWidth <= 768;
+        const mapEl = document.getElementById('muni-map');
+        const dockEl = document.getElementById(`muni-dock-${{this.currentMode}}`);
+
+        if (!mapEl) {{
+          return {{
+            paddingTopLeft: isMobile ? [15, 20] : [30, 30],
+            paddingBottomRight: isMobile ? [15, 20] : [30, 30]
+          }};
+        }}
+
+        if (this.map) this.map.invalidateSize({{ pan: false }});
+        const mapRect = mapEl.getBoundingClientRect();
+        const topPad = isMobile ? 20 : 30;
+
+        let bottomPad = isMobile ? 20 : 30;
+        if (dockEl && !dockEl.classList.contains('hidden')) {{
+          const dockRect = dockEl.getBoundingClientRect();
+          if (dockRect.height > 0 && dockRect.top < mapRect.bottom) {{
+            const coveredHeight = mapRect.bottom - dockRect.top;
+            bottomPad = Math.max(bottomPad, coveredHeight + (isMobile ? 15 : 25));
+          }}
+        }}
+
+        const leftPad = isMobile ? 15 : 30;
+        const rightPad = isMobile ? 15 : 30;
+
+        return {{
+          paddingTopLeft: [leftPad, topPad],
+          paddingBottomRight: [rightPad, bottomPad]
+        }};
+      }},
+
       highlightQuestionPolygon() {{
         if (!this.geoJsonLayer || !this.currentQuestion) return;
         this.resetPolygonStyles();
@@ -2258,8 +2292,16 @@ html_content = f'''<!DOCTYPE html>
         if (targetBounds && (this.currentMode === 'name' || this.currentMode === 'type' || this.isAnswered)) {{
           const isMobile = window.innerWidth <= 768;
           const maxZ = isMobile ? (isWardQuestion ? 9.0 : 8.5) : (isWardQuestion ? 11 : 10);
-          const pad = isMobile ? [30, 20] : [20, 20];
-          this.map.flyToBounds(targetBounds, {{ maxZoom: maxZ, padding: pad, duration: 0.5 }});
+          setTimeout(() => {{
+            if (!this.map) return;
+            const p = this.getVisibleMapPadding();
+            this.map.flyToBounds(targetBounds, {{
+              paddingTopLeft: p.paddingTopLeft,
+              paddingBottomRight: p.paddingBottomRight,
+              maxZoom: maxZ,
+              duration: 0.5
+            }});
+          }}, 40);
         }}
       }},
 
@@ -2776,6 +2818,40 @@ html_content = f'''<!DOCTYPE html>
         }});
       }},
 
+      getVisibleMapPadding() {{
+        const isMobile = window.innerWidth <= 768;
+        const mapEl = document.getElementById('prov-map');
+        const dockEl = document.getElementById(`prov-dock-${{this.currentMode}}`);
+
+        if (!mapEl) {{
+          return {{
+            paddingTopLeft: isMobile ? [15, 20] : [30, 30],
+            paddingBottomRight: isMobile ? [15, 20] : [30, 30]
+          }};
+        }}
+
+        if (this.map) this.map.invalidateSize({{ pan: false }});
+        const mapRect = mapEl.getBoundingClientRect();
+        const topPad = isMobile ? 20 : 30;
+
+        let bottomPad = isMobile ? 20 : 30;
+        if (dockEl && !dockEl.classList.contains('hidden')) {{
+          const dockRect = dockEl.getBoundingClientRect();
+          if (dockRect.height > 0 && dockRect.top < mapRect.bottom) {{
+            const coveredHeight = mapRect.bottom - dockRect.top;
+            bottomPad = Math.max(bottomPad, coveredHeight + (isMobile ? 15 : 25));
+          }}
+        }}
+
+        const leftPad = isMobile ? 15 : 30;
+        const rightPad = isMobile ? 15 : 30;
+
+        return {{
+          paddingTopLeft: [leftPad, topPad],
+          paddingBottomRight: [rightPad, bottomPad]
+        }};
+      }},
+
       highlightQuestionPolygon() {{
         if (!this.geoJsonLayer || !this.currentQuestion) return;
         this.resetPolygonStyles();
@@ -2793,7 +2869,18 @@ html_content = f'''<!DOCTYPE html>
         }});
 
         if (targetBounds && (this.currentMode === 'name' || this.currentMode === 'type' || this.isAnswered)) {{
-          this.map.flyToBounds(targetBounds, {{ maxZoom: 8, duration: 0.5 }});
+          const isMobile = window.innerWidth <= 768;
+          const maxZ = isMobile ? 7.5 : 8.0;
+          setTimeout(() => {{
+            if (!this.map) return;
+            const p = this.getVisibleMapPadding();
+            this.map.flyToBounds(targetBounds, {{
+              paddingTopLeft: p.paddingTopLeft,
+              paddingBottomRight: p.paddingBottomRight,
+              maxZoom: maxZ,
+              duration: 0.5
+            }});
+          }}, 40);
         }}
       }},
 
@@ -3439,6 +3526,40 @@ html_content = f'''<!DOCTYPE html>
         }});
       }},
 
+      getVisibleMapPadding() {{
+        const isMobile = window.innerWidth <= 768;
+        const mapEl = document.getElementById('world-map');
+        const dockEl = document.getElementById(`world-dock-${{this.currentMode}}`);
+
+        if (!mapEl) {{
+          return {{
+            paddingTopLeft: isMobile ? [15, 20] : [30, 30],
+            paddingBottomRight: isMobile ? [15, 20] : [30, 30]
+          }};
+        }}
+
+        if (this.map) this.map.invalidateSize({{ pan: false }});
+        const mapRect = mapEl.getBoundingClientRect();
+        const topPad = isMobile ? 20 : 30;
+
+        let bottomPad = isMobile ? 20 : 30;
+        if (dockEl && !dockEl.classList.contains('hidden')) {{
+          const dockRect = dockEl.getBoundingClientRect();
+          if (dockRect.height > 0 && dockRect.top < mapRect.bottom) {{
+            const coveredHeight = mapRect.bottom - dockRect.top;
+            bottomPad = Math.max(bottomPad, coveredHeight + (isMobile ? 15 : 25));
+          }}
+        }}
+
+        const leftPad = isMobile ? 15 : 30;
+        const rightPad = isMobile ? 15 : 30;
+
+        return {{
+          paddingTopLeft: [leftPad, topPad],
+          paddingBottomRight: [rightPad, bottomPad]
+        }};
+      }},
+
       highlightQuestionPolygon() {{
         if (!this.geoJsonLayer || !this.currentQuestion) return;
         this.resetPolygonStyles();
@@ -3456,7 +3577,18 @@ html_content = f'''<!DOCTYPE html>
         }});
 
         if (targetBounds && (this.currentMode === 'name' || this.currentMode === 'type' || this.isAnswered)) {{
-          this.map.flyToBounds(targetBounds, {{ maxZoom: 5.5, duration: 0.5 }});
+          const isMobile = window.innerWidth <= 768;
+          const maxZ = isMobile ? 5.0 : 5.5;
+          setTimeout(() => {{
+            if (!this.map) return;
+            const p = this.getVisibleMapPadding();
+            this.map.flyToBounds(targetBounds, {{
+              paddingTopLeft: p.paddingTopLeft,
+              paddingBottomRight: p.paddingBottomRight,
+              maxZoom: maxZ,
+              duration: 0.5
+            }});
+          }}, 40);
         }}
       }},
 

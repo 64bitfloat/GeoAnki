@@ -109,6 +109,9 @@ with open("world_master.json", "r", encoding="utf-8") as f:
 with open("world.geojson", "r", encoding="utf-8") as f:
     world_geojson = json.load(f)
 
+with open("lakes.geojson", "r", encoding="utf-8") as f:
+    lakes_geojson = json.load(f)
+
 WORLD_REGIONS = [
     {"id": "ALL", "name": "全世界 (196ヶ国・地域)", "filter": "ALL", "desc": "国連加盟国および主要地域を網羅", "center": [20.0, 15.0], "zoom": 2},
     {"id": "asia", "name": "アジア (48ヶ国・地域)", "filter": "アジア", "desc": "東アジア、東南アジア、南アジア、中央・西アジア", "bounds": [[-12.0, 25.0], [55.0, 146.0]]},
@@ -131,6 +134,7 @@ prov_geo_json = json.dumps(provinces_geojson, ensure_ascii=False, separators=(',
 world_master_json = json.dumps(world_master, ensure_ascii=False, separators=(',', ':'))
 world_geo_json = json.dumps(world_geojson, ensure_ascii=False, separators=(',', ':'))
 world_regions_json = json.dumps(WORLD_REGIONS, ensure_ascii=False, separators=(',', ':'))
+lakes_geo_json = json.dumps(lakes_geojson, ensure_ascii=False, separators=(',', ':'))
 
 # HTML生成
 html_content = f'''<!DOCTYPE html>
@@ -1194,6 +1198,54 @@ html_content = f'''<!DOCTYPE html>
     const WORLD_MASTER = {world_master_json};
     const WORLD_GEOJSON = {world_geo_json};
     const WORLD_REGIONS = {world_regions_json};
+    const LAKES_GEOJSON = {lakes_geo_json};
+
+    // 主要湖沼ポリゴンを行政区域・令制国ポリゴンから切り抜くヘルパー関数
+    function clipLakesFromGeoJson(geoJson, prefCodeFilter = null) {{
+      if (!geoJson || !geoJson.features || typeof LAKES_GEOJSON === 'undefined' || !LAKES_GEOJSON.features) {{
+        return geoJson;
+      }}
+      if (typeof turf === 'undefined' || !turf.difference || !turf.bbox) {{
+        return geoJson;
+      }}
+      const targetLakes = prefCodeFilter
+        ? LAKES_GEOJSON.features.filter(l => l.properties && Array.isArray(l.properties.prefs) && l.properties.prefs.includes(prefCodeFilter))
+        : LAKES_GEOJSON.features;
+
+      if (targetLakes.length === 0) return geoJson;
+
+      const lakeBboxes = targetLakes.map(l => ({{ lake: l, bbox: turf.bbox(l) }}));
+      const outFeatures = [];
+
+      for (let i = 0; i < geoJson.features.length; i++) {{
+        let cur = geoJson.features[i];
+        if (!cur || !cur.geometry) continue;
+        let b1 = turf.bbox(cur);
+
+        for (let j = 0; j < lakeBboxes.length; j++) {{
+          const item = lakeBboxes[j];
+          const b2 = item.bbox;
+          if (b1[0] <= b2[2] && b1[2] >= b2[0] && b1[1] <= b2[3] && b1[3] >= b2[1]) {{
+            try {{
+              const diff = turf.difference(cur, item.lake);
+              if (diff && diff.geometry) {{
+                diff.properties = cur.properties;
+                cur = diff;
+                b1 = turf.bbox(cur);
+              }}
+            }} catch (err) {{
+              console.warn('Lake clip fallback:', err);
+            }}
+          }}
+        }}
+        outFeatures.push(cur);
+      }}
+
+      return {{
+        type: 'FeatureCollection',
+        features: outFeatures
+      }};
+    }}
   </script>
 
   <!-- ============================================================== -->
@@ -1854,7 +1906,8 @@ html_content = f'''<!DOCTYPE html>
           let resp = await fetch(primaryUrl);
           if (!resp.ok) resp = await fetch(fallbackUrl);
           if (resp.ok) {{
-            const data = await resp.json();
+            const rawData = await resp.json();
+            const data = clipLakesFromGeoJson(rawData, codeStr);
             this.geoJsonCache[codeStr] = data;
             this.currentGeoJson = data;
           }} else {{
@@ -2668,9 +2721,13 @@ html_content = f'''<!DOCTYPE html>
         if (!this.map || !PROVINCES_GEOJSON) return;
         if (this.geoJsonLayer) this.map.removeLayer(this.geoJsonLayer);
 
+        if (!this.clippedProvincesGeoJson) {{
+          this.clippedProvincesGeoJson = clipLakesFromGeoJson(PROVINCES_GEOJSON, null);
+        }}
+
         const targetCodes = new Set(this.questionPool.map(p => p.code));
 
-        this.geoJsonLayer = L.geoJSON(PROVINCES_GEOJSON, {{
+        this.geoJsonLayer = L.geoJSON(this.clippedProvincesGeoJson, {{
           smoothFactor: 0,
           style: (feature) => {{
             const code = feature.properties.code;

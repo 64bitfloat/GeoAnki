@@ -543,7 +543,7 @@
             <div class="flex items-center justify-between gap-2">
               <div class="flex-1 min-w-0">
                 <div class="text-[10px] sm:text-xs text-slate-400 flex items-center gap-1.5 flex-wrap">
-                  <span>地図上でタップ：</span>
+                  <span id="muni-locate-instruction-text">地図上でタップ：</span>
                   <span id="muni-locate-kana" class="text-slate-300 font-medium">（ふりがな）</span>
                   <span id="muni-locate-multi-badge" class="hidden px-1.5 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 text-amber-300 font-bold text-[10px] sm:text-[11px]"></span>
                 </div>
@@ -1459,6 +1459,7 @@
       currentGeoJson: null,
       geoJsonLayer: null,
       cityBoundariesLayer: null,
+      prefBoundariesLayer: null,
       currentMode: 'locate',
       questionPool: [],
       currentIndex: 0,
@@ -1468,9 +1469,11 @@
       activeRegionFilter: 'ALL',
       geoJsonCache: {},
       cityBoundaryCache: {},
+      prefBoundaryCache: {},
       nationalGeoJson: null,
       isReviewMode: false,
       activeMapKey: null,
+      selectMinZoom: 7.0,
       sameNameMap: {},
       multiAllCodes: [],
       multiRequiredCodes: [],
@@ -1794,6 +1797,7 @@
             renderer: L.svg({ padding: 1.5, tolerance: 0 })
           });
           L.control.zoom({ position: 'bottomright' }).addTo(this.map);
+          this.map.on('zoomend', () => this.onMapZoomChanged());
         }
 
         this.renderIslandButtonsForCurrentState();
@@ -1909,10 +1913,35 @@
             renderer: L.svg({ padding: 1.5, tolerance: 0 })
           });
           L.control.zoom({ position: 'bottomright' }).addTo(this.map);
+          this.map.on('zoomend', () => this.onMapZoomChanged());
         }
 
         this.renderLevelTabs();
         await this.nextQuestion();
+      },
+
+      isSelectEnabledAtCurrentZoom() {
+        if (this.activeMapKey !== 'NATIONAL') return true;
+        if (!this.map) return false;
+        return this.map.getZoom() >= this.selectMinZoom;
+      },
+
+      onMapZoomChanged() {
+        if (AppRouter.currentScreen !== 'screen-muni-spoke') return;
+        this.updateLocateInstructionText();
+        this.resetPolygonStyles();
+      },
+
+      updateLocateInstructionText() {
+        const instEl = document.getElementById('muni-locate-instruction-text');
+        if (!instEl) return;
+        if (this.activeMapKey === 'NATIONAL' && !this.isSelectEnabledAtCurrentZoom()) {
+          instEl.textContent = '🔍 エリアをタップまたは拡大して選択：';
+          instEl.className = 'text-amber-300 font-bold';
+        } else {
+          instEl.textContent = '地図上でタップ：';
+          instEl.className = '';
+        }
       },
 
       async fetchSinglePrefGeoJson(codeStr) {
@@ -1928,7 +1957,138 @@
         const data = clipLakesFromGeoJson(rawData, codeStr);
         this.geoJsonCache[codeStr] = data;
         this.ensureCityBoundaryCache(codeStr, data);
+        this.ensurePrefBoundaryCache(codeStr, data);
         return data;
+      },
+
+      ensurePrefBoundaryCache(codeStr, geoJsonData) {
+        if (this.prefBoundaryCache[codeStr]) return this.prefBoundaryCache[codeStr];
+        if (!geoJsonData || !geoJsonData.features) return null;
+
+        // 同一都道府県内で隣接自治体が共有する内部辺（出現2回以上）を相殺し、都道府県外郭辺（出現1回）のみを抽出
+        const edgeMap = new Map();
+        const addRingEdges = (ring) => {
+          if (!ring || ring.length < 2) return;
+          for (let i = 0; i < ring.length - 1; i++) {
+            const p1 = ring[i];
+            const p2 = ring[i + 1];
+            const k1 = `${p1[0].toFixed(5)},${p1[1].toFixed(5)}`;
+            const k2 = `${p2[0].toFixed(5)},${p2[1].toFixed(5)}`;
+            if (k1 === k2) continue;
+            const edgeKey = (k1 < k2) ? `${k1}|${k2}` : `${k2}|${k1}`;
+            const existing = edgeMap.get(edgeKey);
+            if (existing) {
+              existing.count++;
+            } else {
+              edgeMap.set(edgeKey, { count: 1, p1, p2, k1, k2 });
+            }
+          }
+        };
+
+        for (let i = 0; i < geoJsonData.features.length; i++) {
+          const geom = geoJsonData.features[i].geometry;
+          if (!geom) continue;
+          if (geom.type === 'Polygon') {
+            for (let r = 0; r < geom.coordinates.length; r++) {
+              addRingEdges(geom.coordinates[r]);
+            }
+          } else if (geom.type === 'MultiPolygon') {
+            for (let p = 0; p < geom.coordinates.length; p++) {
+              const poly = geom.coordinates[p];
+              for (let r = 0; r < poly.length; r++) {
+                addRingEdges(poly[r]);
+              }
+            }
+          }
+        }
+
+        const outerEdges = [];
+        edgeMap.forEach(val => {
+          if (val.count === 1) outerEdges.push(val);
+        });
+
+        // 連続する外郭辺をポリライン（チェイン）に連結して描画負荷を最小化
+        const adj = new Map();
+        for (let i = 0; i < outerEdges.length; i++) {
+          const e = outerEdges[i];
+          if (!adj.has(e.k1)) adj.set(e.k1, []);
+          if (!adj.has(e.k2)) adj.set(e.k2, []);
+          adj.get(e.k1).push(i);
+          adj.get(e.k2).push(i);
+        }
+
+        const visited = new Uint8Array(outerEdges.length);
+        const chains = [];
+
+        for (let i = 0; i < outerEdges.length; i++) {
+          if (visited[i]) continue;
+          visited[i] = 1;
+          const e0 = outerEdges[i];
+          const chain = [e0.p1, e0.p2];
+          let headKey = e0.k1;
+          let tailKey = e0.k2;
+
+          // 終端側へ延長
+          while (true) {
+            const neighbors = adj.get(tailKey);
+            let nextIdx = -1;
+            if (neighbors) {
+              for (let j = 0; j < neighbors.length; j++) {
+                if (!visited[neighbors[j]]) {
+                  nextIdx = neighbors[j];
+                  break;
+                }
+              }
+            }
+            if (nextIdx === -1) break;
+            visited[nextIdx] = 1;
+            const ne = outerEdges[nextIdx];
+            if (ne.k1 === tailKey) {
+              chain.push(ne.p2);
+              tailKey = ne.k2;
+            } else {
+              chain.push(ne.p1);
+              tailKey = ne.k1;
+            }
+          }
+
+          // 始端側へ延長
+          while (true) {
+            const neighbors = adj.get(headKey);
+            let prevIdx = -1;
+            if (neighbors) {
+              for (let j = 0; j < neighbors.length; j++) {
+                if (!visited[neighbors[j]]) {
+                  prevIdx = neighbors[j];
+                  break;
+                }
+              }
+            }
+            if (prevIdx === -1) break;
+            visited[prevIdx] = 1;
+            const pe = outerEdges[prevIdx];
+            if (pe.k2 === headKey) {
+              chain.unshift(pe.p1);
+              headKey = pe.k1;
+            } else {
+              chain.unshift(pe.p2);
+              headKey = pe.k2;
+            }
+          }
+
+          chains.push(chain);
+        }
+
+        const feature = {
+          type: 'Feature',
+          properties: { prefCode: codeStr },
+          geometry: {
+            type: 'MultiLineString',
+            coordinates: chains
+          }
+        };
+        this.prefBoundaryCache[codeStr] = feature;
+        return feature;
       },
 
       ensureCityBoundaryCache(codeStr, geoJsonData) {
@@ -1979,6 +2139,7 @@
         if (this.geoJsonCache[codeStr]) {
           this.currentGeoJson = this.geoJsonCache[codeStr];
           this.ensureCityBoundaryCache(codeStr, this.currentGeoJson);
+          this.ensurePrefBoundaryCache(codeStr, this.currentGeoJson);
           return;
         }
 
@@ -2175,6 +2336,7 @@
         if (!this.map || !this.currentGeoJson) return;
         if (this.geoJsonLayer) this.map.removeLayer(this.geoJsonLayer);
         if (this.cityBoundariesLayer) this.map.removeLayer(this.cityBoundariesLayer);
+        if (this.prefBoundariesLayer) this.map.removeLayer(this.prefBoundariesLayer);
 
         // 全国復習モード時は場所のヒントにならないよう全自治体をアクティブ表示
         const isAllActive = this.isReviewMode;
@@ -2204,14 +2366,24 @@
             layer.on({
               mouseover: (e) => {
                 if (this.isAnswered) return;
+                if (!this.isSelectEnabledAtCurrentZoom()) return;
                 if (!isTarget && this.currentMode !== 'explore') return;
                 if (this.multiFoundCodes && (this.multiFoundCodes.has(code) || this.multiFoundCodes.has(cityCode))) return;
                 layer.setStyle({ fillColor: '#e2e8f0', fillOpacity: 1 });
               },
               mouseout: (e) => {
+                if (!this.isSelectEnabledAtCurrentZoom()) return;
                 this.resetPolygonStyles();
               },
-              click: () => {
+              click: (e) => {
+                if (!this.isSelectEnabledAtCurrentZoom()) {
+                  // 自治体境が非表示の広域ズーム時は、回答判定を行わずタップ地点へ自治体境が見える倍率まで拡大
+                  if (this.map && e && e.latlng) {
+                    const targetZoom = Math.max(this.selectMinZoom + 0.6, this.map.getZoom() + 2.0);
+                    this.map.flyTo(e.latlng, targetZoom, { duration: 0.35 });
+                  }
+                  return;
+                }
                 if (!isTarget && this.currentMode !== 'explore') return;
                 this.onPolygonClick(feature, layer);
               }
@@ -2249,6 +2421,35 @@
           }).addTo(this.map);
         }
 
+        // 都道府県境（Prefecture Boundary）をキャッシュから高速取得して重ね描画
+        let prefBoundaryFeatures = [];
+        if (this.activeMapKey === 'NATIONAL') {
+          PREFECTURES.forEach(p => {
+            const feat = this.ensurePrefBoundaryCache(p.code, this.geoJsonCache[p.code]);
+            if (feat) prefBoundaryFeatures.push(feat);
+          });
+        } else if (this.activeMapKey) {
+          const feat = this.ensurePrefBoundaryCache(this.activeMapKey, this.currentGeoJson);
+          if (feat) prefBoundaryFeatures.push(feat);
+        }
+
+        if (prefBoundaryFeatures.length > 0) {
+          this.prefBoundariesLayer = L.geoJSON({
+            type: 'FeatureCollection',
+            features: prefBoundaryFeatures
+          }, {
+            smoothFactor: 0,
+            interactive: false,
+            style: {
+              fill: false,
+              fillOpacity: 0,
+              color: '#090d16',
+              weight: 1.25,
+              opacity: 1
+            }
+          }).addTo(this.map);
+        }
+
         if (this.activeMapKey === 'NATIONAL' || fitNational) {
           this.map.fitBounds([[30.0, 129.3], [45.6, 145.9]], { padding: [20, 20] });
         } else {
@@ -2261,6 +2462,9 @@
             this.map.fitBounds(this.geoJsonLayer.getBounds(), { padding: [20, 20] });
           }
         }
+
+        this.updateLocateInstructionText();
+        this.resetPolygonStyles();
       },
 
       setMode(mode) {
@@ -2403,6 +2607,10 @@
         const isHighlightMode = (this.currentMode === 'name' || this.currentMode === 'type');
         const currentCode = (this.currentQuestion && isHighlightMode) ? this.currentQuestion[0] : null;
 
+        const zoom = this.map ? this.map.getZoom() : 8.0;
+        const showMuniBorders = this.isSelectEnabledAtCurrentZoom();
+        const isMidZoom = (zoom < 8.5);
+
         const matchesTargetCode = (featCode, featCityCode, targetCode) => {
           const isWard = Boolean(WARD_INFO[targetCode]);
           return isWard ? (featCode === targetCode) : (featCode === targetCode || featCityCode === targetCode);
@@ -2431,7 +2639,8 @@
                   fillOpacity: 0.95,
                   weight: isWard ? 1.0 : 3.5,
                   color: isWard ? '#047857' : '#059669',
-                  dashArray: isWard ? '3, 3' : null
+                  dashArray: isWard ? '3, 3' : null,
+                  opacity: 1
                 });
                 if (layer.bringToFront) layer.bringToFront();
                 return;
@@ -2444,7 +2653,8 @@
                   fillOpacity: 0.95,
                   weight: isWard ? 1.0 : 3.5,
                   color: isWard ? '#047857' : '#059669',
-                  dashArray: isWard ? '3, 3' : null
+                  dashArray: isWard ? '3, 3' : null,
+                  opacity: 1
                 });
                 if (layer.bringToFront) layer.bringToFront();
                 return;
@@ -2457,7 +2667,8 @@
                   fillOpacity: 0.95,
                   weight: isWard ? 1.0 : 3.5,
                   color: isWard ? '#d97706' : '#eab308',
-                  dashArray: isWard ? '3, 3' : null
+                  dashArray: isWard ? '3, 3' : null,
+                  opacity: 1
                 });
                 if (layer._path) layer._path.classList.add('polygon-pulse');
                 if (layer.bringToFront) layer.bringToFront();
@@ -2470,7 +2681,8 @@
                   fillOpacity: 0.95,
                   weight: isWard ? 1.0 : 3.5,
                   color: isWard ? '#b91c1c' : '#dc2626',
-                  dashArray: isWard ? '3, 3' : null
+                  dashArray: isWard ? '3, 3' : null,
+                  opacity: 1
                 });
                 if (layer.bringToFront) layer.bringToFront();
                 return;
@@ -2487,7 +2699,8 @@
                 fillOpacity: 0.95,
                 weight: isWard ? 1.0 : 3.5,
                 color: isWard ? '#047857' : '#059669',
-                dashArray: isWard ? '3, 3' : null
+                dashArray: isWard ? '3, 3' : null,
+                opacity: 1
               });
               if (layer.bringToFront) layer.bringToFront();
               return;
@@ -2502,21 +2715,35 @@
               fillOpacity: 0.95,
               weight: isWard ? 1.0 : 3.5,
               color: isWard ? '#d97706' : '#f59e0b',
-              dashArray: isWard ? '3, 3' : null
+              dashArray: isWard ? '3, 3' : null,
+              opacity: 1
             });
             if (layer.bringToFront) layer.bringToFront();
+          } else if (!showMuniBorders) {
+            // 広域俯瞰時（zoom < 7.0）: 自治体境は塗りと同色にして隠し、都道府県境のみを見せる
+            const baseFill = isTarget ? '#f8fafc' : '#334155';
+            layer.setStyle({
+              fillColor: baseFill,
+              fillOpacity: isTarget ? 0.95 : 0.65,
+              color: baseFill,
+              weight: 0.5,
+              dashArray: null,
+              opacity: 1
+            });
           } else {
+            // 自治体境表示時（zoom >= 7.0 または都道府県単体マップ）: 拡大率に合わせて線幅を調整
             layer.setStyle({
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.65,
-              color: isWard ? '#64748b' : '#090d16',
-              weight: isWard ? 0.9 : 0.8,
-              dashArray: isWard ? '3, 4' : null
+              color: isWard ? '#64748b' : (isMidZoom ? '#1e293b' : '#090d16'),
+              weight: isWard ? (isMidZoom ? 0.55 : 0.9) : (isMidZoom ? 0.55 : 0.85),
+              dashArray: isWard ? (isMidZoom ? '2, 3' : '3, 4') : null,
+              opacity: 1
             });
           }
         });
 
-        // 市外郭レイヤーのハイライト連動
+        // 市外郭レイヤーのハイライト＆ズーム連動
         if (this.cityBoundariesLayer) {
           this.cityBoundariesLayer.eachLayer(layer => {
             if (!layer.feature || !layer.feature.properties) return;
@@ -2527,11 +2754,11 @@
               const res = this.answeredResult;
               const correctCodesList = res.correctCodes || [res.correctCode || res.code];
               if (res.isCorrect && correctCodesList.includes(cCode)) {
-                layer.setStyle({ color: '#059669', weight: 3.5 });
+                layer.setStyle({ color: '#059669', weight: 3.5, opacity: 1 });
                 if (layer.bringToFront) layer.bringToFront();
                 return;
               } else if (!res.isCorrect && correctCodesList.includes(cCode)) {
-                layer.setStyle({ color: '#eab308', weight: 3.5 });
+                layer.setStyle({ color: '#eab308', weight: 3.5, opacity: 1 });
                 if (layer._path) layer._path.classList.add('polygon-pulse');
                 if (layer.bringToFront) layer.bringToFront();
                 return;
@@ -2539,12 +2766,58 @@
             }
 
             if (!this.isAnswered && currentCode && cCode === currentCode) {
-              layer.setStyle({ color: '#f59e0b', weight: 3.5 });
+              layer.setStyle({ color: '#f59e0b', weight: 3.5, opacity: 1 });
               if (layer.bringToFront) layer.bringToFront();
+            } else if (!showMuniBorders) {
+              layer.setStyle({ color: '#090d16', weight: 0, opacity: 0 });
             } else {
-              layer.setStyle({ color: '#090d16', weight: 1.5 });
+              layer.setStyle({ color: '#090d16', weight: isMidZoom ? 1.15 : 1.5, opacity: 1 });
             }
           });
+        }
+
+        // 都道府県境レイヤーのズーム連動（常に最前面で都道府県境をくっきり維持）
+        if (this.prefBoundariesLayer) {
+          let prefWeight = 1.2;
+          if (this.activeMapKey === 'NATIONAL') {
+            if (!showMuniBorders) {
+              prefWeight = 1.25; // 全国俯瞰時はすっきり見やすい都道府県境
+            } else if (isMidZoom) {
+              prefWeight = 1.8;  // 自治体境が出始めたら県境をしっかり太く区別
+            } else {
+              prefWeight = 2.2;  // 高ズーム時も県境を明確に維持
+            }
+          } else {
+            prefWeight = isMidZoom ? 1.2 : 1.5;
+          }
+          this.prefBoundariesLayer.setStyle({
+            color: '#020617',
+            weight: prefWeight,
+            opacity: 1
+          });
+          if (this.prefBoundariesLayer.bringToFront) {
+            this.prefBoundariesLayer.bringToFront();
+          }
+          // 回答後のハイライトや出題中の黄色ポリゴンが県境の下に隠れないよう再調整
+          if (this.isAnswered || currentCode || (this.multiFoundCodes && this.multiFoundCodes.size > 0)) {
+            this.geoJsonLayer.eachLayer(layer => {
+              if (!layer.feature || !layer.feature.properties) return;
+              const featProps = layer.feature.properties;
+              let code = String(featProps.N03_007 || featProps.code || '');
+              const cityCode = WARD_TO_CITY[code] || code;
+              if (this.isAnswered && this.answeredResult) {
+                const res = this.answeredResult;
+                const correctCodesList = res.correctCodes || [res.correctCode || res.code];
+                if (correctCodesList.some(c => matchesTargetCode(code, cityCode, c)) || (res.wrongCode && code === res.wrongCode)) {
+                  if (layer.bringToFront) layer.bringToFront();
+                }
+              } else if (currentCode && matchesTargetCode(code, cityCode, currentCode)) {
+                if (layer.bringToFront) layer.bringToFront();
+              } else if (this.multiFoundCodes && Array.from(this.multiFoundCodes).some(c => matchesTargetCode(code, cityCode, c))) {
+                if (layer.bringToFront) layer.bringToFront();
+              }
+            });
+          }
         }
       },
 

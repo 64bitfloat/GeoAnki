@@ -195,10 +195,15 @@
               </div>
             </div>
 
-            <button id="btn-enter-muni" class="mt-5 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 active:scale-95">
-              <span>特訓を始める</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-            </button>
+            <div class="mt-5 flex flex-col gap-2">
+              <button id="btn-enter-muni" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2 active:scale-95">
+                <span>特訓を始める</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </button>
+              <button id="btn-root-daily-review" class="w-full py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 font-bold text-xs transition flex items-center justify-center gap-1.5 active:scale-95">
+                <span>🔥 全国復習モード（最大30問）</span>
+              </button>
+            </div>
           </div>
 
           <!-- カード 2: 令制国・旧国名 -->
@@ -329,14 +334,20 @@
       </div>
     </header>
 
-    <div class="w-full bg-slate-800/50 border-b border-slate-700/50 px-4 py-2 shrink-0">
-      <div class="max-w-6xl mx-auto flex items-center gap-3">
-        <div class="flex-1 bg-slate-700/60 h-2.5 rounded-full overflow-hidden">
-          <div id="muni-hub-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
+    <div class="w-full bg-slate-800/50 border-b border-slate-700/50 px-4 py-2.5 shrink-0">
+      <div class="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div class="flex-1 flex items-center gap-3">
+          <div class="flex-1 bg-slate-700/60 h-2.5 rounded-full overflow-hidden">
+            <div id="muni-hub-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
+          </div>
+          <div class="text-xs font-semibold text-slate-300 shrink-0">
+            全47都道府県中 <span id="muni-hub-completed-prefs" class="text-emerald-400 font-bold">0</span> 県コンプリート
+          </div>
         </div>
-        <div class="text-xs font-semibold text-slate-300 shrink-0">
-          全47都道府県中 <span id="muni-hub-completed-prefs" class="text-emerald-400 font-bold">0</span> 県コンプリート
-        </div>
+        <button id="btn-muni-daily-review" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition flex items-center justify-center gap-1.5 active:scale-95 shrink-0">
+          <span>🔥 全国復習モード（最大30問）</span>
+          <span id="muni-hub-review-count-badge" class="px-1.5 py-0.5 rounded-full bg-slate-950/20 text-slate-950 text-[10px] font-extrabold">0問対象</span>
+        </button>
       </div>
     </div>
 
@@ -425,6 +436,29 @@
   </div>
 
   <!-- ============================================================== -->
+  <!-- モーダル: 復習モード 未学習時の案内ポップアップ -->
+  <!-- ============================================================== -->
+  <div id="modal-review-empty" class="hidden fixed inset-0 z-[2100] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4 text-center">
+      <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-2xl mx-auto">
+        💡
+      </div>
+      <div class="space-y-1.5">
+        <h3 class="text-base sm:text-lg font-bold text-white">まだ復習できる自治体がありません</h3>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          全国復習モードでは、これまでに通常モードで正解して覚えた自治体の中から最大30問を出題します。<br>
+          まずは各都道府県の問題を解いて、自治体を覚えましょう！
+        </p>
+      </div>
+      <div class="pt-2">
+        <button id="btn-close-review-empty-modal" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg transition active:scale-95">
+          都道府県を選んで問題を解く
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
   <!-- 画面 1B: 市区町村 Spoke (クイズ画面) -->
   <!-- ============================================================== -->
   <div id="screen-muni-spoke" class="hidden flex-1 flex flex-col h-full overflow-hidden relative">
@@ -481,7 +515,7 @@
       <!-- ローディング表示 -->
       <div id="muni-loading-overlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm z-[1050] flex flex-col items-center justify-center gap-3 hidden">
         <div class="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-        <div class="text-sm font-semibold text-slate-200">市区町村ベクター(GeoJSON)を取得中...</div>
+        <div id="muni-loading-text" class="text-sm font-semibold text-slate-200">市区町村ベクター(GeoJSON)を取得中...</div>
       </div>
 
       <!-- 離島ボタン群 & 全体リセット -->
@@ -508,9 +542,10 @@
 
             <div class="flex items-center justify-between gap-2">
               <div class="flex-1 min-w-0">
-                <div class="text-[10px] sm:text-xs text-slate-400 flex items-center gap-1 truncate">
+                <div class="text-[10px] sm:text-xs text-slate-400 flex items-center gap-1.5 flex-wrap">
                   <span>地図上でタップ：</span>
                   <span id="muni-locate-kana" class="text-slate-300 font-medium">（ふりがな）</span>
+                  <span id="muni-locate-multi-badge" class="hidden px-1.5 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 text-amber-300 font-bold text-[10px] sm:text-[11px]"></span>
                 </div>
                 <div id="muni-locate-question-name" class="text-lg sm:text-2xl font-black text-white truncate tracking-wide leading-tight">
                   〇〇市
@@ -1432,10 +1467,27 @@
       answeredResult: null,
       activeRegionFilter: 'ALL',
       geoJsonCache: {},
+      cityBoundaryCache: {},
+      nationalGeoJson: null,
+      isReviewMode: false,
+      activeMapKey: null,
+      sameNameMap: {},
+      multiAllCodes: [],
+      multiRequiredCodes: [],
+      multiFoundCodes: new Set(),
+      multiTargetCount: 1,
 
       init() {
         this.data = STORAGE.get(KEYS.MUNI, { records: {} });
         if (!this.data.records) this.data.records = {};
+
+        // 同名市区町村（漢字表記＋ふりがなが完全同一）のインデックス構築
+        this.sameNameMap = {};
+        MUNI_RAW_DATA.forEach(m => {
+          const key = `${m[3]}|${m[4]}`;
+          if (!this.sameNameMap[key]) this.sameNameMap[key] = [];
+          this.sameNameMap[key].push(m);
+        });
 
         document.querySelectorAll('.muni-filter-btn').forEach(btn => {
           btn.onclick = () => {
@@ -1451,9 +1503,37 @@
         });
 
         document.getElementById('btn-muni-back-hub').onclick = () => {
+          this.isReviewMode = false;
+          this.activeMapKey = null;
           AppRouter.navigate('screen-muni-hub');
           this.renderHub();
         };
+
+        const btnDailyReview = document.getElementById('btn-muni-daily-review');
+        if (btnDailyReview) {
+          btnDailyReview.onclick = () => this.startDailyReview();
+        }
+        const btnRootDailyReview = document.getElementById('btn-root-daily-review');
+        if (btnRootDailyReview) {
+          btnRootDailyReview.onclick = () => this.startDailyReview();
+        }
+
+        const modalRevEmpty = document.getElementById('modal-review-empty');
+        const btnCloseRevEmpty = document.getElementById('btn-close-review-empty-modal');
+        if (btnCloseRevEmpty) {
+          btnCloseRevEmpty.onclick = () => {
+            if (modalRevEmpty) modalRevEmpty.classList.add('hidden');
+            if (AppRouter.currentScreen !== 'screen-muni-hub') {
+              AppRouter.navigate('screen-muni-hub');
+              this.renderHub();
+            }
+          };
+        }
+        if (modalRevEmpty) {
+          modalRevEmpty.onclick = (e) => {
+            if (e.target === modalRevEmpty) modalRevEmpty.classList.add('hidden');
+          };
+        }
 
         const modalHk = document.getElementById('modal-hokkaido-area');
         const btnCloseHk = document.getElementById('btn-close-hokkaido-modal');
@@ -1475,8 +1555,13 @@
         });
         document.getElementById('btn-muni-reset-bounds').onclick = () => {
           if (this.map && this.geoJsonLayer) {
-            if (this.currentPref.defaultView) this.map.fitBounds(this.currentPref.defaultView, { padding: [20, 20] });
-            else this.map.fitBounds(this.geoJsonLayer.getBounds(), { padding: [20, 20] });
+            if (this.isReviewMode && (this.currentMode === 'locate' || this.currentMode === 'explore')) {
+              this.map.fitBounds([[30.0, 129.3], [45.6, 145.9]], { padding: [20, 20] });
+            } else if (this.currentPref && this.currentPref.defaultView) {
+              this.map.fitBounds(this.currentPref.defaultView, { padding: [20, 20] });
+            } else {
+              this.map.fitBounds(this.geoJsonLayer.getBounds(), { padding: [20, 20] });
+            }
           }
         };
 
@@ -1591,6 +1676,10 @@
         document.getElementById('muni-hub-pct').textContent = totalPct + '%';
         document.getElementById('muni-hub-progress-bar').style.width = totalPct + '%';
         document.getElementById('muni-hub-completed-prefs').textContent = completedPrefsCount;
+        const reviewBadge = document.getElementById('muni-hub-review-count-badge');
+        if (reviewBadge) {
+          reviewBadge.textContent = totalCleared > 0 ? `習得済 ${totalCleared}問（最大30問出題）` : '0問対象';
+        }
 
         const regions = ['北海道', '東北', '関東', '中部', '近畿', '中国', '四国', '九州・沖縄'];
         regions.forEach(reg => {
@@ -1681,6 +1770,8 @@
       },
 
       async openPref(pref, areaId = 'ALL') {
+        this.isReviewMode = false;
+        this.activeMapKey = null;
         this.currentPref = pref;
         this.currentAreaId = areaId;
         AppRouter.navigate('screen-muni-spoke');
@@ -1705,18 +1796,52 @@
           L.control.zoom({ position: 'bottomright' }).addTo(this.map);
         }
 
+        this.renderIslandButtonsForCurrentState();
+
+        await this.loadGeoJson(pref.code);
+        this.activeMapKey = pref.code;
+        this.renderLevelTabs();
+
+        // 最適化レベルの先頭レベルを開始
+        const levelKey = (pref.code === '01' ? `01_${areaId}` : pref.code);
+        const levels = PREF_LEVELS_MASTER[levelKey] || [];
+        const initialLvl = (levels.length > 0) ? levels[0].level : 'ALL';
+        this.startLevel(initialLvl);
+      },
+
+      renderIslandButtonsForCurrentState() {
         const islandContainer = document.getElementById('muni-island-buttons');
+        if (!islandContainer) return;
         islandContainer.innerHTML = '';
 
-        if (pref.code === '01') {
-          // 北海道の場合は「エリア変更」ボタンを常設
+        if (this.isReviewMode && (this.currentMode === 'locate' || this.currentMode === 'explore')) {
+          const regions = [
+            { label: '🗾 日本全体', bounds: [[30.0, 129.3], [45.6, 145.9]] },
+            { label: '❄️ 北海道', bounds: [[41.3, 139.3], [45.6, 145.9]] },
+            { label: '🗼 本州・四国・九州', bounds: [[30.9, 129.5], [41.6, 142.1]] },
+            { label: '🌺 沖縄', bounds: [[24.0, 122.9], [27.1, 128.4]] }
+          ];
+          regions.forEach(r => {
+            const btn = document.createElement('button');
+            btn.className = 'px-2 py-1 rounded bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-600/70 text-[10px] font-bold shadow-lg';
+            btn.textContent = r.label;
+            btn.onclick = () => this.map.fitBounds(r.bounds, { padding: [20, 20], animate: true });
+            islandContainer.appendChild(btn);
+          });
+          return;
+        }
+
+        const pref = this.currentPref || (this.currentQuestion ? PREFECTURES.find(p => p.code === this.currentQuestion[1]) : null);
+        const areaId = this.currentAreaId || 'ALL';
+        if (!pref) return;
+
+        if (pref.code === '01' && !this.isReviewMode) {
           const changeBtn = document.createElement('button');
           changeBtn.className = 'px-2 py-1 rounded bg-emerald-600/90 hover:bg-emerald-500 text-white border border-emerald-400/50 text-[10px] font-bold shadow-lg flex items-center gap-1';
           changeBtn.innerHTML = '<span>🗺️ エリア変更</span>';
           changeBtn.onclick = () => this.openHokkaidoModal(pref);
           islandContainer.appendChild(changeBtn);
 
-          // 離島ボタン (道北または全域の場合に利尻礼文ボタンを表示)
           if (areaId === 'ALL' || areaId === 'northern') {
             const btn = document.createElement('button');
             btn.className = 'px-2 py-1 rounded bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-600/70 text-[10px] font-bold shadow-lg';
@@ -1733,15 +1858,115 @@
             islandContainer.appendChild(btn);
           });
         }
+      },
 
-        await this.loadGeoJson(pref.code);
+      async startDailyReview() {
+        // 習得済み（1回以上正解した）自治体をすべて抽出
+        const clearedMunis = MUNI_RAW_DATA.filter(m => this.data.records[m[0]] && this.data.records[m[0]].correct > 0);
+
+        if (clearedMunis.length === 0) {
+          const modal = document.getElementById('modal-review-empty');
+          if (modal) modal.classList.remove('hidden');
+          return;
+        }
+
+        // 同名自治体（漢字＋読みが完全一致）が同じ回に重複して2問出ないよう、同名グループごとに1問に集約して抽選
+        const seenKeys = new Set();
+        const uniqueCandidates = [];
+        // まずシャッフルしてからユニーク化することで、どの都道府県が代表になるかもランダム化
+        const shuffledCleared = [...clearedMunis].sort(() => Math.random() - 0.5);
+        shuffledCleared.forEach(m => {
+          const key = `${m[3]}|${m[4]}`;
+          if (!seenKeys.has(key)) {
+            seenKeys.add(key);
+            uniqueCandidates.push(m);
+          }
+        });
+
+        uniqueCandidates.sort(() => Math.random() - 0.5);
+        const selectedQuestions = uniqueCandidates.slice(0, 30);
+
+        this.isReviewMode = true;
+        this.currentPref = null;
+        this.currentAreaId = 'ALL';
+        this.currentLevel = 'REVIEW';
+        this.currentLevelObj = null;
+        this.questionPool = selectedQuestions;
+        this.currentIndex = 0;
+        this.activeMapKey = null;
+
+        AppRouter.navigate('screen-muni-spoke');
+
+        document.getElementById('muni-spoke-pref-title').textContent = '🔥 全国復習モード';
+        document.getElementById('muni-spoke-pref-count-badge').textContent = `最大30問（${selectedQuestions.length}問）`;
+
+        this.updateHeaderProgress();
+
+        if (!this.map) {
+          this.map = L.map('muni-map', {
+            attributionControl: false,
+            zoomControl: false,
+            renderer: L.svg({ padding: 1.5, tolerance: 0 })
+          });
+          L.control.zoom({ position: 'bottomright' }).addTo(this.map);
+        }
+
         this.renderLevelTabs();
+        await this.nextQuestion();
+      },
 
-        // 最適化レベルの先頭レベルを開始
-        const levelKey = (pref.code === '01' ? `01_${areaId}` : pref.code);
-        const levels = PREF_LEVELS_MASTER[levelKey] || [];
-        const initialLvl = (levels.length > 0) ? levels[0].level : 'ALL';
-        this.startLevel(initialLvl);
+      async fetchSinglePrefGeoJson(codeStr) {
+        if (this.geoJsonCache[codeStr]) {
+          return this.geoJsonCache[codeStr];
+        }
+        const primaryUrl = `https://cdn.jsdelivr.net/gh/smartnews-smri/japan-topography@main/data/municipality/geojson/s0010/N03-21_${codeStr}_210101.json`;
+        const fallbackUrl = `https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/geojson/s0010/N03-21_${codeStr}_210101.json`;
+        let resp = await fetch(primaryUrl);
+        if (!resp.ok) resp = await fetch(fallbackUrl);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status} for pref ${codeStr}`);
+        const rawData = await resp.json();
+        const data = clipLakesFromGeoJson(rawData, codeStr);
+        this.geoJsonCache[codeStr] = data;
+        this.ensureCityBoundaryCache(codeStr, data);
+        return data;
+      },
+
+      ensureCityBoundaryCache(codeStr, geoJsonData) {
+        if (this.cityBoundaryCache[codeStr]) return this.cityBoundaryCache[codeStr];
+        const cityWardsMap = {};
+        if (geoJsonData && geoJsonData.features) {
+          geoJsonData.features.forEach(f => {
+            const code = String(f.properties.N03_007 || f.properties.code || '');
+            const cityCode = WARD_TO_CITY[code];
+            if (cityCode) {
+              if (!cityWardsMap[cityCode]) cityWardsMap[cityCode] = [];
+              cityWardsMap[cityCode].push(f);
+            }
+          });
+        }
+        const cityBoundaryFeatures = [];
+        if (typeof turf !== 'undefined' && turf.union) {
+          Object.keys(cityWardsMap).forEach(cCode => {
+            const wards = cityWardsMap[cCode];
+            if (wards.length > 0) {
+              try {
+                let merged = JSON.parse(JSON.stringify(wards[0]));
+                for (let i = 1; i < wards.length; i++) {
+                  const u = turf.union(merged, wards[i]);
+                  if (u) merged = u;
+                }
+                if (merged) {
+                  merged.properties = { cityCode: cCode };
+                  cityBoundaryFeatures.push(merged);
+                }
+              } catch (err) {
+                console.warn('City boundary merge error:', err);
+              }
+            }
+          });
+        }
+        this.cityBoundaryCache[codeStr] = cityBoundaryFeatures;
+        return cityBoundaryFeatures;
       },
 
       async loadGeoJson(prefCode) {
@@ -1753,27 +1978,18 @@
 
         if (this.geoJsonCache[codeStr]) {
           this.currentGeoJson = this.geoJsonCache[codeStr];
+          this.ensureCityBoundaryCache(codeStr, this.currentGeoJson);
           return;
         }
 
         const loading = document.getElementById('muni-loading-overlay');
+        const loadingText = document.getElementById('muni-loading-text');
+        if (loadingText) loadingText.textContent = '市区町村ベクター(GeoJSON)を取得中...';
         loading.classList.remove('hidden');
 
-        // 正式な全国自治体ベクターGeoJSONのURL（smartnews-smri / 国土数値情報N03-21準拠）
-        const primaryUrl = `https://cdn.jsdelivr.net/gh/smartnews-smri/japan-topography@main/data/municipality/geojson/s0010/N03-21_${codeStr}_210101.json`;
-        const fallbackUrl = `https://raw.githubusercontent.com/smartnews-smri/japan-topography/main/data/municipality/geojson/s0010/N03-21_${codeStr}_210101.json`;
-
         try {
-          let resp = await fetch(primaryUrl);
-          if (!resp.ok) resp = await fetch(fallbackUrl);
-          if (resp.ok) {
-            const rawData = await resp.json();
-            const data = clipLakesFromGeoJson(rawData, codeStr);
-            this.geoJsonCache[codeStr] = data;
-            this.currentGeoJson = data;
-          } else {
-            throw new Error(`HTTP ${resp.status}`);
-          }
+          const data = await this.fetchSinglePrefGeoJson(codeStr);
+          this.currentGeoJson = data;
         } catch(e) {
           console.error("GeoJSON load failed:", e);
           alert('地図データの読み込みに失敗しました。ネットワーク接続を確認してください。');
@@ -1782,9 +1998,115 @@
         }
       },
 
+      async loadNationalGeoJson() {
+        if (this.nationalGeoJson) {
+          this.currentGeoJson = this.nationalGeoJson;
+          return;
+        }
+
+        const loading = document.getElementById('muni-loading-overlay');
+        const loadingText = document.getElementById('muni-loading-text');
+        loading.classList.remove('hidden');
+
+        try {
+          const allCodes = PREFECTURES.map(p => p.code);
+          let loadedCount = 0;
+          if (loadingText) {
+            loadingText.textContent = `全国統合マップを構築中... (0 / ${allCodes.length} 都道府県)`;
+          }
+
+          // 12都道府県ずつ並列取得して高速かつ安定的に全国データを構築
+          const chunkSize = 12;
+          for (let i = 0; i < allCodes.length; i += chunkSize) {
+            const chunk = allCodes.slice(i, i + chunkSize);
+            await Promise.all(chunk.map(async (c) => {
+              await this.fetchSinglePrefGeoJson(c);
+              loadedCount++;
+              if (loadingText) {
+                loadingText.textContent = `全国統合マップを構築中... (${loadedCount} / ${allCodes.length} 都道府県)`;
+              }
+            }));
+          }
+
+          const allFeatures = [];
+          allCodes.forEach(c => {
+            const gj = this.geoJsonCache[c];
+            if (gj && gj.features) {
+              for (let i = 0; i < gj.features.length; i++) {
+                allFeatures.push(gj.features[i]);
+              }
+            }
+          });
+
+          this.nationalGeoJson = {
+            type: 'FeatureCollection',
+            features: allFeatures
+          };
+          this.currentGeoJson = this.nationalGeoJson;
+        } catch (e) {
+          console.error("National GeoJSON load failed:", e);
+          alert('全国地図データの読み込みに失敗しました。ネットワーク接続を確認してください。');
+        } finally {
+          if (loadingText) loadingText.textContent = '市区町村ベクター(GeoJSON)を取得中...';
+          loading.classList.add('hidden');
+        }
+      },
+
+      async syncMapForCurrentQuestion() {
+        this.renderIslandButtonsForCurrentState();
+
+        if (!this.isReviewMode) {
+          if (this.currentPref && this.activeMapKey !== this.currentPref.code) {
+            await this.loadGeoJson(this.currentPref.code);
+            this.activeMapKey = this.currentPref.code;
+            this.renderMapLayers();
+          }
+          return;
+        }
+
+        // 全国復習モード時:
+        // 場所当て(locate)・探索(explore) は全国統合マップを表示
+        // 4択(name)・記入(type) は出題自治体の都道府県マップを表示
+        if (this.currentMode === 'locate' || this.currentMode === 'explore') {
+          if (this.activeMapKey !== 'NATIONAL') {
+            await this.loadNationalGeoJson();
+            this.activeMapKey = 'NATIONAL';
+            this.renderMapLayers(true);
+          } else {
+            // 場所当てモードで次の問題に移った際、日本全体が見えるビューにリセット
+            if (this.map && this.currentMode === 'locate') {
+              this.map.fitBounds([[30.0, 129.3], [45.6, 145.9]], { padding: [20, 20], animate: true });
+            }
+          }
+        } else {
+          const q = this.currentQuestion;
+          if (!q) return;
+          const prefCode = q[1];
+          if (this.activeMapKey !== prefCode) {
+            await this.loadGeoJson(prefCode);
+            this.activeMapKey = prefCode;
+            this.renderMapLayers(false);
+          }
+        }
+      },
+
       renderLevelTabs() {
         const container = document.getElementById('muni-level-tabs-container');
         container.innerHTML = '';
+
+        if (this.isReviewMode) {
+          const badge = document.createElement('div');
+          badge.className = 'px-2.5 py-1 rounded bg-amber-500 text-slate-950 text-[11px] sm:text-xs font-black whitespace-nowrap shrink-0 flex items-center gap-1 shadow';
+          badge.innerHTML = `<span>🔥 全国復習</span> <span class="font-bold opacity-85">(${this.questionPool.length}問)</span>`;
+          container.appendChild(badge);
+
+          const reshuffleBtn = document.createElement('button');
+          reshuffleBtn.className = 'px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[11px] sm:text-xs font-semibold whitespace-nowrap shrink-0 transition flex items-center gap-1';
+          reshuffleBtn.innerHTML = `<span>🔄 別の30問を再抽選</span>`;
+          reshuffleBtn.onclick = () => this.startDailyReview();
+          container.appendChild(reshuffleBtn);
+          return;
+        }
 
         const levelKey = (this.currentPref.code === '01') ? `01_${this.currentAreaId || 'ALL'}` : this.currentPref.code;
         const levels = PREF_LEVELS_MASTER[levelKey] || [];
@@ -1815,6 +2137,10 @@
       },
 
       startLevel(levelId) {
+        if (this.isReviewMode || levelId === 'REVIEW') {
+          this.startDailyReview();
+          return;
+        }
         this.currentLevel = levelId;
         const levelKey = (this.currentPref.code === '01') ? `01_${this.currentAreaId || 'ALL'}` : this.currentPref.code;
         const levels = PREF_LEVELS_MASTER[levelKey] || [];
@@ -1845,12 +2171,14 @@
         this.nextQuestion();
       },
 
-      renderMapLayers() {
+      renderMapLayers(fitNational = false) {
         if (!this.map || !this.currentGeoJson) return;
         if (this.geoJsonLayer) this.map.removeLayer(this.geoJsonLayer);
         if (this.cityBoundariesLayer) this.map.removeLayer(this.cityBoundariesLayer);
 
-        const targetCodes = new Set(this.questionPool.map(m => m[0]));
+        // 全国復習モード時は場所のヒントにならないよう全自治体をアクティブ表示
+        const isAllActive = this.isReviewMode;
+        const targetCodes = isAllActive ? null : new Set(this.questionPool.map(m => m[0]));
 
         this.geoJsonLayer = L.geoJSON(this.currentGeoJson, {
           smoothFactor: 0,
@@ -1858,7 +2186,7 @@
             let code = String(feature.properties.N03_007 || feature.properties.code || '');
             const isWard = Boolean(WARD_TO_CITY[code]);
             const cityCode = WARD_TO_CITY[code] || code;
-            const isTarget = targetCodes.has(code) || targetCodes.has(cityCode);
+            const isTarget = isAllActive ? true : (targetCodes.has(code) || targetCodes.has(cityCode));
             return {
               fillColor: isTarget ? '#f8fafc' : '#334155',
               fillOpacity: isTarget ? 0.95 : 0.65,
@@ -1871,12 +2199,13 @@
           onEachFeature: (feature, layer) => {
             let code = String(feature.properties.N03_007 || feature.properties.code || '');
             const cityCode = WARD_TO_CITY[code] || code;
-            const isTarget = targetCodes.has(code) || targetCodes.has(cityCode);
+            const isTarget = isAllActive ? true : (targetCodes.has(code) || targetCodes.has(cityCode));
 
             layer.on({
               mouseover: (e) => {
                 if (this.isAnswered) return;
                 if (!isTarget && this.currentMode !== 'explore') return;
+                if (this.multiFoundCodes && (this.multiFoundCodes.has(code) || this.multiFoundCodes.has(cityCode))) return;
                 layer.setStyle({ fillColor: '#e2e8f0', fillOpacity: 1 });
               },
               mouseout: (e) => {
@@ -1890,39 +2219,17 @@
           }
         }).addTo(this.map);
 
-        // 政令指定都市の外郭（City Boundary）を生成して重ね描画
-        const cityWardsMap = {};
-        if (this.currentGeoJson.features) {
-          this.currentGeoJson.features.forEach(f => {
-            const code = String(f.properties.N03_007 || f.properties.code || '');
-            const cityCode = WARD_TO_CITY[code];
-            if (cityCode) {
-              if (!cityWardsMap[cityCode]) cityWardsMap[cityCode] = [];
-              cityWardsMap[cityCode].push(f);
+        // 政令指定都市の外郭（City Boundary）をキャッシュから高速取得して重ね描画
+        let cityBoundaryFeatures = [];
+        if (this.activeMapKey === 'NATIONAL') {
+          PREFECTURES.forEach(p => {
+            const feats = this.ensureCityBoundaryCache(p.code, this.geoJsonCache[p.code]);
+            if (feats && feats.length > 0) {
+              cityBoundaryFeatures.push(...feats);
             }
           });
-        }
-
-        const cityBoundaryFeatures = [];
-        if (typeof turf !== 'undefined' && turf.union) {
-          Object.keys(cityWardsMap).forEach(cCode => {
-            const wards = cityWardsMap[cCode];
-            if (wards.length > 0) {
-              try {
-                let merged = JSON.parse(JSON.stringify(wards[0]));
-                for (let i = 1; i < wards.length; i++) {
-                  const u = turf.union(merged, wards[i]);
-                  if (u) merged = u;
-                }
-                if (merged) {
-                  merged.properties = { cityCode: cCode };
-                  cityBoundaryFeatures.push(merged);
-                }
-              } catch (err) {
-                console.warn('City boundary merge error:', err);
-              }
-            }
-          });
+        } else if (this.activeMapKey) {
+          cityBoundaryFeatures = this.ensureCityBoundaryCache(this.activeMapKey, this.currentGeoJson) || [];
         }
 
         if (cityBoundaryFeatures.length > 0) {
@@ -1942,12 +2249,17 @@
           }).addTo(this.map);
         }
 
-        if (this.currentPref.code === '01' && HOKKAIDO_AREA_INFO[this.currentAreaId]) {
-          this.map.fitBounds(HOKKAIDO_AREA_INFO[this.currentAreaId].bounds, { padding: [20, 20] });
-        } else if (this.currentPref.defaultView) {
-          this.map.fitBounds(this.currentPref.defaultView, { padding: [20, 20] });
+        if (this.activeMapKey === 'NATIONAL' || fitNational) {
+          this.map.fitBounds([[30.0, 129.3], [45.6, 145.9]], { padding: [20, 20] });
         } else {
-          this.map.fitBounds(this.geoJsonLayer.getBounds(), { padding: [20, 20] });
+          const pref = this.currentPref || (this.currentQuestion ? PREFECTURES.find(p => p.code === this.currentQuestion[1]) : null);
+          if (pref && pref.code === '01' && !this.isReviewMode && HOKKAIDO_AREA_INFO[this.currentAreaId]) {
+            this.map.fitBounds(HOKKAIDO_AREA_INFO[this.currentAreaId].bounds, { padding: [20, 20] });
+          } else if (pref && pref.defaultView) {
+            this.map.fitBounds(pref.defaultView, { padding: [20, 20] });
+          } else {
+            this.map.fitBounds(this.geoJsonLayer.getBounds(), { padding: [20, 20] });
+          }
         }
       },
 
@@ -1972,7 +2284,39 @@
         this.nextQuestion();
       },
 
-      nextQuestion() {
+      setupMultiTargetForQuestion(q) {
+        const key = `${q[3]}|${q[4]}`;
+        const group = this.sameNameMap[key] || [q];
+        this.multiFoundCodes = new Set();
+
+        const multiBadge = document.getElementById('muni-locate-multi-badge');
+
+        if (this.isReviewMode && this.currentMode === 'locate' && group.length > 1) {
+          this.multiAllCodes = group.map(m => m[0]);
+          const learned = group.filter(m => this.data.records[m[0]] && this.data.records[m[0]].correct > 0);
+          this.multiRequiredCodes = learned.length > 0 ? learned.map(m => m[0]) : [q[0]];
+          this.multiTargetCount = this.multiRequiredCodes.length;
+
+          if (multiBadge) {
+            multiBadge.classList.remove('hidden');
+            if (this.multiTargetCount > 1) {
+              multiBadge.textContent = `⚠️ 同名自治体あり（全${group.length}箇所中 習得済み${this.multiTargetCount}箇所をすべて選択）`;
+            } else {
+              multiBadge.textContent = `⚠️ 同名自治体あり（全${group.length}箇所 / 習得済み1箇所の選択で正解）`;
+            }
+          }
+        } else {
+          this.multiAllCodes = [q[0]];
+          this.multiRequiredCodes = [q[0]];
+          this.multiTargetCount = 1;
+          if (multiBadge) {
+            multiBadge.classList.add('hidden');
+            multiBadge.textContent = '';
+          }
+        }
+      },
+
+      async nextQuestion() {
         if (this.nextTimer) {
           clearTimeout(this.nextTimer);
           this.nextTimer = null;
@@ -1986,16 +2330,26 @@
         const muniTypeInput = document.getElementById('muni-input-type');
         if (muniTypeInput) muniTypeInput.readOnly = false;
 
-        if (this.currentMode === 'explore') return;
+        if (this.currentMode === 'explore') {
+          await this.syncMapForCurrentQuestion();
+          return;
+        }
 
         if (this.currentIndex >= this.questionPool.length) {
           sound.fanfare();
-          alert('このレベルの全問題を完了しました！');
-          this.startLevel(this.currentLevel);
+          if (this.isReviewMode) {
+            alert(`全国復習モード（全${this.questionPool.length}問）を完了しました！新たな問題セットで復習を続けます。`);
+            this.startDailyReview();
+          } else {
+            alert('このレベルの全問題を完了しました！');
+            this.startLevel(this.currentLevel);
+          }
           return;
         }
 
         this.currentQuestion = this.questionPool[this.currentIndex];
+        this.setupMultiTargetForQuestion(this.currentQuestion);
+        await this.syncMapForCurrentQuestion();
         this.updateHeaderProgress();
 
         const q = this.currentQuestion;
@@ -2006,7 +2360,9 @@
 
         if (this.currentMode === 'locate') {
           let lvlLabel = `Lv.${q[6]} ${q[5]}`;
-          if (this.currentLevel === 'ALL') {
+          if (this.isReviewMode) {
+            lvlLabel = '🔥 全国復習';
+          } else if (this.currentLevel === 'ALL') {
             lvlLabel = '全自治体';
           } else if (this.currentLevel === 'WEAK') {
             lvlLabel = '⚠️ 弱点復習';
@@ -2042,9 +2398,15 @@
 
       resetPolygonStyles() {
         if (!this.geoJsonLayer) return;
-        const targetCodes = new Set(this.questionPool.map(m => m[0]));
+        const isAllActive = this.isReviewMode;
+        const targetCodes = isAllActive ? null : new Set(this.questionPool.map(m => m[0]));
         const isHighlightMode = (this.currentMode === 'name' || this.currentMode === 'type');
         const currentCode = (this.currentQuestion && isHighlightMode) ? this.currentQuestion[0] : null;
+
+        const matchesTargetCode = (featCode, featCityCode, targetCode) => {
+          const isWard = Boolean(WARD_INFO[targetCode]);
+          return isWard ? (featCode === targetCode) : (featCode === targetCode || featCityCode === targetCode);
+        };
 
         this.geoJsonLayer.eachLayer(layer => {
           if (!layer.feature || !layer.feature.properties) return;
@@ -2054,16 +2416,15 @@
           let code = String(featProps.N03_007 || featProps.code || '');
           const isWard = Boolean(WARD_TO_CITY[code]);
           const cityCode = WARD_TO_CITY[code] || code;
-          const isTarget = targetCodes.has(code) || targetCodes.has(cityCode);
+          const isTarget = isAllActive ? true : (targetCodes.has(code) || targetCodes.has(cityCode));
 
-          // 回答後のハイライト判定
+          // 回答確定後のハイライト判定
           if (this.isAnswered && this.answeredResult) {
             const res = this.answeredResult;
-            const correctTargetCode = res.correctCode || res.code;
-            const isCorrectWard = Boolean(WARD_INFO[correctTargetCode]);
+            const correctCodesList = res.correctCodes || [res.correctCode || res.code];
 
             if (res.isCorrect) {
-              const isMatch = isCorrectWard ? (code === res.code) : (code === res.code || cityCode === res.code);
+              const isMatch = correctCodesList.some(c => matchesTargetCode(code, cityCode, c));
               if (isMatch) {
                 layer.setStyle({
                   fillColor: '#34d399',
@@ -2076,8 +2437,20 @@
                 return;
               }
             } else {
+              // 複数解の途中ですでに当てていた箇所は緑色維持
+              if (res.foundCodes && res.foundCodes.some(c => matchesTargetCode(code, cityCode, c))) {
+                layer.setStyle({
+                  fillColor: '#34d399',
+                  fillOpacity: 0.95,
+                  weight: isWard ? 1.0 : 3.5,
+                  color: isWard ? '#047857' : '#059669',
+                  dashArray: isWard ? '3, 3' : null
+                });
+                if (layer.bringToFront) layer.bringToFront();
+                return;
+              }
               // 不正解時: 正解場所は黄色点滅
-              const isCorrectMatch = isCorrectWard ? (code === res.correctCode) : (code === res.correctCode || cityCode === res.correctCode);
+              const isCorrectMatch = correctCodesList.some(c => matchesTargetCode(code, cityCode, c));
               if (isCorrectMatch) {
                 layer.setStyle({
                   fillColor: '#fbbf24',
@@ -2105,9 +2478,24 @@
             }
           }
 
+          // 複数解の途中で正解済みのポリゴン（回答継続中）は緑色ハイライト
+          if (!this.isAnswered && this.currentMode === 'locate' && this.multiFoundCodes && this.multiFoundCodes.size > 0) {
+            const isFound = Array.from(this.multiFoundCodes).some(c => matchesTargetCode(code, cityCode, c));
+            if (isFound) {
+              layer.setStyle({
+                fillColor: '#34d399',
+                fillOpacity: 0.95,
+                weight: isWard ? 1.0 : 3.5,
+                color: isWard ? '#047857' : '#059669',
+                dashArray: isWard ? '3, 3' : null
+              });
+              if (layer.bringToFront) layer.bringToFront();
+              return;
+            }
+          }
+
           // 通常出題中（4択または記入）のハイライト
-          const isTargetWard = Boolean(currentCode && WARD_INFO[currentCode]);
-          const isCurrentHighlight = !this.isAnswered && currentCode && (isTargetWard ? (code === currentCode) : (code === currentCode || cityCode === currentCode));
+          const isCurrentHighlight = !this.isAnswered && currentCode && matchesTargetCode(code, cityCode, currentCode);
           if (isCurrentHighlight) {
             layer.setStyle({
               fillColor: '#fbbf24',
@@ -2137,11 +2525,12 @@
 
             if (this.isAnswered && this.answeredResult) {
               const res = this.answeredResult;
-              if (res.isCorrect && cCode === res.code) {
+              const correctCodesList = res.correctCodes || [res.correctCode || res.code];
+              if (res.isCorrect && correctCodesList.includes(cCode)) {
                 layer.setStyle({ color: '#059669', weight: 3.5 });
                 if (layer.bringToFront) layer.bringToFront();
                 return;
-              } else if (!res.isCorrect && cCode === res.correctCode) {
+              } else if (!res.isCorrect && correctCodesList.includes(cCode)) {
                 layer.setStyle({ color: '#eab308', weight: 3.5 });
                 if (layer._path) layer._path.classList.add('polygon-pulse');
                 if (layer.bringToFront) layer.bringToFront();
@@ -2159,27 +2548,31 @@
         }
       },
 
-      highlightQuestionPolygon() {
+      highlightQuestionPolygon(customCodes = null) {
         if (!this.geoJsonLayer || !this.currentQuestion) return;
         this.resetPolygonStyles();
 
-        const code = this.currentQuestion[0];
+        const codesToFocus = customCodes || [this.currentQuestion[0]];
         let targetBounds = null;
 
-        const isWardQuestion = Boolean(WARD_INFO[code]);
         this.geoJsonLayer.eachLayer(layer => {
           if (!layer.feature || !layer.feature.properties) return;
           const featProps = layer.feature.properties;
           const featCode = String(featProps.N03_007 || featProps.code || '');
           const cityCode = WARD_TO_CITY[featCode] || featCode;
 
-          const match = isWardQuestion ? (featCode === code) : (featCode === code || cityCode === code);
+          const match = codesToFocus.some(c => {
+            const isWardQ = Boolean(WARD_INFO[c]);
+            return isWardQ ? (featCode === c) : (featCode === c || cityCode === c);
+          });
           if (match) {
             if (layer.getBounds && layer.getBounds().isValid()) {
               targetBounds = targetBounds ? targetBounds.extend(layer.getBounds()) : layer.getBounds();
             }
           }
         });
+
+        const hasWardInFocus = codesToFocus.some(c => Boolean(WARD_INFO[c]));
 
         if (targetBounds && (this.currentMode === 'name' || this.currentMode === 'type' || this.isAnswered)) {
           setTimeout(() => {
@@ -2220,12 +2613,12 @@
             let maxZ = 10;
             if (isMobile) {
               if (isKeyboardOpen) {
-                maxZ = isWardQuestion ? 8.2 : 7.6;
+                maxZ = hasWardInFocus ? 8.2 : 7.6;
               } else {
-                maxZ = isWardQuestion ? 9.0 : 8.5;
+                maxZ = hasWardInFocus ? 9.0 : 8.5;
               }
             } else {
-              maxZ = isWardQuestion ? 11 : 10;
+              maxZ = hasWardInFocus ? 11 : 10;
             }
 
             this.map.flyToBounds(targetBounds, {
@@ -2242,8 +2635,9 @@
         const grid = document.getElementById('muni-choice-buttons-grid');
         grid.innerHTML = '';
         const q = this.currentQuestion;
+        const prefCode = this.currentPref ? this.currentPref.code : q[1];
 
-        const prefMunis = MUNI_RAW_DATA.filter(m => m[1] === this.currentPref.code && m[0] !== q[0]);
+        const prefMunis = MUNI_RAW_DATA.filter(m => m[1] === prefCode && m[0] !== q[0]);
         prefMunis.sort(() => Math.random() - 0.5);
         const choices = [q, ...prefMunis.slice(0, 3)].sort(() => Math.random() - 0.5);
 
@@ -2273,6 +2667,53 @@
 
         if (this.currentMode === 'locate') {
           if (this.isAnswered || !currentTargetCode) return;
+
+          const q = this.currentQuestion;
+          const key = `${q[3]}|${q[4]}`;
+          const group = (this.isReviewMode && this.sameNameMap[key]) ? this.sameNameMap[key] : [q];
+
+          // 同名自治体が複数ある場合の判定（全国復習モード）
+          if (this.isReviewMode && group.length > 1) {
+            const matchedMuni = group.find(m => {
+              const tCode = m[0];
+              return WARD_INFO[tCode] ? (code === tCode) : (code === tCode || cityCode === tCode);
+            });
+
+            if (matchedMuni) {
+              if (this.multiFoundCodes.has(matchedMuni[0])) return; // すでに選択済み
+              this.multiFoundCodes.add(matchedMuni[0]);
+
+              // 完答チェック: 習得済みの必須箇所すべてを選択したか、または必要数に達したか
+              const allRequiredFound = this.multiRequiredCodes.every(reqCode => this.multiFoundCodes.has(reqCode));
+              const countReached = this.multiFoundCodes.size >= this.multiTargetCount;
+
+              if (allRequiredFound || countReached) {
+                this.handleAnswer(true, layer, matchedMuni[0]);
+              } else {
+                // 途中正解（残り箇所あり）
+                sound.correct();
+                this.resetPolygonStyles();
+                const remaining = this.multiTargetCount - this.multiFoundCodes.size;
+                const multiBadge = document.getElementById('muni-locate-multi-badge');
+                if (multiBadge) {
+                  multiBadge.textContent = `⚠️ 同名自治体あり（あと ${remaining} 箇所を選択）`;
+                }
+                const bar = document.getElementById('muni-locate-feedback-bar');
+                bar.classList.remove('hidden');
+                bar.innerHTML = `
+                  <div class="text-xs font-bold text-emerald-400">
+                    ⭕ ${this.multiFoundCodes.size} / ${this.multiTargetCount} 箇所正解！（${matchedMuni[2]} ${matchedMuni[3]}） 残り ${remaining} 箇所をタップしてください
+                  </div>
+                `;
+              }
+            } else {
+              // 無関係な自治体を誤タップ
+              this.handleAnswer(false, layer, code);
+            }
+            return;
+          }
+
+          // 単一解（または通常モード）の判定
           let isCorrect = false;
           if (WARD_INFO[currentTargetCode]) {
             // 出題が「区」（例: 静岡市葵区）の場合: 葵区そのものをタップしたときのみ正解
@@ -2289,7 +2730,7 @@
           document.getElementById('muni-explore-empty').classList.add('hidden');
           document.getElementById('muni-explore-detail').classList.remove('hidden');
 
-          document.getElementById('muni-exp-type-badge').textContent = targetMuni[5];
+          document.getElementById('muni-exp-type-badge').textContent = `${targetMuni[2]} / ${targetMuni[5]}`;
           document.getElementById('muni-exp-kana-text').textContent = targetMuni[4];
           document.getElementById('muni-exp-name-text').textContent = targetMuni[3];
           document.getElementById('muni-exp-code-text').textContent = targetMuni[0];
@@ -2306,21 +2747,39 @@
         this.isAnswered = true;
 
         const q = this.currentQuestion;
-        if (!this.data.records[q[0]]) this.data.records[q[0]] = { correct: 0, wrong: 0 };
-        const rec = this.data.records[q[0]];
+        const key = `${q[3]}|${q[4]}`;
+        const group = (this.isReviewMode && this.currentMode === 'locate' && this.sameNameMap[key]) ? this.sameNameMap[key] : [q];
 
         if (isCorrect) {
-          this.answeredResult = { isCorrect: true, code: q[0] };
+          const solvedCodes = (this.isReviewMode && this.currentMode === 'locate' && this.multiFoundCodes && this.multiFoundCodes.size > 0)
+            ? Array.from(this.multiFoundCodes)
+            : [q[0]];
+
+          this.answeredResult = { isCorrect: true, code: q[0], correctCodes: solvedCodes };
           sound.correct();
-          rec.correct++;
-          rec.last = 'correct';
-          rec.updated = Date.now();
+
+          solvedCodes.forEach(c => {
+            if (!this.data.records[c]) this.data.records[c] = { correct: 0, wrong: 0 };
+            this.data.records[c].correct++;
+            this.data.records[c].last = 'correct';
+            this.data.records[c].updated = Date.now();
+          });
           STORAGE.set(KEYS.MUNI, this.data);
 
           if (this.currentMode === 'locate') {
             const bar = document.getElementById('muni-locate-feedback-bar');
             bar.classList.remove('hidden');
-            bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！</div>`;
+            if (solvedCodes.length > 1) {
+              const names = solvedCodes.map(c => {
+                const m = MUNI_RAW_DATA.find(item => item[0] === c);
+                return m ? `${m[2]} ${m[3]}` : '';
+              }).filter(Boolean).join('・');
+              bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 全${solvedCodes.length}箇所 完答正解！（${names}）</div>`;
+            } else {
+              const solvedMuni = MUNI_RAW_DATA.find(item => item[0] === solvedCodes[0]) || q;
+              const prefLabel = this.isReviewMode ? `（${solvedMuni[2]} ${solvedMuni[3]}）` : '';
+              bar.innerHTML = `<div class="text-xs font-bold text-emerald-400">⭕ 正解！素晴らしい！${prefLabel}</div>`;
+            }
           } else if (this.currentMode === 'name') {
             if (targetEl) targetEl.classList.add('!bg-emerald-600', '!border-emerald-400');
           } else if (this.currentMode === 'type') {
@@ -2328,9 +2787,10 @@
             if (input) input.readOnly = true;
             const bar = document.getElementById('muni-type-feedback-bar');
             bar.classList.remove('hidden');
+            const prefPrefix = this.isReviewMode ? `${q[2]} ` : '';
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-bold text-emerald-400">⭕ 正解！${q[3]}（${q[4]}）</span>
+                <span class="text-xs font-bold text-emerald-400">⭕ 正解！${prefPrefix}${q[3]}（${q[4]}）</span>
                 <button type="button" class="px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white shrink-0" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
@@ -2341,23 +2801,54 @@
           this.nextTimer = setTimeout(() => {
             this.currentIndex++;
             this.nextQuestion();
-          }, 900);
+          }, 950);
         } else {
-          this.answeredResult = { isCorrect: false, correctCode: q[0], wrongCode: clickedCode };
+          const targetCorrectCodes = (this.isReviewMode && this.currentMode === 'locate' && group.length > 1)
+            ? this.multiAllCodes
+            : [q[0]];
+          const foundSoFar = (this.multiFoundCodes && this.multiFoundCodes.size > 0) ? Array.from(this.multiFoundCodes) : [];
+
+          this.answeredResult = {
+            isCorrect: false,
+            correctCode: q[0],
+            correctCodes: targetCorrectCodes,
+            foundCodes: foundSoFar,
+            wrongCode: clickedCode
+          };
           sound.wrong();
-          rec.wrong++;
-          rec.last = 'wrong';
-          rec.updated = Date.now();
+
+          const recordTargets = (this.isReviewMode && this.currentMode === 'locate' && group.length > 1)
+            ? this.multiRequiredCodes
+            : [q[0]];
+          recordTargets.forEach(c => {
+            if (!this.data.records[c]) this.data.records[c] = { correct: 0, wrong: 0 };
+            this.data.records[c].wrong++;
+            this.data.records[c].last = 'wrong';
+            this.data.records[c].updated = Date.now();
+          });
           STORAGE.set(KEYS.MUNI, this.data);
 
           if (this.currentMode === 'locate') {
             this.resetPolygonStyles();
+            if (this.isReviewMode) {
+              this.highlightQuestionPolygon(targetCorrectCodes);
+            }
+            let wrongTappedName = '';
+            if (clickedCode) {
+              const wMuni = MUNI_RAW_DATA.find(item => item[0] === clickedCode) || MUNI_RAW_DATA.find(item => item[0] === (WARD_TO_CITY[clickedCode] || clickedCode));
+              if (wMuni) wrongTappedName = `（選択: ${wMuni[2]}${wMuni[3]}）`;
+            }
+            const correctNames = group.map(m => `${m[2]}${m[3]}`).join('・');
+            const msg = this.isReviewMode
+              ? `❌ 惜しい！正解は ${correctNames}（黄色点滅）です ${wrongTappedName}`
+              : `❌ 惜しい！正解は黄色点滅の場所です`;
+
             const bar = document.getElementById('muni-locate-feedback-bar');
             bar.classList.remove('hidden');
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-bold text-rose-400">❌ 惜しい！正解は黄色点滅の場所です</span>
-                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
+                <span class="text-xs font-bold text-rose-400">${msg}</span>
+                <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white shrink-0" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
           } else if (this.currentMode === 'name') {
@@ -2371,9 +2862,10 @@
             if (input) input.readOnly = true;
             const bar = document.getElementById('muni-type-feedback-bar');
             bar.classList.remove('hidden');
+            const prefPrefix = this.isReviewMode ? `${q[2]} ` : '';
             bar.innerHTML = `
               <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-bold text-rose-400">❌ 正解: ${q[3]}（${q[4]}）</span>
+                <span class="text-xs font-bold text-rose-400">❌ 正解: ${prefPrefix}${q[3]}（${q[4]}）</span>
                 <button type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white shrink-0" onclick="MuniApp.currentIndex++; MuniApp.nextQuestion();">次へ (Enter ↵)</button>
               </div>
             `;
@@ -2407,6 +2899,18 @@
       },
 
       updateHeaderProgress() {
+        if (this.isReviewMode) {
+          let totalCleared = 0;
+          MUNI_RAW_DATA.forEach(m => {
+            const r = this.data.records[m[0]];
+            if (r && r.correct > 0) totalCleared++;
+          });
+          document.getElementById('muni-spoke-cleared-count').textContent = totalCleared;
+          document.getElementById('muni-spoke-total-count').textContent = MUNI_RAW_DATA.length;
+          const pct = ((totalCleared / MUNI_RAW_DATA.length) * 100).toFixed(1);
+          document.getElementById('muni-spoke-cleared-pct').textContent = `(${pct}%)`;
+          return;
+        }
         if (!this.currentPref) return;
         const areaMunis = this.getAreaMunis();
         let cleared = 0;

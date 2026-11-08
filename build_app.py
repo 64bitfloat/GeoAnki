@@ -1604,9 +1604,13 @@ html_content = f'''<!DOCTYPE html>
       geoJsonLayer: null,
       cityBoundariesLayer: null,
       prefBoundariesLayer: null,
+      lakesLayer: null,
       nationalPrefBaseLayer: null,
+      nationalPrefTopOutlineLayer: null,
       nationalPrefLayers: {{}},
       pendingPrefFetches: {{}},
+      forceMountedPrefs: new Set(),
+      viewportTimer: null,
       currentMode: 'locate',
       questionPool: [],
       currentIndex: 0,
@@ -1936,16 +1940,7 @@ html_content = f'''<!DOCTYPE html>
 
         this.updateHeaderProgress();
 
-        if (!this.map) {{
-          this.map = L.map('muni-map', {{
-            attributionControl: false,
-            zoomControl: false,
-            renderer: L.svg({{ padding: 0.35 }})
-          }});
-          L.control.zoom({{ position: 'bottomright' }}).addTo(this.map);
-          this.map.on('zoomend', () => this.onMapMoveOrZoom());
-          this.map.on('moveend', () => this.onMapMoveOrZoom());
-        }}
+        this.initMapIfNeeded();
 
         this.renderIslandButtonsForCurrentState();
 
@@ -1958,6 +1953,52 @@ html_content = f'''<!DOCTYPE html>
         const levels = PREF_LEVELS_MASTER[levelKey] || [];
         const initialLvl = (levels.length > 0) ? levels[0].level : 'ALL';
         this.startLevel(initialLvl);
+      }},
+
+      initMapIfNeeded() {{
+        if (this.map) return;
+        this.map = L.map('muni-map', {{
+          attributionControl: false,
+          zoomControl: false,
+          renderer: L.svg({{ padding: 1.0 }})
+        }});
+        L.control.zoom({{ position: 'bottomright' }}).addTo(this.map);
+
+        // 専用ペインによるZ順序のハードウェア固定（bringToFrontによるDOM再配置コストをゼロ化）
+        const basePrefPane = this.map.createPane('basePrefPane');
+        basePrefPane.style.zIndex = 390;
+
+        const lakesPane = this.map.createPane('lakesPane');
+        lakesPane.style.zIndex = 410;
+        lakesPane.style.pointerEvents = 'none';
+
+        const cityBorderPane = this.map.createPane('cityBorderPane');
+        cityBorderPane.style.zIndex = 420;
+        cityBorderPane.style.pointerEvents = 'none';
+
+        const prefBorderPane = this.map.createPane('prefBorderPane');
+        prefBorderPane.style.zIndex = 430;
+        prefBorderPane.style.pointerEvents = 'none';
+
+        // 主要湖沼は専用ペインに1回だけ描画（ランタイムのturf.difference演算を完全撤廃）
+        if (typeof LAKES_GEOJSON !== 'undefined' && LAKES_GEOJSON && LAKES_GEOJSON.features) {{
+          this.lakesLayer = L.geoJSON(LAKES_GEOJSON, {{
+            pane: 'lakesPane',
+            renderer: L.svg({{ pane: 'lakesPane', padding: 1.0 }}),
+            smoothFactor: 0,
+            interactive: false,
+            style: {{
+              fillColor: '#090d16',
+              fillOpacity: 1,
+              color: '#090d16',
+              weight: 0.8,
+              opacity: 1
+            }}
+          }}).addTo(this.map);
+        }}
+
+        this.map.on('zoomend', () => this.onMapZoomChanged());
+        this.map.on('moveend', () => this.onMapMoveEnd());
       }},
 
       renderIslandButtonsForCurrentState() {{
@@ -2052,17 +2093,7 @@ html_content = f'''<!DOCTYPE html>
         document.getElementById('muni-spoke-pref-count-badge').textContent = `最大30問（${{selectedQuestions.length}}問）`;
 
         this.updateHeaderProgress();
-
-        if (!this.map) {{
-          this.map = L.map('muni-map', {{
-            attributionControl: false,
-            zoomControl: false,
-            renderer: L.svg({{ padding: 0.35 }})
-          }});
-          L.control.zoom({{ position: 'bottomright' }}).addTo(this.map);
-          this.map.on('zoomend', () => this.onMapMoveOrZoom());
-          this.map.on('moveend', () => this.onMapMoveOrZoom());
-        }}
+        this.initMapIfNeeded();
 
         this.renderLevelTabs();
         await this.nextQuestion();
@@ -2074,13 +2105,33 @@ html_content = f'''<!DOCTYPE html>
         return this.map.getZoom() >= this.selectMinZoom;
       }},
 
-      onMapMoveOrZoom() {{
+      scheduleViewportUpdate() {{
+        if (this.viewportTimer) clearTimeout(this.viewportTimer);
+        this.viewportTimer = setTimeout(() => {{
+          this.viewportTimer = null;
+          if (AppRouter.currentScreen !== 'screen-muni-spoke') return;
+          if (this.activeMapKey === 'NATIONAL') {{
+            this.updateNationalViewportLayers();
+          }}
+        }}, 70);
+      }},
+
+      onMapZoomChanged() {{
         if (AppRouter.currentScreen !== 'screen-muni-spoke') return;
         this.updateLocateInstructionText();
         if (this.activeMapKey === 'NATIONAL') {{
-          this.updateNationalViewportLayers();
+          if (!this.isSelectEnabledAtCurrentZoom()) {{
+            this.forceMountedPrefs.clear();
+          }}
+          this.scheduleViewportUpdate();
         }}
-        this.resetPolygonStyles();
+      }},
+
+      onMapMoveEnd() {{
+        if (AppRouter.currentScreen !== 'screen-muni-spoke') return;
+        if (this.activeMapKey === 'NATIONAL' && this.isSelectEnabledAtCurrentZoom()) {{
+          this.scheduleViewportUpdate();
+        }}
       }},
 
       updateLocateInstructionText() {{
@@ -2110,11 +2161,10 @@ html_content = f'''<!DOCTYPE html>
             if (!resp.ok) resp = await fetch(fallbackUrl);
             if (!resp.ok) throw new Error(`HTTP ${{resp.status}} for pref ${{codeStr}}`);
             const rawData = await resp.json();
-            const data = clipLakesFromGeoJson(rawData, codeStr);
-            this.geoJsonCache[codeStr] = data;
-            this.ensureCityBoundaryCache(codeStr, data);
-            this.ensurePrefBoundaryCache(codeStr, data);
-            return data;
+            // 湖沼はlakesPaneの専用レイヤーでマスク描画するため、重いturf.differenceをスキップして即座にキャッシュ
+            this.geoJsonCache[codeStr] = rawData;
+            this.ensureCityBoundaryCache(codeStr, rawData);
+            return rawData;
           }} finally {{
             delete this.pendingPrefFetches[codeStr];
           }}
@@ -2247,12 +2297,16 @@ html_content = f'''<!DOCTYPE html>
         }};
       }},
 
-      ensurePrefBoundaryCache(codeStr, geoJsonData) {{
+      ensurePrefBoundaryCache(codeStr) {{
         if (this.prefBoundaryCache[codeStr]) return this.prefBoundaryCache[codeStr];
-        if (!geoJsonData || !geoJsonData.features) return null;
-        const feature = this.buildOuterBoundaryMultiLine(geoJsonData.features, {{ prefCode: codeStr }});
-        if (feature) this.prefBoundaryCache[codeStr] = feature;
-        return feature;
+        if (typeof PREFECTURES_GEOJSON !== 'undefined' && PREFECTURES_GEOJSON && PREFECTURES_GEOJSON.features) {{
+          const found = PREFECTURES_GEOJSON.features.find(f => f.properties && f.properties.code === codeStr);
+          if (found) {{
+            this.prefBoundaryCache[codeStr] = found;
+            return found;
+          }}
+        }}
+        return null;
       }},
 
       ensureCityBoundaryCache(codeStr, geoJsonData) {{
@@ -2290,7 +2344,6 @@ html_content = f'''<!DOCTYPE html>
         if (this.geoJsonCache[codeStr]) {{
           this.currentGeoJson = this.geoJsonCache[codeStr];
           this.ensureCityBoundaryCache(codeStr, this.currentGeoJson);
-          this.ensurePrefBoundaryCache(codeStr, this.currentGeoJson);
           return;
         }}
 
@@ -2317,6 +2370,7 @@ html_content = f'''<!DOCTYPE html>
 
       async syncMapForCurrentQuestion() {{
         this.renderIslandButtonsForCurrentState();
+        this.forceMountedPrefs.clear();
 
         if (!this.isReviewMode) {{
           if (this.currentPref && this.activeMapKey !== this.currentPref.code) {{
@@ -2336,11 +2390,11 @@ html_content = f'''<!DOCTYPE html>
             this.activeMapKey = 'NATIONAL';
             this.renderMapLayers(true);
           }} else {{
-            // 場所当てモードで次の問題に移った際、日本全体が見えるビューにリセット
             if (this.map && this.currentMode === 'locate') {{
-              this.map.fitBounds([[30.0, 129.3], [45.6, 145.9]], {{ padding: [20, 20], animate: true }});
+              this.map.fitBounds([[30.0, 129.3], [45.6, 145.9]], {{ padding: [20, 20], animate: false }});
             }}
             this.updateNationalViewportLayers();
+            this.updateLocateInstructionText();
           }}
         }} else {{
           const q = this.currentQuestion;
@@ -2457,15 +2511,146 @@ html_content = f'''<!DOCTYPE html>
           this.map.removeLayer(this.nationalPrefBaseLayer);
           this.nationalPrefBaseLayer = null;
         }}
+        if (this.nationalPrefTopOutlineLayer) {{
+          this.map.removeLayer(this.nationalPrefTopOutlineLayer);
+          this.nationalPrefTopOutlineLayer = null;
+        }}
         Object.keys(this.nationalPrefLayers).forEach(code => {{
           const entry = this.nationalPrefLayers[code];
           if (entry && entry.active) {{
             if (entry.muniLayer) this.map.removeLayer(entry.muniLayer);
             if (entry.cityLayer) this.map.removeLayer(entry.cityLayer);
-            if (entry.prefLayer) this.map.removeLayer(entry.prefLayer);
             entry.active = false;
           }}
         }});
+      }},
+
+      computeMuniFeatureStyle(feature, targetCodesSet = null) {{
+        const featProps = feature.properties || {{}};
+        const code = String(featProps.N03_007 || featProps.code || '');
+        const isWard = Boolean(WARD_TO_CITY[code]);
+        const cityCode = WARD_TO_CITY[code] || code;
+        const isAllActive = this.isReviewMode;
+        const isTarget = isAllActive ? true : (!targetCodesSet || targetCodesSet.has(code) || targetCodesSet.has(cityCode));
+
+        const matchesTargetCode = (featCode, featCityCode, targetCode) => {{
+          const isW = Boolean(WARD_INFO[targetCode]);
+          return isW ? (featCode === targetCode) : (featCode === targetCode || featCityCode === targetCode);
+        }};
+
+        if (this.isAnswered && this.answeredResult) {{
+          const res = this.answeredResult;
+          const correctCodesList = res.correctCodes || [res.correctCode || res.code];
+          if (res.isCorrect) {{
+            if (correctCodesList.some(c => matchesTargetCode(code, cityCode, c))) {{
+              return {{
+                fillColor: '#34d399',
+                fillOpacity: 0.95,
+                weight: isWard ? 1.0 : 3.5,
+                color: isWard ? '#047857' : '#059669',
+                dashArray: isWard ? '3, 3' : null,
+                opacity: 1,
+                pulse: false
+              }};
+            }}
+          }} else {{
+            if (res.foundCodes && res.foundCodes.some(c => matchesTargetCode(code, cityCode, c))) {{
+              return {{
+                fillColor: '#34d399',
+                fillOpacity: 0.95,
+                weight: isWard ? 1.0 : 3.5,
+                color: isWard ? '#047857' : '#059669',
+                dashArray: isWard ? '3, 3' : null,
+                opacity: 1,
+                pulse: false
+              }};
+            }}
+            if (correctCodesList.some(c => matchesTargetCode(code, cityCode, c))) {{
+              return {{
+                fillColor: '#fbbf24',
+                fillOpacity: 0.95,
+                weight: isWard ? 1.0 : 3.5,
+                color: isWard ? '#d97706' : '#eab308',
+                dashArray: isWard ? '3, 3' : null,
+                opacity: 1,
+                pulse: true
+              }};
+            }}
+            if (res.wrongCode && code === res.wrongCode) {{
+              return {{
+                fillColor: '#f87171',
+                fillOpacity: 0.95,
+                weight: isWard ? 1.0 : 3.5,
+                color: isWard ? '#b91c1c' : '#dc2626',
+                dashArray: isWard ? '3, 3' : null,
+                opacity: 1,
+                pulse: false
+              }};
+            }}
+          }}
+        }}
+
+        if (!this.isAnswered && this.currentMode === 'locate' && this.multiFoundCodes && this.multiFoundCodes.size > 0) {{
+          if (Array.from(this.multiFoundCodes).some(c => matchesTargetCode(code, cityCode, c))) {{
+            return {{
+              fillColor: '#34d399',
+              fillOpacity: 0.95,
+              weight: isWard ? 1.0 : 3.5,
+              color: isWard ? '#047857' : '#059669',
+              dashArray: isWard ? '3, 3' : null,
+              opacity: 1,
+              pulse: false
+            }};
+          }}
+        }}
+
+        const isHighlightMode = (this.currentMode === 'name' || this.currentMode === 'type');
+        const currentCode = (this.currentQuestion && isHighlightMode) ? this.currentQuestion[0] : null;
+        if (!this.isAnswered && currentCode && matchesTargetCode(code, cityCode, currentCode)) {{
+          return {{
+            fillColor: '#fbbf24',
+            fillOpacity: 0.95,
+            weight: isWard ? 1.0 : 3.5,
+            color: isWard ? '#d97706' : '#f59e0b',
+            dashArray: isWard ? '3, 3' : null,
+            opacity: 1,
+            pulse: false
+          }};
+        }}
+
+        const showMuniBorders = this.isSelectEnabledAtCurrentZoom();
+        if (!showMuniBorders) {{
+          const baseFill = isTarget ? '#f8fafc' : '#334155';
+          return {{
+            fillColor: baseFill,
+            fillOpacity: isTarget ? 0.95 : 0.65,
+            color: baseFill,
+            weight: 0.5,
+            dashArray: null,
+            opacity: 1,
+            pulse: false
+          }};
+        }}
+
+        return {{
+          fillColor: isTarget ? '#f8fafc' : '#334155',
+          fillOpacity: isTarget ? 0.95 : 0.65,
+          color: isWard ? '#64748b' : '#090d16',
+          weight: isWard ? 0.85 : 0.75,
+          dashArray: isWard ? '3, 4' : null,
+          opacity: 1,
+          pulse: false
+        }};
+      }},
+
+      applySingleMuniLayerStyle(layer, targetCodesSet = null) {{
+        if (!layer || !layer.feature) return;
+        const st = this.computeMuniFeatureStyle(layer.feature, targetCodesSet);
+        layer.setStyle(st);
+        if (layer._path) {{
+          if (st.pulse) layer._path.classList.add('polygon-pulse');
+          else layer._path.classList.remove('polygon-pulse');
+        }}
       }},
 
       ensureNationalPrefLayerEntry(prefCode) {{
@@ -2477,31 +2662,22 @@ html_content = f'''<!DOCTYPE html>
 
         const muniLayer = L.geoJSON(gj, {{
           smoothFactor: 0,
-          style: (feature) => {{
-            let code = String(feature.properties.N03_007 || feature.properties.code || '');
-            const isWard = Boolean(WARD_TO_CITY[code]);
-            return {{
-              fillColor: '#f8fafc',
-              fillOpacity: 0.95,
-              color: isWard ? '#64748b' : '#090d16',
-              weight: isWard ? 0.9 : 0.8,
-              dashArray: isWard ? '3, 4' : null,
-              opacity: 1
-            }};
-          }},
+          style: (feature) => this.computeMuniFeatureStyle(feature, null),
           onEachFeature: (feature, layer) => {{
             let code = String(feature.properties.N03_007 || feature.properties.code || '');
             const cityCode = WARD_TO_CITY[code] || code;
             layer.on({{
-              mouseover: (e) => {{
+              mouseover: () => {{
                 if (this.isAnswered) return;
                 if (!this.isSelectEnabledAtCurrentZoom()) return;
                 if (this.multiFoundCodes && (this.multiFoundCodes.has(code) || this.multiFoundCodes.has(cityCode))) return;
                 layer.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
               }},
-              mouseout: (e) => {{
+              mouseout: () => {{
+                if (this.isAnswered) return;
                 if (!this.isSelectEnabledAtCurrentZoom()) return;
-                this.resetPolygonStyles();
+                // O(1): ホバー解除した1ポリゴンだけを元に戻す（全体ループresetPolygonStylesは呼ばない！）
+                this.applySingleMuniLayerStyle(layer, null);
               }},
               click: (e) => {{
                 if (!this.isSelectEnabledAtCurrentZoom()) {{
@@ -2524,32 +2700,15 @@ html_content = f'''<!DOCTYPE html>
             type: 'FeatureCollection',
             features: cityFeats
           }}, {{
+            pane: 'cityBorderPane',
+            renderer: L.svg({{ pane: 'cityBorderPane', padding: 1.0 }}),
             smoothFactor: 0,
             interactive: false,
             style: {{
               fill: false,
               fillOpacity: 0,
               color: '#090d16',
-              weight: 1.5,
-              opacity: 1
-            }}
-          }});
-        }}
-
-        const prefFeat = this.ensurePrefBoundaryCache(prefCode, gj);
-        let prefLayer = null;
-        if (prefFeat) {{
-          prefLayer = L.geoJSON({{
-            type: 'FeatureCollection',
-            features: [prefFeat]
-          }}, {{
-            smoothFactor: 0,
-            interactive: false,
-            style: {{
-              fill: false,
-              fillOpacity: 0,
-              color: '#020617',
-              weight: 1.8,
+              weight: 1.4,
               opacity: 1
             }}
           }});
@@ -2558,7 +2717,6 @@ html_content = f'''<!DOCTYPE html>
         const entry = {{
           muniLayer,
           cityLayer,
-          prefLayer,
           active: false
         }};
         this.nationalPrefLayers[prefCode] = entry;
@@ -2571,13 +2729,16 @@ html_content = f'''<!DOCTYPE html>
         const neededPrefs = new Set();
         const showMuniBorders = this.isSelectEnabledAtCurrentZoom();
 
-        // 1. 拡大時(zoom >= 7.0)は現在の画面(ビューポート)に映っている都道府県のみ対象
+        // 1. 拡大時(zoom >= 7.0)は画面中央周辺の注目エリア内の都道府県のみをマウント（広画面PCで38県同時マウントされるのを防止）
         if (showMuniBorders) {{
-          const bounds = this.map.getBounds().pad(0.15);
-          const vMinLat = bounds.getSouth();
-          const vMaxLat = bounds.getNorth();
-          const vMinLng = bounds.getWest();
-          const vMaxLng = bounds.getEast();
+          const bounds = this.map.getBounds();
+          const center = this.map.getCenter();
+          const maxHalfLat = 2.8;
+          const maxHalfLng = 3.5;
+          const vMinLat = Math.max(bounds.getSouth(), center.lat - maxHalfLat);
+          const vMaxLat = Math.min(bounds.getNorth(), center.lat + maxHalfLat);
+          const vMinLng = Math.max(bounds.getWest(), center.lng - maxHalfLng);
+          const vMaxLng = Math.min(bounds.getEast(), center.lng + maxHalfLng);
 
           if (PREFECTURES_GEOJSON && PREFECTURES_GEOJSON.features) {{
             for (let i = 0; i < PREFECTURES_GEOJSON.features.length; i++) {{
@@ -2588,6 +2749,7 @@ html_content = f'''<!DOCTYPE html>
               }}
             }}
           }}
+          this.forceMountedPrefs.forEach(pCode => neededPrefs.add(pCode));
         }}
 
         // 2. 回答後や複数解の途中でハイライト表示が必要な自治体の都道府県はズームを問わず対象
@@ -2618,35 +2780,40 @@ html_content = f'''<!DOCTYPE html>
           if (entry && entry.active && !neededPrefs.has(pCode)) {{
             if (entry.muniLayer) this.map.removeLayer(entry.muniLayer);
             if (entry.cityLayer) this.map.removeLayer(entry.cityLayer);
-            if (entry.prefLayer) this.map.removeLayer(entry.prefLayer);
             entry.active = false;
           }}
         }});
 
-        // 必要な都道府県のレイヤーをマウント（未取得の県はバックグラウンドでオンデマンド取得）
-        let addedAny = false;
+        // 必要な都道府県のレイヤーをマウント（未取得の県はバッチで一括取得し、完了時に1回だけマウント）
+        const missingCodes = [];
         neededPrefs.forEach(pCode => {{
           if (this.geoJsonCache[pCode]) {{
             const entry = this.ensureNationalPrefLayerEntry(pCode);
             if (entry && !entry.active) {{
-              if (entry.muniLayer) entry.muniLayer.addTo(this.map);
-              if (entry.cityLayer) entry.cityLayer.addTo(this.map);
-              if (entry.prefLayer) entry.prefLayer.addTo(this.map);
+              // マウントする県のポリゴンスタイルのみ最新状態に合わせる
+              entry.muniLayer.eachLayer(l => this.applySingleMuniLayerStyle(l, null));
+              entry.muniLayer.addTo(this.map);
+              if (entry.cityLayer) {{
+                entry.cityLayer.setStyle({{
+                  color: '#090d16',
+                  weight: showMuniBorders ? 1.4 : 0,
+                  opacity: showMuniBorders ? 1 : 0
+                }});
+                entry.cityLayer.addTo(this.map);
+              }}
               entry.active = true;
-              addedAny = true;
             }}
           }} else {{
-            this.fetchSinglePrefGeoJson(pCode).then(() => {{
-              if (this.activeMapKey === 'NATIONAL' && AppRouter.currentScreen === 'screen-muni-spoke') {{
-                this.updateNationalViewportLayers();
-                this.resetPolygonStyles();
-              }}
-            }}).catch(err => console.warn('Lazy pref load error:', pCode, err));
+            missingCodes.push(pCode);
           }}
         }});
 
-        if (addedAny) {{
-          this.resetPolygonStyles();
+        if (missingCodes.length > 0) {{
+          Promise.all(missingCodes.map(pCode => this.fetchSinglePrefGeoJson(pCode))).then(() => {{
+            if (this.activeMapKey === 'NATIONAL' && AppRouter.currentScreen === 'screen-muni-spoke') {{
+              this.updateNationalViewportLayers();
+            }}
+          }}).catch(err => console.warn('Lazy pref batch load error:', err));
         }}
       }},
 
@@ -2676,26 +2843,18 @@ html_content = f'''<!DOCTYPE html>
         }}
       }},
 
-      forEachActivePrefGroup(callback) {{
-        if (this.activeMapKey === 'NATIONAL') {{
-          Object.keys(this.nationalPrefLayers).forEach(pCode => {{
-            const entry = this.nationalPrefLayers[pCode];
-            if (entry && entry.active && entry.prefLayer) {{
-              callback(entry.prefLayer);
-            }}
-          }});
-        }} else if (this.prefBoundariesLayer) {{
-          callback(this.prefBoundariesLayer);
-        }}
-      }},
-
       renderMapLayers(fitNational = false) {{
         if (!this.map) return;
 
         if (this.activeMapKey === 'NATIONAL') {{
           this.clearSinglePrefLayers();
+          if (fitNational) {{
+            this.map.fitBounds([[30.0, 129.3], [45.6, 145.9]], {{ padding: [20, 20], animate: false }});
+          }}
           if (!this.nationalPrefBaseLayer) {{
             this.nationalPrefBaseLayer = L.geoJSON(PREFECTURES_GEOJSON, {{
+              pane: 'basePrefPane',
+              renderer: L.svg({{ pane: 'basePrefPane', padding: 1.0 }}),
               smoothFactor: 0,
               style: () => ({{
                 fillColor: '#f8fafc',
@@ -2714,11 +2873,15 @@ html_content = f'''<!DOCTYPE html>
                       }}
                     }} else {{
                       const pCode = feature.properties && feature.properties.code;
-                      if (pCode && !this.geoJsonCache[pCode]) {{
-                        this.fetchSinglePrefGeoJson(pCode).then(() => {{
+                      if (pCode) {{
+                        this.forceMountedPrefs.add(pCode);
+                        if (this.geoJsonCache[pCode]) {{
                           this.updateNationalViewportLayers();
-                          this.resetPolygonStyles();
-                        }});
+                        }} else {{
+                          this.fetchSinglePrefGeoJson(pCode).then(() => {{
+                            this.updateNationalViewportLayers();
+                          }});
+                        }}
                       }}
                     }}
                   }}
@@ -2727,12 +2890,24 @@ html_content = f'''<!DOCTYPE html>
             }}).addTo(this.map);
           }}
 
-          if (fitNational) {{
-            this.map.fitBounds([[30.0, 129.3], [45.6, 145.9]], {{ padding: [20, 20] }});
+          if (!this.nationalPrefTopOutlineLayer) {{
+            this.nationalPrefTopOutlineLayer = L.geoJSON(PREFECTURES_GEOJSON, {{
+              pane: 'prefBorderPane',
+              renderer: L.svg({{ pane: 'prefBorderPane', padding: 1.0 }}),
+              smoothFactor: 0,
+              interactive: false,
+              style: () => ({{
+                fill: false,
+                fillOpacity: 0,
+                color: '#020617',
+                weight: 1.6,
+                opacity: 1
+              }})
+            }}).addTo(this.map);
           }}
+
           this.updateNationalViewportLayers();
           this.updateLocateInstructionText();
-          this.resetPolygonStyles();
           return;
         }}
 
@@ -2746,38 +2921,24 @@ html_content = f'''<!DOCTYPE html>
 
         this.geoJsonLayer = L.geoJSON(this.currentGeoJson, {{
           smoothFactor: 0,
-          style: (feature) => {{
-            let code = String(feature.properties.N03_007 || feature.properties.code || '');
-            const isWard = Boolean(WARD_TO_CITY[code]);
-            const cityCode = WARD_TO_CITY[code] || code;
-            const isTarget = isAllActive ? true : (targetCodes.has(code) || targetCodes.has(cityCode));
-            return {{
-              fillColor: isTarget ? '#f8fafc' : '#334155',
-              fillOpacity: isTarget ? 0.95 : 0.65,
-              color: isWard ? '#64748b' : '#090d16',
-              weight: isWard ? 0.9 : 0.8,
-              dashArray: isWard ? '3, 4' : null,
-              opacity: 1
-            }};
-          }},
+          style: (feature) => this.computeMuniFeatureStyle(feature, targetCodes),
           onEachFeature: (feature, layer) => {{
             let code = String(feature.properties.N03_007 || feature.properties.code || '');
             const cityCode = WARD_TO_CITY[code] || code;
             const isTarget = isAllActive ? true : (targetCodes.has(code) || targetCodes.has(cityCode));
 
             layer.on({{
-              mouseover: (e) => {{
+              mouseover: () => {{
                 if (this.isAnswered) return;
-                if (!this.isSelectEnabledAtCurrentZoom()) return;
                 if (!isTarget && this.currentMode !== 'explore') return;
                 if (this.multiFoundCodes && (this.multiFoundCodes.has(code) || this.multiFoundCodes.has(cityCode))) return;
                 layer.setStyle({{ fillColor: '#e2e8f0', fillOpacity: 1 }});
               }},
-              mouseout: (e) => {{
-                if (!this.isSelectEnabledAtCurrentZoom()) return;
-                this.resetPolygonStyles();
+              mouseout: () => {{
+                if (this.isAnswered) return;
+                this.applySingleMuniLayerStyle(layer, targetCodes);
               }},
-              click: (e) => {{
+              click: () => {{
                 if (!isTarget && this.currentMode !== 'explore') return;
                 this.onPolygonClick(feature, layer);
               }}
@@ -2791,6 +2952,8 @@ html_content = f'''<!DOCTYPE html>
             type: 'FeatureCollection',
             features: cityBoundaryFeatures
           }}, {{
+            pane: 'cityBorderPane',
+            renderer: L.svg({{ pane: 'cityBorderPane', padding: 1.0 }}),
             smoothFactor: 0,
             interactive: false,
             style: {{
@@ -2803,19 +2966,21 @@ html_content = f'''<!DOCTYPE html>
           }}).addTo(this.map);
         }}
 
-        const prefFeat = this.ensurePrefBoundaryCache(this.activeMapKey, this.currentGeoJson);
+        const prefFeat = this.ensurePrefBoundaryCache(this.activeMapKey);
         if (prefFeat) {{
           this.prefBoundariesLayer = L.geoJSON({{
             type: 'FeatureCollection',
             features: [prefFeat]
           }}, {{
+            pane: 'prefBorderPane',
+            renderer: L.svg({{ pane: 'prefBorderPane', padding: 1.0 }}),
             smoothFactor: 0,
             interactive: false,
             style: {{
               fill: false,
               fillOpacity: 0,
               color: '#090d16',
-              weight: 1.25,
+              weight: 1.3,
               opacity: 1
             }}
           }}).addTo(this.map);
@@ -2973,155 +3138,12 @@ html_content = f'''<!DOCTYPE html>
         const targetCodes = isAllActive ? null : new Set(this.questionPool.map(m => m[0]));
         const isHighlightMode = (this.currentMode === 'name' || this.currentMode === 'type');
         const currentCode = (this.currentQuestion && isHighlightMode) ? this.currentQuestion[0] : null;
-
-        const zoom = this.map ? this.map.getZoom() : 8.0;
         const showMuniBorders = this.isSelectEnabledAtCurrentZoom();
-        const isMidZoom = (zoom < 8.5);
-
-        if (this.activeMapKey === 'NATIONAL' && this.nationalPrefBaseLayer) {{
-          const basePrefWeight = !showMuniBorders ? 1.25 : (isMidZoom ? 1.8 : 2.2);
-          this.nationalPrefBaseLayer.setStyle({{
-            fillColor: '#f8fafc',
-            fillOpacity: 0.95,
-            color: '#020617',
-            weight: basePrefWeight,
-            opacity: 1
-          }});
-        }}
-
-        const matchesTargetCode = (featCode, featCityCode, targetCode) => {{
-          const isWard = Boolean(WARD_INFO[targetCode]);
-          return isWard ? (featCode === targetCode) : (featCode === targetCode || featCityCode === targetCode);
-        }};
 
         this.forEachActiveMuniLayer(layer => {{
-          if (!layer.feature || !layer.feature.properties) return;
-          if (layer._path) layer._path.classList.remove('polygon-pulse');
-
-          const featProps = layer.feature.properties;
-          let code = String(featProps.N03_007 || featProps.code || '');
-          const isWard = Boolean(WARD_TO_CITY[code]);
-          const cityCode = WARD_TO_CITY[code] || code;
-          const isTarget = isAllActive ? true : (targetCodes.has(code) || targetCodes.has(cityCode));
-
-          // 回答確定後のハイライト判定
-          if (this.isAnswered && this.answeredResult) {{
-            const res = this.answeredResult;
-            const correctCodesList = res.correctCodes || [res.correctCode || res.code];
-
-            if (res.isCorrect) {{
-              const isMatch = correctCodesList.some(c => matchesTargetCode(code, cityCode, c));
-              if (isMatch) {{
-                layer.setStyle({{
-                  fillColor: '#34d399',
-                  fillOpacity: 0.95,
-                  weight: isWard ? 1.0 : 3.5,
-                  color: isWard ? '#047857' : '#059669',
-                  dashArray: isWard ? '3, 3' : null,
-                  opacity: 1
-                }});
-                if (layer.bringToFront) layer.bringToFront();
-                return;
-              }}
-            }} else {{
-              // 複数解の途中ですでに当てていた箇所は緑色維持
-              if (res.foundCodes && res.foundCodes.some(c => matchesTargetCode(code, cityCode, c))) {{
-                layer.setStyle({{
-                  fillColor: '#34d399',
-                  fillOpacity: 0.95,
-                  weight: isWard ? 1.0 : 3.5,
-                  color: isWard ? '#047857' : '#059669',
-                  dashArray: isWard ? '3, 3' : null,
-                  opacity: 1
-                }});
-                if (layer.bringToFront) layer.bringToFront();
-                return;
-              }}
-              // 不正解時: 正解場所は黄色点滅
-              const isCorrectMatch = correctCodesList.some(c => matchesTargetCode(code, cityCode, c));
-              if (isCorrectMatch) {{
-                layer.setStyle({{
-                  fillColor: '#fbbf24',
-                  fillOpacity: 0.95,
-                  weight: isWard ? 1.0 : 3.5,
-                  color: isWard ? '#d97706' : '#eab308',
-                  dashArray: isWard ? '3, 3' : null,
-                  opacity: 1
-                }});
-                if (layer._path) layer._path.classList.add('polygon-pulse');
-                if (layer.bringToFront) layer.bringToFront();
-                return;
-              }}
-              // 誤ってタップした場所は赤色
-              if (res.wrongCode && code === res.wrongCode) {{
-                layer.setStyle({{
-                  fillColor: '#f87171',
-                  fillOpacity: 0.95,
-                  weight: isWard ? 1.0 : 3.5,
-                  color: isWard ? '#b91c1c' : '#dc2626',
-                  dashArray: isWard ? '3, 3' : null,
-                  opacity: 1
-                }});
-                if (layer.bringToFront) layer.bringToFront();
-                return;
-              }}
-            }}
-          }}
-
-          // 複数解の途中で正解済みのポリゴン（回答継続中）は緑色ハイライト
-          if (!this.isAnswered && this.currentMode === 'locate' && this.multiFoundCodes && this.multiFoundCodes.size > 0) {{
-            const isFound = Array.from(this.multiFoundCodes).some(c => matchesTargetCode(code, cityCode, c));
-            if (isFound) {{
-              layer.setStyle({{
-                fillColor: '#34d399',
-                fillOpacity: 0.95,
-                weight: isWard ? 1.0 : 3.5,
-                color: isWard ? '#047857' : '#059669',
-                dashArray: isWard ? '3, 3' : null,
-                opacity: 1
-              }});
-              if (layer.bringToFront) layer.bringToFront();
-              return;
-            }}
-          }}
-
-          // 通常出題中（4択または記入）のハイライト
-          const isCurrentHighlight = !this.isAnswered && currentCode && matchesTargetCode(code, cityCode, currentCode);
-          if (isCurrentHighlight) {{
-            layer.setStyle({{
-              fillColor: '#fbbf24',
-              fillOpacity: 0.95,
-              weight: isWard ? 1.0 : 3.5,
-              color: isWard ? '#d97706' : '#f59e0b',
-              dashArray: isWard ? '3, 3' : null,
-              opacity: 1
-            }});
-            if (layer.bringToFront) layer.bringToFront();
-          }} else if (!showMuniBorders) {{
-            // 広域俯瞰時（zoom < 7.0）: 自治体境は塗りと同色にして隠し、都道府県境のみを見せる
-            const baseFill = isTarget ? '#f8fafc' : '#334155';
-            layer.setStyle({{
-              fillColor: baseFill,
-              fillOpacity: isTarget ? 0.95 : 0.65,
-              color: baseFill,
-              weight: 0.5,
-              dashArray: null,
-              opacity: 1
-            }});
-          }} else {{
-            // 自治体境表示時（zoom >= 7.0 または都道府県単体マップ）: 拡大率に合わせて線幅を調整
-            layer.setStyle({{
-              fillColor: isTarget ? '#f8fafc' : '#334155',
-              fillOpacity: isTarget ? 0.95 : 0.65,
-              color: isWard ? '#64748b' : (isMidZoom ? '#1e293b' : '#090d16'),
-              weight: isWard ? (isMidZoom ? 0.55 : 0.9) : (isMidZoom ? 0.55 : 0.85),
-              dashArray: isWard ? (isMidZoom ? '2, 3' : '3, 4') : null,
-              opacity: 1
-            }});
-          }}
+          this.applySingleMuniLayerStyle(layer, targetCodes);
         }});
 
-        // 市外郭レイヤーのハイライト＆ズーム連動
         this.forEachActiveCityLayer(layer => {{
           if (!layer.feature || !layer.feature.properties) return;
           const cCode = layer.feature.properties.cityCode;
@@ -3132,71 +3154,22 @@ html_content = f'''<!DOCTYPE html>
             const correctCodesList = res.correctCodes || [res.correctCode || res.code];
             if (res.isCorrect && correctCodesList.includes(cCode)) {{
               layer.setStyle({{ color: '#059669', weight: 3.5, opacity: 1 }});
-              if (layer.bringToFront) layer.bringToFront();
               return;
             }} else if (!res.isCorrect && correctCodesList.includes(cCode)) {{
               layer.setStyle({{ color: '#eab308', weight: 3.5, opacity: 1 }});
               if (layer._path) layer._path.classList.add('polygon-pulse');
-              if (layer.bringToFront) layer.bringToFront();
               return;
             }}
           }}
 
           if (!this.isAnswered && currentCode && cCode === currentCode) {{
             layer.setStyle({{ color: '#f59e0b', weight: 3.5, opacity: 1 }});
-            if (layer.bringToFront) layer.bringToFront();
           }} else if (!showMuniBorders) {{
             layer.setStyle({{ color: '#090d16', weight: 0, opacity: 0 }});
           }} else {{
-            layer.setStyle({{ color: '#090d16', weight: isMidZoom ? 1.15 : 1.5, opacity: 1 }});
+            layer.setStyle({{ color: '#090d16', weight: 1.4, opacity: 1 }});
           }}
         }});
-
-        // 都道府県境レイヤーのズーム連動（常に最前面で都道府県境をくっきり維持）
-        let prefWeight = 1.2;
-        if (this.activeMapKey === 'NATIONAL') {{
-          if (!showMuniBorders) {{
-            prefWeight = 1.25;
-          }} else if (isMidZoom) {{
-            prefWeight = 1.8;
-          }} else {{
-            prefWeight = 2.2;
-          }}
-        }} else {{
-          prefWeight = isMidZoom ? 1.2 : 1.5;
-        }}
-
-        this.forEachActivePrefGroup(prefLayerGroup => {{
-          prefLayerGroup.setStyle({{
-            color: '#020617',
-            weight: prefWeight,
-            opacity: 1
-          }});
-          if (prefLayerGroup.bringToFront) {{
-            prefLayerGroup.bringToFront();
-          }}
-        }});
-
-        // 回答後のハイライトや出題中の黄色ポリゴンが県境の下に隠れないよう再調整
-        if (this.isAnswered || currentCode || (this.multiFoundCodes && this.multiFoundCodes.size > 0)) {{
-          this.forEachActiveMuniLayer(layer => {{
-            if (!layer.feature || !layer.feature.properties) return;
-            const featProps = layer.feature.properties;
-            let code = String(featProps.N03_007 || featProps.code || '');
-            const cityCode = WARD_TO_CITY[code] || code;
-            if (this.isAnswered && this.answeredResult) {{
-              const res = this.answeredResult;
-              const correctCodesList = res.correctCodes || [res.correctCode || res.code];
-              if (correctCodesList.some(c => matchesTargetCode(code, cityCode, c)) || (res.wrongCode && code === res.wrongCode)) {{
-                if (layer.bringToFront) layer.bringToFront();
-              }}
-            }} else if (currentCode && matchesTargetCode(code, cityCode, currentCode)) {{
-              if (layer.bringToFront) layer.bringToFront();
-            }} else if (this.multiFoundCodes && Array.from(this.multiFoundCodes).some(c => matchesTargetCode(code, cityCode, c))) {{
-              if (layer.bringToFront) layer.bringToFront();
-            }}
-          }});
-        }}
       }},
 
       async highlightQuestionPolygon(customCodes = null) {{
@@ -3678,7 +3651,7 @@ html_content = f'''<!DOCTYPE html>
           this.map = L.map('prov-map', {{
             attributionControl: false,
             zoomControl: false,
-            renderer: L.svg({{ padding: 0.35 }})
+            renderer: L.svg({{ padding: 1.0 }})
           }});
           L.control.zoom({{ position: 'bottomright' }}).addTo(this.map);
         }}
@@ -4377,7 +4350,7 @@ html_content = f'''<!DOCTYPE html>
           this.map = L.map('world-map', {{
             attributionControl: false,
             zoomControl: false,
-            renderer: L.svg({{ padding: 0.35 }}),
+            renderer: L.svg({{ padding: 1.0 }}),
             minZoom: 1.5,
             maxZoom: 9
           }});

@@ -2350,6 +2350,7 @@ html_content = f'''<!DOCTYPE html>
             const cleaned = this.cleanAndFilterMuniGeoJson(rawData);
             this.geoJsonCache[codeStr] = cleaned;
             this.ensureCityBoundaryCache(codeStr, cleaned);
+            this.ensurePrefBoundaryCache(codeStr, cleaned);
             return cleaned;
           }} finally {{
             delete this.pendingPrefFetches[codeStr];
@@ -2483,13 +2484,14 @@ html_content = f'''<!DOCTYPE html>
         }};
       }},
 
-      ensurePrefBoundaryCache(codeStr) {{
+      ensurePrefBoundaryCache(codeStr, geoJsonData = null) {{
         if (this.prefBoundaryCache[codeStr]) return this.prefBoundaryCache[codeStr];
-        if (typeof PREFECTURES_GEOJSON !== 'undefined' && PREFECTURES_GEOJSON && PREFECTURES_GEOJSON.features) {{
-          const found = PREFECTURES_GEOJSON.features.find(f => f.properties && f.properties.code === codeStr);
-          if (found) {{
-            this.prefBoundaryCache[codeStr] = found;
-            return found;
+        const gj = geoJsonData || this.geoJsonCache[codeStr] || (this.activeMapKey === codeStr ? this.currentGeoJson : null);
+        if (gj && gj.features && gj.features.length > 0) {{
+          const feat = this.buildOuterBoundaryMultiLine(gj.features, {{ code: codeStr }});
+          if (feat) {{
+            this.prefBoundaryCache[codeStr] = feat;
+            return feat;
           }}
         }}
         return null;
@@ -2530,6 +2532,7 @@ html_content = f'''<!DOCTYPE html>
         if (this.geoJsonCache[codeStr]) {{
           this.currentGeoJson = this.geoJsonCache[codeStr];
           this.ensureCityBoundaryCache(codeStr, this.currentGeoJson);
+          this.ensurePrefBoundaryCache(codeStr, this.currentGeoJson);
           return;
         }}
 
@@ -2715,9 +2718,48 @@ html_content = f'''<!DOCTYPE html>
           if (entry && entry.active) {{
             if (entry.muniLayer) this.map.removeLayer(entry.muniLayer);
             if (entry.cityLayer) this.map.removeLayer(entry.cityLayer);
+            if (entry.prefLayer) this.map.removeLayer(entry.prefLayer);
             entry.active = false;
           }}
         }});
+      }},
+
+      syncNationalOverviewBaseStyles(lodParams = null) {{
+        const lod = lodParams || this.getZoomLodParams();
+        if (this.nationalPrefBaseLayer) {{
+          this.nationalPrefBaseLayer.eachLayer(l => {{
+            const pCode = l.feature && l.feature.properties && l.feature.properties.code;
+            const isMounted = Boolean(pCode && this.nationalPrefLayers[pCode] && this.nationalPrefLayers[pCode].active);
+            if (isMounted) {{
+              l.setStyle({{ fillOpacity: 0, opacity: 0, weight: 0 }});
+            }} else {{
+              l.setStyle({{
+                fillColor: '#f8fafc',
+                fillOpacity: 0.95,
+                color: '#0f172a',
+                weight: 1.0,
+                opacity: 1
+              }});
+            }}
+          }});
+        }}
+        if (this.nationalPrefTopOutlineLayer) {{
+          this.nationalPrefTopOutlineLayer.eachLayer(l => {{
+            const pCode = l.feature && l.feature.properties && l.feature.properties.code;
+            const isMounted = Boolean(pCode && this.nationalPrefLayers[pCode] && this.nationalPrefLayers[pCode].active);
+            if (isMounted) {{
+              l.setStyle({{ opacity: 0, weight: 0 }});
+            }} else {{
+              l.setStyle({{
+                fill: false,
+                fillOpacity: 0,
+                color: lod.prefColor,
+                weight: lod.prefWeight,
+                opacity: 1
+              }});
+            }}
+          }});
+        }}
       }},
 
       computeMuniFeatureStyle(feature, targetCodesSet = null, lodParams = null) {{
@@ -2874,7 +2916,7 @@ html_content = f'''<!DOCTYPE html>
           }}, {{
             pane: 'pulsePane',
             renderer: this.pulseSvgRenderer,
-            smoothFactor: 0.5,
+            smoothFactor: 0,
             interactive: false,
             style: () => ({{
               fillColor: '#fbbf24',
@@ -2901,7 +2943,7 @@ html_content = f'''<!DOCTYPE html>
 
         const muniLayer = L.geoJSON(gj, {{
           renderer: this.canvasRenderers.overlay,
-          smoothFactor: 0.65,
+          smoothFactor: 0,
           style: (feature) => this.computeMuniFeatureStyle(feature, null),
           onEachFeature: (feature, layer) => {{
             let code = String(feature.properties.N03_007 || feature.properties.code || '');
@@ -2932,17 +2974,17 @@ html_content = f'''<!DOCTYPE html>
           }}
         }});
 
+        const lod = this.getZoomLodParams();
         const cityFeats = this.ensureCityBoundaryCache(prefCode, gj) || [];
         let cityLayer = null;
         if (cityFeats.length > 0) {{
-          const lod = this.getZoomLodParams();
           cityLayer = L.geoJSON({{
             type: 'FeatureCollection',
             features: cityFeats
           }}, {{
             pane: 'cityBorderPane',
             renderer: this.canvasRenderers.cityBorder,
-            smoothFactor: 0.65,
+            smoothFactor: 0,
             interactive: false,
             style: {{
               fill: false,
@@ -2954,9 +2996,31 @@ html_content = f'''<!DOCTYPE html>
           }});
         }}
 
+        const prefFeat = this.ensurePrefBoundaryCache(prefCode, gj);
+        let prefLayer = null;
+        if (prefFeat) {{
+          prefLayer = L.geoJSON({{
+            type: 'FeatureCollection',
+            features: [prefFeat]
+          }}, {{
+            pane: 'prefBorderPane',
+            renderer: this.canvasRenderers.prefBorder,
+            smoothFactor: 0,
+            interactive: false,
+            style: {{
+              fill: false,
+              fillOpacity: 0,
+              color: lod.prefColor,
+              weight: lod.prefWeight,
+              opacity: 1
+            }}
+          }});
+        }}
+
         const entry = {{
           muniLayer,
           cityLayer,
+          prefLayer,
           active: false
         }};
         this.nationalPrefLayers[prefCode] = entry;
@@ -2968,15 +3032,6 @@ html_content = f'''<!DOCTYPE html>
 
         const lod = this.getZoomLodParams();
         const showMuniBorders = lod.showMuni;
-
-        // 都道府県境の線幅も拡大率（LOD）に合わせてGoogleマップ風に動的更新
-        if (this.nationalPrefTopOutlineLayer && stageChanged) {{
-          this.nationalPrefTopOutlineLayer.setStyle({{
-            color: lod.prefColor,
-            weight: lod.prefWeight,
-            opacity: 1
-          }});
-        }}
 
         const neededPrefs = new Set();
 
@@ -3022,16 +3077,18 @@ html_content = f'''<!DOCTYPE html>
           }}
         }}
 
+        let mountChanged = false;
+
         // 縮小して市区町村境非表示（Stage 0）になった場合のみ、不要な県のレイヤーをアンマウント
-        // 拡大中（Stage 1〜3）は L.Canvas のネイティブ画面外カリング（_pxBounds.intersects）により0.05msで自動スキップされるため、
-        // スクロール移動のたびに removeLayer せず保持することでパン移動時の引っかかりを完全にゼロにする
         if (!showMuniBorders) {{
           Object.keys(this.nationalPrefLayers).forEach(pCode => {{
             const entry = this.nationalPrefLayers[pCode];
             if (entry && entry.active && !neededPrefs.has(pCode)) {{
               if (entry.muniLayer) this.map.removeLayer(entry.muniLayer);
               if (entry.cityLayer) this.map.removeLayer(entry.cityLayer);
+              if (entry.prefLayer) this.map.removeLayer(entry.prefLayer);
               entry.active = false;
+              mountChanged = true;
             }}
           }});
         }}
@@ -3052,12 +3109,25 @@ html_content = f'''<!DOCTYPE html>
                 }});
                 entry.cityLayer.addTo(this.map);
               }}
+              if (entry.prefLayer) {{
+                entry.prefLayer.setStyle({{
+                  color: lod.prefColor,
+                  weight: lod.prefWeight,
+                  opacity: 1
+                }});
+                entry.prefLayer.addTo(this.map);
+              }}
               entry.active = true;
+              mountChanged = true;
             }}
           }} else {{
             missingCodes.push(pCode);
           }}
         }});
+
+        if (mountChanged || stageChanged) {{
+          this.syncNationalOverviewBaseStyles(lod);
+        }}
 
         // 既にマウント済みの県についても、ズームLOD段階（Stage）が変化したときは線の太さ・濃さを一括更新
         if (stageChanged) {{
@@ -3099,6 +3169,19 @@ html_content = f'''<!DOCTYPE html>
         }}
       }},
 
+      forEachActivePrefLayer(callback) {{
+        if (this.activeMapKey === 'NATIONAL') {{
+          Object.keys(this.nationalPrefLayers).forEach(pCode => {{
+            const entry = this.nationalPrefLayers[pCode];
+            if (entry && entry.active && entry.prefLayer) {{
+              entry.prefLayer.eachLayer(callback);
+            }}
+          }});
+        }} else if (this.prefBoundariesLayer) {{
+          this.prefBoundariesLayer.eachLayer(callback);
+        }}
+      }},
+
       renderMapLayers(fitNational = false) {{
         if (!this.map) return;
 
@@ -3114,7 +3197,7 @@ html_content = f'''<!DOCTYPE html>
             this.nationalPrefBaseLayer = L.geoJSON(PREFECTURES_GEOJSON, {{
               pane: 'basePrefPane',
               renderer: this.canvasRenderers.basePref,
-              smoothFactor: 0.5,
+              smoothFactor: 0,
               style: () => ({{
                 fillColor: '#f8fafc',
                 fillOpacity: 0.95,
@@ -3153,7 +3236,7 @@ html_content = f'''<!DOCTYPE html>
             this.nationalPrefTopOutlineLayer = L.geoJSON(PREFECTURES_GEOJSON, {{
               pane: 'prefBorderPane',
               renderer: this.canvasRenderers.prefBorder,
-              smoothFactor: 0.5,
+              smoothFactor: 0,
               interactive: false,
               style: () => ({{
                 fill: false,
@@ -3163,15 +3246,10 @@ html_content = f'''<!DOCTYPE html>
                 opacity: 1
               }})
             }}).addTo(this.map);
-          }} else {{
-            this.nationalPrefTopOutlineLayer.setStyle({{
-              color: lod.prefColor,
-              weight: lod.prefWeight,
-              opacity: 1
-            }});
           }}
 
           this.updateNationalViewportLayers(false);
+          this.syncNationalOverviewBaseStyles(lod);
           this.updateLocateInstructionText();
           return;
         }}
@@ -3188,7 +3266,7 @@ html_content = f'''<!DOCTYPE html>
 
         this.geoJsonLayer = L.geoJSON(this.currentGeoJson, {{
           renderer: this.canvasRenderers.overlay,
-          smoothFactor: 0.65,
+          smoothFactor: 0,
           style: (feature) => this.computeMuniFeatureStyle(feature, targetCodes, lod),
           onEachFeature: (feature, layer) => {{
             let code = String(feature.properties.N03_007 || feature.properties.code || '');
@@ -3222,7 +3300,7 @@ html_content = f'''<!DOCTYPE html>
           }}, {{
             pane: 'cityBorderPane',
             renderer: this.canvasRenderers.cityBorder,
-            smoothFactor: 0.65,
+            smoothFactor: 0,
             interactive: false,
             style: {{
               fill: false,
@@ -3234,7 +3312,7 @@ html_content = f'''<!DOCTYPE html>
           }}).addTo(this.map);
         }}
 
-        const prefFeat = this.ensurePrefBoundaryCache(this.activeMapKey);
+        const prefFeat = this.ensurePrefBoundaryCache(this.activeMapKey, this.currentGeoJson);
         if (prefFeat) {{
           this.prefBoundariesLayer = L.geoJSON({{
             type: 'FeatureCollection',
@@ -3242,7 +3320,7 @@ html_content = f'''<!DOCTYPE html>
           }}, {{
             pane: 'prefBorderPane',
             renderer: this.canvasRenderers.prefBorder,
-            smoothFactor: 0.5,
+            smoothFactor: 0,
             interactive: false,
             style: {{
               fill: false,
@@ -3439,18 +3517,16 @@ html_content = f'''<!DOCTYPE html>
           }}
         }});
 
-        if (this.activeMapKey === 'NATIONAL' && this.nationalPrefTopOutlineLayer) {{
-          this.nationalPrefTopOutlineLayer.setStyle({{
+        this.forEachActivePrefLayer(layer => {{
+          layer.setStyle({{
             color: lod.prefColor,
             weight: lod.prefWeight,
             opacity: 1
           }});
-        }} else if (this.prefBoundariesLayer) {{
-          this.prefBoundariesLayer.setStyle({{
-            color: lod.prefColor,
-            weight: lod.prefWeight,
-            opacity: 1
-          }});
+        }});
+
+        if (this.activeMapKey === 'NATIONAL') {{
+          this.syncNationalOverviewBaseStyles(lod);
         }}
 
         this.syncPulseOverlayLayer();
